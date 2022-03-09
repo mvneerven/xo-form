@@ -1,0 +1,16 @@
+{
+    "@context" : "http://schema.org",
+    "@type" : "Organization",
+    "name" : "Neerventure",
+    "telephone" : "+31 6 246 150 38",
+    "email" : "info@neerventure.com",
+    "image": "https://cto-as-as-service.nl/img/og-image.jpg",
+    "address" : {
+      "@type" : "PostalAddress",
+      "streetAddress": "Fred. Roeskestraat 115",
+      "postalCode": "1076 EE",
+      "addressLocality": "Amsterdam",
+      "addressRegion": "Noord-Holland",
+      "addressCountry" : "The Netherlands"
+    }
+  }

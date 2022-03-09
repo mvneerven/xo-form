@@ -1,0 +1,255 @@
+@import "theme";
+@import "shared";
+
+* {
+    box-sizing: border-box; /* 1 */
+}
+
+.xo-cn:not(.xo-rep) {
+    margin-top: 0.4rem;
+
+    .xo-in {
+        padding: 0.8rem 1.3rem;
+        border: 1px solid var(--xo-input-border-color);
+        border-radius: 1rem;
+        background-color: var(--xo-input-bg);
+    }
+    
+}
+
+.xo-ct {
+    padding: 0.5rem;
+}
+
+label {
+    display: inline-block;
+    margin-top: 0.3rem;
+    margin-bottom: 0.3rem;
+    margin-right: 0.7rem;
+}
+
+input,
+select,
+textarea {
+    background-color: transparent;
+}
+
+input:not([type="checkbox"], [type="radio"]),
+select,
+textarea {
+    min-width: 20rem;
+    padding: 0.4rem 0.8rem;
+}
+
+.xo-hd {
+    display: none;
+}
+
+input:not([type="checkbox"], [type="radio"]),
+select,
+textarea {
+    border: 0;
+    outline: 0;
+    padding: 0;
+    width: 100%;
+    resize: vertical;
+}
+
+label {
+    display: inline-block;
+}
+
+.xo-lb {
+    &:empty {
+        display: none;
+    }
+}
+
+button {
+    padding: 0.4rem 0.8rem;
+    border-radius: 1rem;
+    border: 1px solid var(--xo-input-border-color);
+    &:hover {
+        border: 1px solid var(--xo-input-border-color-hover);
+    }
+    &:active {
+        transform: translateY(2px);
+        transition: all 0.1s ease-out;
+    }
+}
+
+/* sub label */
+.xo-sl {
+    display: inline-block;
+    padding-left: 0.5rem;
+}
+
+/* disabled */
+.xo-ds {
+    opacity: 0.5;
+    //pointer-events: none;
+    user-select: none;
+    cursor: not-allowed;
+
+    input,
+    [name],
+    label {
+        pointer-events: none;
+    }
+}
+
+
+.xo-nv {
+    margin-top: 2rem;
+}
+
+fieldset {
+    border: 0;
+}
+
+legend {
+    font-size: 1.3rem;
+}
+
+.xo-vl {
+    color: rgb(250, 94, 94);
+}
+
+.xo-cn.horizontal {
+    display: flex;
+    gap: 1rem;
+}
+
+option {
+    background-color: var(--bg-color);
+}
+
+
+.autocomplete {
+    
+    //position: relative;
+    margin: auto;
+
+    .xo-in{
+        position: relative;
+    }
+
+    .xo-ac-rs {
+        font-size: 0.9rem;
+        text-align: left;
+        background-color: rgb(40, 40, 40);
+        position: fixed;
+        box-shadow: 0 5px 10px 2px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        padding: 0.2rem;
+        max-height: 300px;
+        max-width: 500px;
+        overflow-y: auto;
+        z-index: 9999;
+
+        .exf-ac-itm {
+            display: grid;
+            grid-template-columns: var(--exf-ac-itm-grid, 30px 1fr 7rem);
+            cursor: pointer;
+            overflow: hidden;
+            padding: 0.5rem;
+            height: var(--exf-ac-itm-height, auto);
+
+            .exf-ac-img {
+                background-repeat: no-repeat;
+                background-size: contain;
+                width: var(--exf-ac-itm-width, 1.1rem);
+                height: var(--exf-ac-itm-height, auto);
+                display: inline-block;
+            }
+
+            &:hover {
+                background-color: rgba(0, 0, 0, 0.05);
+            }
+
+            span.text {
+                display: inline-block;
+
+                min-width: 100px;
+
+                small {
+                    color: rgba(0, 0, 0, 0.5);
+                    word-wrap: normal;
+                    display: inline-block;
+                }
+
+                .txt-hl {
+                    text-decoration: underline;
+                }
+            }
+
+            span.category {
+                float: right;
+                text-align: right;
+                color: rgba(0, 0, 0, 0.5);
+                font-size: smaller;
+            }
+
+            &.selected {
+                background-color: rgba(0, 0, 0, 0.1);
+            }
+
+            &.active {
+                background-color: rgba(0, 0, 0, 0.05);
+                transition: all 0.1s;
+            }
+        }
+    }
+
+    &.simple {
+
+        .exf-ac-rs {
+            .exf-ac-itm {
+                grid-template-columns: var(--exf-ac-itm-grid, 1px 1fr 7rem);
+            }
+        }
+    }
+
+}
+
+html.theme-dark {
+    .exf-ctl-cnt.autocomplete {
+        .exf-ac-rs {
+            background-color: rgb(40, 40, 40);
+
+            box-shadow: 0 5px 10px 2px rgba(0, 0, 0, 0.5);
+            border-color: rgba(255, 2555, 255, 0.1);
+
+            .exf-ac-itm {
+                &:hover {
+                    background-color: rgba(255, 255, 255, 0.05);
+                }
+
+                span.text {
+                    small {
+                        color: rgba(255, 255, 255, 0.5);
+                    }
+                }
+
+                span.category {
+                    color: rgba(255, 255, 255, 0.5);
+                }
+
+                &.selected {
+                    background-color: rgba(255, 255, 255, 0.5);
+                }
+
+                &.active {
+                    background-color: rgba(255, 255, 255, 0.65);
+                }
+            }
+        }
+    }
+}
+
+.pwa-omnibox {
+    .exf-ctl-cnt.autocomplete {
+        width: auto;
+        display: inline-block;
+    }
+}

@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,CAAC;AACD,CAAC,AAAA,OAAO;AACR,CAAC,AAAA,MAAM,CAAC;EACJ,UAAU,EAAE,OAAO;CACtB;;AAED,AAAA,IAAI,CAAC;EACD,MAAM,EAAE,aAAa;CACxB",
+    "sources": [
+        "../scss/xo-form.scss"
+    ],
+    "names": [],
+    "file": "xo-form.css"
+}

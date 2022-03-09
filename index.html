@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" id="belovedpet">
+
+<head>
+  <meta charset="UTF-8">
+  <title>XO 3.0</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta name="color-scheme" content="dark light" />
+  <meta name="theme-color" content="#ffffff" />
+  <link rel="manifest" href="/manifest.json">
+  <meta name="description" content="XO 3.0" />
+  <meta name="keywords" content="forms, webforms, webcomponents" />
+
+  <link href="/css/main.css" rel="stylesheet">
+
+  <link rel="shortcut icon" href="/img/icon-512p.png" />
+  <link rel="apple-touch-icon" href="/img/icon-512p.png" />
+
+  <script defer type="module" src="/dist/index.js"></script>
+
+</head>
+
+<body>
+  <header>
+    <h1><a href="/">XO 3.0</a></h1>
+    <nav id="hamburgermenu"></nav>
+  </header>
+
+  <main>
+    <xo-form></xo-form>
+
+    <hr />
+
+    <textarea id="model" rows="20" cols="80" style="border: 1px solid rgba(125,125,125.5)"></textarea>
+
+  </main>
+
+  <footer>
+    &copy; 2022 XO - made with 💗 by Neerventure.com
+  </footer>
+  
+  <script type="module">
+    eventBus.register("xo-modelchange", e=>{
+      document.getElementById("model").value = JSON.stringify(e.detail.model, null, 2);
+    })
+  </script>
+
+</body>
+
+</html>

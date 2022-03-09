@@ -1,0 +1,29 @@
+{
+    "name": "MyPet",
+    "short_name": "CaaS",
+    "theme_color": "#ffffff",
+    "background_color": "#da532b",
+    "display": "standalone",
+    "scope": "/",
+    "description": "MyPetApp",
+    "start_url": "/",
+    "orientation": "portrait",
+    "icons": [
+        {
+            "src": "/img/icon-512p.png",
+            "type": "image/png",
+            "sizes": "128x128"
+        },
+        {
+            "src": "/img/icon-512p.png",
+            "type": "image/png",
+            "sizes": "64x64"
+        },
+        {
+            "src": "/img/icon-512p.png",
+            "type": "image/png",
+            "sizes": "512x512",
+            "purpose": "any maskable"
+        }
+    ]
+}
