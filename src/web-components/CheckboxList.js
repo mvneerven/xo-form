@@ -1,9 +1,8 @@
-import Control from "./Control";
+import xo from '../xo'
 import { html } from 'lit';
 import { repeat } from 'lit/directives/repeat.js';
 
-
-class CheckboxList extends Control {
+class CheckboxList extends xo.control {
 
     _value = [];
 

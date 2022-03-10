@@ -1,10 +1,8 @@
-import Control from "./Control";
+//import Control from "./Control";
 import { html } from 'lit';
 import { repeat } from 'lit/directives/repeat.js';
 
-
-class Select extends Control {
-
+class Select extends xo.control {
     _value = [];
 
     static get properties() {

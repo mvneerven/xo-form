@@ -861,8 +861,15 @@ a:visited:hover {
   /* 1 */
 }
 
-.xo-cn {
+.xo-cn:not(.xo-rep) {
   margin-top: 0.4rem;
+}
+
+.xo-cn:not(.xo-rep) .xo-in {
+  padding: 0.8rem 1.3rem;
+  border: 1px solid var(--xo-input-border-color);
+  border-radius: 1rem;
+  background-color: var(--xo-input-bg);
 }
 
 .xo-ct {
@@ -950,13 +957,6 @@ button:active {
   pointer-events: none;
 }
 
-.xo-in {
-  padding: 0.8rem 1.3rem;
-  border: 1px solid var(--xo-input-border-color);
-  border-radius: 1rem;
-  background-color: var(--xo-input-bg);
-}
-
 .xo-nv {
   margin-top: 2rem;
 }
@@ -995,7 +995,7 @@ option {
 .autocomplete .xo-ac-rs {
   font-size: 0.9rem;
   text-align: left;
-  background-color: #f0f0f0;
+  background-color: #282828;
   position: fixed;
   -webkit-box-shadow: 0 5px 10px 2px rgba(0, 0, 0, 0.1);
           box-shadow: 0 5px 10px 2px rgba(0, 0, 0, 0.1);

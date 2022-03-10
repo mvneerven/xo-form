@@ -41,10 +41,11 @@ class Repeat extends Group {
         this.schema.layout = this.layout || "horizontal";
         this.items.forEach(item => {
             let group = this.createControl(this.context, "group", this.schema, {
+
                 scope: item,
                 index: index++
             });
-
+            group.setAttribute("data-index", index)
             this.appendChild(group);
         });
     }
@@ -53,6 +54,8 @@ class Repeat extends Group {
         let c = super.getClasses();
         return (c + " xo-rep");
     }
+
+
 }
 
 export default Repeat;

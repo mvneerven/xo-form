@@ -4,7 +4,7 @@ import DataBinding from './DataBinding';
 class Context{
     constructor(form){
         this._form = form;
-        this._model = new DataBinding(this);
+        this._db = new DataBinding(this);
         this._mapper = new PropertyMapper(this)
     }
 
@@ -13,7 +13,7 @@ class Context{
     }
 
     get data(){
-        return this._model;
+        return this._db;
     }
 
     get mapper(){

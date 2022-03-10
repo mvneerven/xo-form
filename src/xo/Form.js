@@ -1,8 +1,8 @@
 import { html } from 'lit';
 import Control from './Control';
-import Validation from '../modules/Validation';
-import { EventBus } from '../modules/EventBus';
-import Context from '../modules/Context';
+import Validation from './Validation';
+import { EventBus } from './EventBus';
+import Context from './Context';
 
 class Form extends Control {
     elements = {};
@@ -12,7 +12,7 @@ class Form extends Control {
         this._context = new Context(this)
         this._page = 1
 
-        
+
     }
 
     static get properties() {
@@ -21,6 +21,9 @@ class Form extends Control {
             page: {
                 type: Number,
                 attribute: true
+            },
+            schema: {
+                type: Object
             }
         }
     }
@@ -42,6 +45,34 @@ class Form extends Control {
         this._page = value
 
         this.requestUpdate()
+    }
+
+    set schema(schema) {
+        this._schema = schema;
+
+
+        if (typeof (schema) !== "object")
+            throw Error("Invalid schema");
+
+        schema.page = "#/_xo/page";
+
+        this.context.data.initialize(schema.model)
+
+        let index = 1;
+        for (let page of schema.pages) {
+            page.index = index++;
+            let pageElement = this.createControl(this.context, "xo-page", page);
+            pageElement.setAttribute("slot", "w")
+            this.appendChild(pageElement);
+        }
+
+        this.nav = this.createControl(this.context, "xo-nav", schema);
+        this.nav.setAttribute("slot", "n")
+        this.appendChild(this.nav);
+    }
+
+    get schema() {
+        return this._schema;
     }
 
     get page() {
@@ -69,31 +100,8 @@ class Form extends Control {
     <div>`
     }
 
-    load(schema) {
-        if(typeof(schema) !== "object")
-            throw Error("Invalid schema");
-
-        
-        schema.page = "#/_xo/page";
-
-        this.context.data.initialize(schema.model)       
-
-        let index = 1;
-        for (let page of schema.pages) {
-            page.index = index++;
-            let pageElement = this.createControl(this.context, "xo-page", page);
-            pageElement.setAttribute("slot", "w")
-            this.appendChild(pageElement);
-        }
-
-        this.nav = this.createControl(this.context, "xo-nav", schema);
-        this.nav.setAttribute("slot", "n")
-        this.appendChild(this.nav);
-    }
-
     firstUpdated() {
         this.validation = new Validation(this);
-
     }
 
     getSlotted(node) {

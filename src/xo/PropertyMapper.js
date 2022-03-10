@@ -40,7 +40,7 @@ class PropertyMapper {
             if (prop === "type") continue;
 
             let value = this.getCurrentValue(element, properties, prop)
-            
+
             element[prop] = value;
 
             let hyphenAttrName = PropertyMapper.camelCaseToHyphen(prop);
@@ -59,43 +59,94 @@ class PropertyMapper {
                     else {
                         nested.setAttribute("data-" + hyphenAttrName, value);
                     }
-
                 }
             }
         }
 
-
-        // if (nested instanceof HTMLInputElement) {
-        //     PropertyMapper.tryAutoComplete(element, properties.autocomplete );
-        // }
-
         if (nested instanceof HTMLSelectElement) {
-            PropertyMapper.importItems(nested, properties.items );
+            PropertyMapper.importItems(nested, properties.items);
         }
-        else if (nested instanceof HTMLButtonElement) {
-            if(typeof(properties.label) !== "undefined")    
+        else if (nested instanceof HTMLButtonElement || nested instanceof HTMLAnchorElement) {
+            if (typeof (properties.label) !== "undefined")
                 nested.innerText = properties.label;
-            
-            nested.addEventListener("click", properties.click)
+
+            const getParent = (elem, f) => {
+                let m = elem;
+                if (m.nodeType === 11)
+                    m = m.host;
+                else
+                    m = m.parentNode;
+
+                if(!m)
+                    return;
+
+                if (f(m))
+                    return m;
+
+                return getParent(m, f)
+            }
+
+            if (properties.click) {
+                nested.addEventListener("click", e => {
+                    console.log("BUTTON CLICK")
+
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    let node = e.path[0];
+
+                    let repeat = getParent(node, x => {
+                        return x.nodeName === "XO-REPEAT"
+                    });
+                    let index = -1;
+                    [...repeat.childNodes].forEach(x=>{
+                        if(index === -1){
+                            getParent(node, x=>{
+                                let ix = x.getAttribute ? x.getAttribute("data-index") : null;
+                                if(ix){
+                                    index = parseInt(ix)-1
+                                }
+                            })
+                        }
+                    })
+                    
+
+                    let ee = {
+                        target: e.target,
+                        path: e.path,
+                        detail: {
+                            repeat: repeat,
+                            index: index
+                        }
+                    }
+
+                    properties.click(ee)
+                })
+            }
         }
+
     }
+
 
     getCurrentValue(element, properties, prop) {
         if (["type", "bind"].includes(prop))
             return properties[prop]
 
-        let varRes, i=0;
+        let varRes, i = 0;
         if (element.data && element.data[prop]) {
             let result = PropertyMapper.match(element.data[prop], variable => {
                 i++;
-                varRes = this.context.data.get(variable)
+                varRes = this.context.data.get(variable);
+                
                 return varRes;
             });
-            if(i===1 && typeof(varRes) !== "undefined" ){
-                return varRes;
+            if (i === 1 && typeof (varRes) !== "undefined" ) {
+                if(varRes.toString().length === result.length)
+                    return varRes; // keep type (non-string)
             }
+
             return result;
-            
+
         }
         return properties[prop]
     }
@@ -115,17 +166,17 @@ class PropertyMapper {
     }
 
     replaceVar(binding, prop, value) {
-        let varRes, i=0, result = PropertyMapper.match(binding.rawValue, variable => {
+        let varRes, i = 0, result = PropertyMapper.match(binding.rawValue, variable => {
             i++;
-            
-            varRes =  value;
+
+            varRes = value;
             return varRes;
-            
+
         });
-        if(i===1 && typeof(varRes) !== "undefined" ){            
+        if (i === 1 && typeof (varRes) !== "undefined") {
             return varRes;
-        }                    
-        return  result;
+        }
+        return result;
     }
 
     static importItems(select, items = []) {
@@ -137,8 +188,8 @@ class PropertyMapper {
         }
     }
 
-    tryAutoComplete(input, autoComplete){
-        if(autoComplete && autoComplete.items ){
+    tryAutoComplete(input, autoComplete) {
+        if (autoComplete && autoComplete.items) {
             let ac = new AutoComplete(input, autoComplete);
             ac.attach(input);
         }

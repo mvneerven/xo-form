@@ -1,6 +1,6 @@
 import { html } from 'lit';
-import Group from '../Components/Group';
-import Control from '../Components/Control';
+import Group from '../web-components/Group';
+import Control from '../web-components/Control';
 
 class Navigation extends Group {
 
@@ -15,7 +15,7 @@ class Navigation extends Group {
     }
 
     set page(value) {
-        if(typeof(value) !== "number")
+        if (typeof (value) !== "number")
             throw Error("Invalid value for page");
 
         this.context.form.page = value;
@@ -67,34 +67,17 @@ class Navigation extends Group {
     }
 
     prev(e) {
-        // this.closest("xo-form").page--;
-        // this.closest("xo-form").dispatchEvent(new CustomEvent("xo-page"))
         let p = this.context.data.get("#/_xo/page");
-        
-        p = Math.max(1, p-1)
+        p = Math.max(1, p - 1)
         this.context.data.set("#/_xo/page", p)
-
         this.context.data.set("#/_xo/disabled/next", p);
-        this.context.data.set("#/_xo/disabled/back", p<=1);
+        this.context.data.set("#/_xo/disabled/back", p <= 1);
     }
 
     next(e) {
         let p = this.context.data.get("#/_xo/page");
-        this.context.data.set("#/_xo/page", p+1)
+        this.context.data.set("#/_xo/page", p + 1)
         this.context.data.set("#/_xo/disabled/back", false)
-        
-        // this.closest("xo-form").page++;
-        // this.closest("xo-form").dispatchEvent(new CustomEvent("xo-page"))
-
-        // debugger;
-        // const source = e.composedPath()[0]
-        // this._clicked++;
-        // const detail = {
-        //   control: this,
-        //   source: source,
-        //   value: this._clicked
-        // };
-        // eventBus.fire("xo-interaction", detail)
     }
 
     submit(e) {
@@ -106,9 +89,7 @@ class Navigation extends Group {
                 let value = item[1].value;
                 result[key] = value;
             }
-
         })
-
         console.log(JSON.stringify(result, null, 2))
     }
 

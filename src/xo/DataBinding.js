@@ -1,10 +1,34 @@
 import PropertyMapper from "./PropertyMapper";
 
+const objectEquals = (x, y) => {
+    if (x === null || x === undefined || y === null || y === undefined) { return x === y; }
+    // after this just checking type of one would be enough
+    if (x.constructor !== y.constructor) { return false; }
+    // if they are functions, they should exactly refer to same one (because of closures)
+    if (x instanceof Function) { return x === y; }
+    // if they are regexps, they should exactly refer to same one (it is hard to better equality check on current ES)
+    if (x instanceof RegExp) { return x === y; }
+    if (x === y || x.valueOf() === y.valueOf()) { return true; }
+    if (Array.isArray(x) && x.length !== y.length) { return false; }
+
+    // if they are dates, they must had equal valueOf
+    if (x instanceof Date) { return false; }
+
+    // if they are strictly equal, they both need to be object at least
+    if (!(x instanceof Object)) { return false; }
+    if (!(y instanceof Object)) { return false; }
+
+    // recursive object equality check
+    var p = Object.keys(x);
+    return Object.keys(y).every(function (i) { return p.indexOf(i) !== -1; }) &&
+        p.every(function (i) { return objectEquals(x[i], y[i]); });
+}
+
 const equals = (x, y) => {
     if (Array.isArray(x))
         return arrayEquals(x, y);
     if (typeof (x) === "object")
-        return Core.objectEquals(x, y)
+        return objectEquals(x, y)
     return x === y;
 }
 
@@ -100,12 +124,18 @@ class DataBinding {
 
         // set up change hooks & run logic
         Object.entries(schemaModel.rules || {}).forEach(entry => {
-            me.hooks[entry[0]] = entry[1];
+            let key = entry[0];
+            me.hooks[key] = entry[1];
 
-            let value = me.get(entry[0]);
+            try {
+                key = this.processBindingIndex(null, key); // process [@index]
+                let value = me.get(key);
 
-            if (typeof (value) !== "undefined")
-                me.applyRules(entry[0], value)
+                if (typeof (value) !== "undefined")
+                    me.applyRules(key, value)
+
+            }
+            catch { }
         });
 
     }
@@ -134,7 +164,7 @@ class DataBinding {
     processBindingIndex(element, value) {
         if (typeof (value) === "string" && value.indexOf("[@index]") !== -1) {
             let scope = this.getParentScope(element);
-            if(!scope)
+            if (!scope)
                 throw "No scope for @index";
 
             value = value.replace("[@index]", "/:" + scope.options.index);
@@ -142,13 +172,13 @@ class DataBinding {
         return value;
     }
 
-    getParentScope(element){
-        let parent = element.parent;
-        while(parent){
-            if(!parent)
+    getParentScope(element) {
+        let parent = element?.parent;
+        while (parent) {
+            if (!parent)
                 break;
-            
-            if(parent.options?.scope)
+
+            if (parent.options?.scope)
                 return parent;
 
             parent = parent.parent;
@@ -206,7 +236,9 @@ class DataBinding {
         const me = this;
 
         if (me.hooks[bindingPath]) {
+            
             let ar = me.hooks[bindingPath]
+
             if (Array.isArray(ar)) {
                 ar.forEach(expression => {
                     if (expression.set) {
@@ -246,6 +278,8 @@ class DataBinding {
         let pathElements = path.substring(2).split("/");
         let instanceName = pathElements.shift();
         var current = this.instance[instanceName];
+        if(!current)
+            return undefined;
 
         for (var i = 0; i < pathElements.length; i++) {
             let key = this.parseKey(pathElements[i]);
@@ -261,7 +295,9 @@ class DataBinding {
         let pathElements = path.substring(2).split("/");
         let instanceName = pathElements.shift();
         var current = this.instance[instanceName];
-
+        if(!current)
+            return undefined;
+        
         for (var i = 0; i < pathElements.length; i++) {
             let key = this.parseKey(pathElements[i]);
             if (i === pathElements.length - 1) {

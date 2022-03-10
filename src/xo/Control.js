@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { unsafeHTML } from 'lit/directives/unsafe-html.js';
-import AutoComplete from '../modules/AutoComplete';
+import AutoComplete from '../xo/AutoComplete';
 
 class Control extends LitElement {
 
@@ -84,13 +84,15 @@ class Control extends LitElement {
 
   // special case: button hosted
   click(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
     const source = e.composedPath()[0]
     this._clicked++;
-    console.log(this._clicked)
     const detail = {
       control: this,
       source: source,
-      value: this._clicked
+      value: source.value ?? this._clicked
     };
     eventBus.fire("xo-interaction", detail)
   }
@@ -167,13 +169,7 @@ class Control extends LitElement {
       elm.parent = this;
       elm.options = options;
       context.parent = this;
-      // context = {
-      //     ...context,
-      //     parent: parent,
-      //     ...options
-      //   }
       elm.context = context;
-      
       context.mapper.map(elm, properties);
       if (elm.loadXoSchema) {
         elm.loadXoSchema(properties)

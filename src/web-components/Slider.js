@@ -1,7 +1,7 @@
-import Control from "./Control";
+//import Control from "./Control";
 import { LitElement, html, css } from 'lit';
 
-class Slider extends Control {
+class Slider extends xo.control {
 
   static styles = css`
     .switch {
