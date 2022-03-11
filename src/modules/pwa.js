@@ -22,6 +22,58 @@ class PWA {
 
         this.form = document.querySelector("xo-form");
 
+        const schema1 = {
+            model: {
+                rules: {
+                    "#/data/receive": [
+                        {
+                            set: "#/data/noreceive",
+                            value: "!this.value"
+                        }
+                    ]
+                },
+                instance: {
+                    data: {
+                        receive: false,
+                        email: "yama@moto.jp"
+                    }
+                }
+            },
+            pages: [
+                {
+                    label: "Newsletter",
+                    fields: [
+                        {
+                            type: "switch",
+                            label: "I want to receive the newsletter",
+                            bind: "#/data/receive"
+                        },
+                        {
+                            label: "Email address",
+                            placeholder: "john@doe.com",
+                            bind: "#/data/email",
+                            type: "email",
+                            disabled: "#/data/noreceive",
+                            prefix: {
+                                icon: "ti-email"
+                            }
+
+                        }
+                    ]
+                }
+            ]
+        };
+
+        const breedAutocomplete = options => {
+            let search = options.search.toLowerCase();
+            return breedData.filter(i => {
+                return i.name.toLowerCase().indexOf(search) >= 0;
+            }).map(x => {
+                return {
+                    text: x.name
+                }
+            })
+        };
 
         const schema = {
             model: {
@@ -43,6 +95,7 @@ class PWA {
                         {
                             set: "#/state/pets",
                             value: context => {
+
                                 let ar = context.get("#/state/pets");
                                 ar.push({
                                     name: "Unnamed Pet",
@@ -70,10 +123,10 @@ class PWA {
 
                     fields: [
                         {
-                            type: "imagedrop",
+                            type: "filedrop",
                             label: "Profile Image",
                             bind: "#/state/profileimg",
-                            height: "200px"
+                            height: "100px"
                         },
                         {
                             type: "group",
@@ -93,13 +146,7 @@ class PWA {
                                     bind: "#/state/breed",
 
                                     autocomplete: {
-                                        items: () => {
-                                            return breedData.map(x => {
-                                                return {
-                                                    text: x.name
-                                                }
-                                            })
-                                        }
+                                        items: breedAutocomplete
                                     },
                                     label: "Breed"
 
@@ -127,10 +174,13 @@ class PWA {
                                             bind: "#/state/pets[@index]/name"
                                         },
                                         {
-                                            type: "text",
+                                            type: "search",
                                             label: "#/state/pets[@index]/type breed",
                                             readonly: true,
-                                            bind: "#/state/pets[@index]/breed"
+                                            bind: "#/state/pets[@index]/breed",
+                                            autocomplete: {
+                                                items: breedAutocomplete
+                                            },
                                         },
 
                                         {

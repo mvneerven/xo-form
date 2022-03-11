@@ -42,12 +42,12 @@ class CheckboxList extends xo.control {
         e.stopPropagation();
 
         if(e.target.checked){
-            this.value.push(e.target.value)
+            this._value.push(e.target.value)
         }
         else{
-            let ix = this.value.indexOf(e.target.value);
+            let ix = this._value.indexOf(e.target.value);
             if(ix!==-1)
-                this.value.splice(ix, 1);
+                this._value.splice(ix, 1);
         }
 
         this.fireChange();

@@ -13,8 +13,6 @@ class AutoComplete {
 
         this.control = control;
         this.htmlElement = control.nestedElement;
-
-
         this.categories = settings.categories || {};
 
         if (!settings.items)
@@ -24,15 +22,7 @@ class AutoComplete {
         this.items = settings.items;
     }
 
-    
-
     attach() {
-
-        //this.htmlElement = this.control.htmlElement
-        //this.htmlElement.setAttribute("autocomplete", "off");
-
-        //this.container = this.control.container;
-
         const on = (a, b) => { this.htmlElement.addEventListener(a, b) };
 
         on("input", this.inputHandler.bind(this))
@@ -407,6 +397,7 @@ class AutoComplete {
     }
 
     isMatch(options, i) {
+        console.log(options.search , i.text)
         if (i.text?.indexOf("%search%") >= 0)
             return true
 

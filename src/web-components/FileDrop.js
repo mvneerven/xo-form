@@ -3,7 +3,7 @@ import { repeat } from 'lit/directives/repeat.js';
 
 const DEF_HEIGHT = "100px";
 
-class ImageDrop extends xo.control {
+class FileDrop extends xo.control {
 
     _value = [];
 
@@ -180,5 +180,5 @@ class ImageDrop extends xo.control {
     }
 }
 
-customElements.define("xo-imagedrop", ImageDrop)
-export default ImageDrop
+customElements.define("xo-filedrop", FileDrop)
+export default FileDrop

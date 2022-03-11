@@ -1,14 +1,16 @@
 import CheckboxList from "./CheckboxList";
-import Slider from "./Slider";
+import Switch from "./Switch";
 import Select from "./Select";
 import Tags from './Tags';
-import ImageDrop from "./ImageDrop";
+import FileDrop from "./FileDrop";
+import Checkbox from "./Checkbox";
 
 export const LIT_COMPONENTS = {
-    slider: Slider,
+    Switch: Switch,
     select: Select,
     checkboxlist: CheckboxList,
     tags: Tags,
-    imagedrop: ImageDrop
+    filedrop: FileDrop,
+    checkbox: Checkbox
 }
 

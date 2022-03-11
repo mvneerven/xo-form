@@ -1,21 +1,22 @@
 //import Control from "./Control";
 import { LitElement, html, css } from 'lit';
 
-class Slider extends xo.control {
+class Switch extends xo.control {
 
   static styles = css`
-    .switch {
+    label.switch {
         display: inline-block;
         height: 24px;
         position: relative;
-        width: 40px;
       }
-      
+
       .switch input {
         display:none;
       }
       
-      .slider {
+      .knob {
+        width: 40px;
+        
         background-color: #ccc;
         bottom: 0;
         cursor: pointer;
@@ -26,7 +27,7 @@ class Slider extends xo.control {
         transition: .4s;
       }
       
-      .slider:before {
+      .knob:before {
         background-color: #fff;
         bottom: 4px;
         content: "";
@@ -37,20 +38,25 @@ class Slider extends xo.control {
         width: 16px;
       }
       
-      input:checked + .slider {
+      input:checked + .knob {
         background-color: #66bb6a;
       }
       
-      input:checked + .slider:before {
+      input:checked + .knob:before {
         transform: translateX(16px);
       }
       
-      .slider.round {
+      .knob.round {
         border-radius: 24px;
       }
       
-      .slider.round:before {
+      .knob.round:before {
         border-radius: 50%;
+      }
+
+      .knob-lbl {
+        margin-left: 50px;
+        width: auto;
       }
     `
   _value = false;
@@ -58,13 +64,21 @@ class Slider extends xo.control {
   renderInput() {
     return html`<label class="switch">
   <input @change=${this.toggle} .checked=${this.value} type="checkbox" />
-  <div class="slider round"></div>
+  <div class="knob round"></div>
+  <div class="knob-lbl">${this.text}</div>
 </label>`
   }
 
-  checkValidity(){ }
+  connectedCallback() {
+    super.connectedCallback();
+    this.text = this.label;
+    this.label = "";
+  }
 
-  onInput(e){
+
+  checkValidity() { }
+
+  onInput(e) {
     e.preventDefault();
     e.stopPropagation();
   }
@@ -86,5 +100,5 @@ class Slider extends xo.control {
   }
 }
 
-export default Slider;
-window.customElements.define('xo-slider', Slider);
+export default Switch;
+window.customElements.define('xo-switch', Switch);

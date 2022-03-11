@@ -284,7 +284,7 @@ class DataBinding {
         for (var i = 0; i < pathElements.length; i++) {
             let key = this.parseKey(pathElements[i]);
             if (i === pathElements.length - 1) {
-                console.log("GET: ", path, current[key]);
+                // console.log("GET: ", path, current[key]);
                 return current[key]
             }
             current = current[key];

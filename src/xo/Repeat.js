@@ -1,7 +1,4 @@
 import Group from "./Group";
-import { html } from 'lit';
-import { repeat } from 'lit/directives/repeat.js';
-import Control from "./Control";
 
 class Repeat extends Group {
 
@@ -40,7 +37,10 @@ class Repeat extends Group {
         let index = 0;
         this.schema.layout = this.layout || "horizontal";
         this.items.forEach(item => {
-            let group = this.createControl(this.context, "group", this.schema, {
+            let group = this.createControl(this.context, "group", {
+                ...this.schema,
+                index: index
+            }, {
 
                 scope: item,
                 index: index++

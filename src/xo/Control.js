@@ -20,7 +20,8 @@ class Control extends LitElement {
       tooltip: { type: String },
       placeholder: { type: String },
       valid: { type: Boolean },
-      value: { type: Object }
+      value: { type: Object },
+      prefix: { type: Object }
     };
   }
 
@@ -33,7 +34,7 @@ class Control extends LitElement {
 
     this.form = this.closest("xo-form");
     this.form?.registerElement(this);
-    
+
     this.acceptMappedState();
 
     this.shadowRoot.addEventListener("focus", this.onfocus.bind(this));
@@ -42,14 +43,14 @@ class Control extends LitElement {
     this.shadowRoot.addEventListener("change", this.onInput.bind(this));
   }
 
-  firstUpdated(){
+  firstUpdated() {
     if (this.nestedElement instanceof HTMLInputElement) {
-      this.context.mapper.tryAutoComplete(this, this.autocomplete );
+      this.context.mapper.tryAutoComplete(this, this.autocomplete);
     }
   }
 
-  acceptMappedState(){
-    
+  acceptMappedState() {
+
   }
 
   get injectedStyles() {
@@ -86,13 +87,13 @@ class Control extends LitElement {
   click(e) {
     e.preventDefault();
     e.stopPropagation();
-    
+
     const source = e.composedPath()[0]
     this._clicked++;
     const detail = {
       control: this,
       source: source,
-      value: source.value ?? this._clicked
+      value: source.value || this._clicked
     };
     eventBus.fire("xo-interaction", detail)
   }
@@ -118,15 +119,15 @@ class Control extends LitElement {
   }
 
   set value(value) {
-    
+
     if (this.nestedElement) {
-       if(this.nestedElement instanceof HTMLSelectElement){
-        let index = this.items.findIndex(v=>{
+      if (this.nestedElement instanceof HTMLSelectElement) {
+        let index = this.items.findIndex(v => {
           return value === v.value || v
         });
         this.nestedElement.selectedIndex = index
       }
-      else{
+      else {
         this.nestedElement.value = value ?? "";// setAttribute("value", value ?? "")
       }
     }
@@ -135,6 +136,9 @@ class Control extends LitElement {
   createControl(context, type, properties, options = {}) {
     if (!context || !context.data)
       throw Error("Invalid or missing context");
+
+    type = this.transform(type, properties);
+
     let elm;
 
     if (customElements.get("xo-" + type))
@@ -175,8 +179,17 @@ class Control extends LitElement {
         elm.loadXoSchema(properties)
       }
     }
-    
+
     return elm;
+  }
+
+  transform(type, properties) {
+    switch (type) {
+
+
+    }
+
+    return type;
   }
 
   getClasses() {
@@ -196,7 +209,7 @@ class Control extends LitElement {
   render() {
     let nav = this.closest("xo-nav");
     if (nav) {
-      return html`${this.injectedStyles}${this.renderInput()}`;
+      return html`${this.i4njectedStyles}${this.renderInput()}`;
     }
 
     if (this.nestedElement?.nodeName === "BUTTON") {
@@ -205,7 +218,7 @@ class Control extends LitElement {
       return html`${this.injectedStyles}${this.renderInput()}`;
     }
 
-    return html`${this.injectedStyles}<div ${this.hidden ? " hidden" : ""} class="xo-cn ${this.getClasses()}">
+    return html`${this.injectedStyles}<div ${this.hidden ? " hidden" : "" } class="xo-cn ${this.getClasses()}">
   <div class="xo-ct">
     <label for="${this.id}" aria-hidden="true" class="xo-lb"
       title="${this.label}">${this.label}${this.renderRequired()}</label>
@@ -232,8 +245,6 @@ class Control extends LitElement {
   renderNestedElement() {
     return this.nestedElement
   }
-
-
 
   set bind(value) {
     if (typeof (value) !== "string")
