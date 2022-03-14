@@ -5,12 +5,12 @@ import Page from "./Page";
 import Repeat from "./Repeat";
 
 const xo = {
-    control: Control,
-    form: Form,
-    group: Group,
-    page: Page,
-    repeat: Repeat
-}
+  control: Control,
+  form: Form,
+  group: Group,
+  page: Page,
+  repeat: Repeat,
+};
 
 window.xo = xo;
 

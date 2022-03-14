@@ -1,73 +1,84 @@
-import xo from '../xo'
-import { html } from 'lit';
-import { repeat } from 'lit/directives/repeat.js';
+import xo from "../xo";
+import { html } from "lit";
+import { repeat } from "lit/directives/repeat.js";
 
 class RadioGroup extends xo.control {
+  _value = [];
 
-    _value = [];
+  static get properties() {
+    return {
+      items: { type: Array },
+      value: { type: Object },
+    };
+  }
 
-    static get properties() {
-        return {
-            items: { type: Array },
-            value: { type: Object }
-        };
-    }
+  constructor() {
+    super();
+    this.items = [];
+  }
 
-    constructor() {
-        super();
-        this.items = []
-    }
+  renderInput() {
+    let name = this.name;
 
-    renderInput() {
-        let name = this.name;
-        
-        return html`<div>
-             ${repeat(this.items, (item) => item.id, (item, index) => {
-                item = this.makeItem(item)                 
-                return html`<label><input @change=${this.change} @click=${this.toggleCheck} .checked=${this.isSelected(item)} type="radio"  name="${name}" value="${item.value}"/><span class="xo-sl"> ${item.label}</span></label>`;
-                })}
-        </div>`
-    }
-
-    change(e){
-        e.preventDefault();
-        e.stopPropagation();
-    }
-
-    onInput(e){
-        e.stopPropagation();
-    }
-
-    toggleCheck(e){
-        e.stopPropagation();
-
-        if(e.target.checked){
-            this._value = e.target.value
+    return html`<div>
+      ${repeat(
+        this.items,
+        (item) => item.id,
+        (item, index) => {
+          item = this.makeItem(item);
+          return html`<label
+            ><input
+              @change=${this.change}
+              @click=${this.toggleCheck}
+              .checked=${this.isSelected(item)}
+              type="radio"
+              name="${name}"
+              value="${item.value}"
+            /><span class="xo-sl"> ${item.label}</span></label
+          >`;
         }
-        
-        this.fireChange();
+      )}
+    </div>`;
+  }
+
+  change(e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
+  onInput(e) {
+    e.stopPropagation();
+  }
+
+  toggleCheck(e) {
+    e.stopPropagation();
+
+    if (e.target.checked) {
+      this._value = e.target.value;
     }
 
-    checkValidity(){
-        //TODO
-    }
+    this.fireChange();
+  }
 
-    
-    isSelected(item){
-        return this._value === item.value;
-    }
+  checkValidity() {
+    //TODO
+  }
 
-    makeItem(item){
-        return typeof(item)==="string" ? {value: item, label: item} : item;
-    }
+  isSelected(item) {
+    return this._value === item.value;
+  }
 
-    get value(){
-        return this._value;
-    }
+  makeItem(item) {
+    return typeof item === "string" ? { value: item, label: item } : item;
+  }
 
-    set value(value){
-        this._value = value;
-    }
+  get value() {
+    return this._value;
+  }
+
+  set value(value) {
+    this._value = value;
+  }
 }
 export default RadioGroup;
-window.customElements.define('xo-radiogroup', RadioGroup);
+window.customElements.define("xo-radiogroup", RadioGroup);

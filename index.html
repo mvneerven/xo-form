@@ -38,14 +38,14 @@
   <footer>
     &copy; 2022 XO - made with 💗 by Neerventure.com
   </footer>
-  
+
   <script type="module">
-    eventBus.register("xo-modelchange", e=>{
+    eventBus.register("xo-modelchange", e => {
       document.getElementById("model").value = JSON.stringify(e.detail.model, (key, value) => {
-            if (key === "dataUrl")
-                return "[...]";
-            return value;
-        }, 2);
+        if (key === "dataUrl")
+          return "[...]";
+        return value;
+      }, 2);
     })
   </script>
 

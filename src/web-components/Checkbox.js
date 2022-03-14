@@ -1,43 +1,42 @@
-import xo from '../xo'
-import { html } from 'lit';
-import { repeat } from 'lit/directives/repeat.js';
-import CheckGroup from './CheckGroup';
+import xo from "../xo";
+import { html } from "lit";
+import { repeat } from "lit/directives/repeat.js";
+import CheckGroup from "./CheckGroup";
 
 class Checkbox extends CheckGroup {
+  static get properties() {
+    return {
+      value: { type: Boolean },
+    };
+  }
 
-    static get properties() {
-        return {
-            value: { type: Boolean }
-        };
-    }
+  get value() {
+    return this._value[0] === this.items[0].value;
+  }
 
-    get value() {
-        return this._value[0] === this.items[0].value;
-    }
+  set value(value) {
+    if (typeof value !== "boolean") return;
 
-    set value(value) {
-        if (typeof (value) !== "boolean")
-            return;
+    this._value = [value];
+  }
 
-        this._value = [value];
-    }
+  toggleCheck(e) {
+    this._value = [];
+    super.toggleCheck(e);
+  }
 
-    toggleCheck(e) {
-        this._value = [];
-        super.toggleCheck(e);
-    }
+  connectedCallback() {
+    super.connectedCallback();
 
-    connectedCallback() {
-        super.connectedCallback();
-
-        this.items = [{
-            value: "1",
-            label: this.label ?? "On"
-        }];
-        this.label = "";
-        this._value = this._value[0] === true ? ["1"] : []
-
-    }
+    this.items = [
+      {
+        value: "1",
+        label: this.label ?? "On",
+      },
+    ];
+    this.label = "";
+    this._value = this._value[0] === true ? ["1"] : [];
+  }
 }
 export default Checkbox;
-window.customElements.define('xo-checkbox', Checkbox);
+window.customElements.define("xo-checkbox", Checkbox);
