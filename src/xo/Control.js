@@ -64,7 +64,6 @@ class Control extends LitElement {
   onInvalid(e) {
     debugger
     e.preventDefault();
-
   }
 
   onInput(e) {
@@ -137,7 +136,7 @@ class Control extends LitElement {
     if (!context || !context.data)
       throw Error("Invalid or missing context");
 
-    type = this.transform(type, properties);
+    type = this.transform(type, properties) || "text";
 
     let elm;
 
@@ -149,8 +148,9 @@ class Control extends LitElement {
     }
     else {
       try {
-        elm = document.createElement(type)
-        if (elm.__proto__?.constructor.name === "HTMLUnknownElement") {
+        elm = document.createElement(type);
+        let className = elm.__proto__?.constructor.name;
+        if (["HTMLUnknownElement", "HTMLTimeElement"].includes(className)) {
           throw new Error("Invalid Element type")
         }
 
@@ -165,6 +165,7 @@ class Control extends LitElement {
         }
       }
       let wrapper = document.createElement("xo-control");
+      wrapper.type = type;
       wrapper.nestedElement = elm;
       elm = wrapper;
 
@@ -174,10 +175,7 @@ class Control extends LitElement {
       elm.options = options;
       context.parent = this;
       elm.context = context;
-      context.mapper.map(elm, properties);
-      if (elm.loadXoSchema) {
-        elm.loadXoSchema(properties)
-      }
+      context.mapper.mapProperties(elm, properties);
     }
 
     return elm;
@@ -186,9 +184,7 @@ class Control extends LitElement {
   transform(type, properties) {
     switch (type) {
 
-
     }
-
     return type;
   }
 
@@ -207,9 +203,11 @@ class Control extends LitElement {
   }
 
   render() {
+    this.setAttribute("type", this.type);
+
     let nav = this.closest("xo-nav");
     if (nav) {
-      return html`${this.i4njectedStyles}${this.renderInput()}`;
+      return html`${this.injectedStyles}${this.renderInput()}`;
     }
 
     if (this.nestedElement?.nodeName === "BUTTON") {
@@ -218,7 +216,7 @@ class Control extends LitElement {
       return html`${this.injectedStyles}${this.renderInput()}`;
     }
 
-    return html`${this.injectedStyles}<div ${this.hidden ? " hidden" : "" } class="xo-cn ${this.getClasses()}">
+    return html`${this.injectedStyles}<div ${this.hidden ? " hidden" : ""} class="xo-cn ${this.getClasses()}">
   <div class="xo-ct">
     <label for="${this.id}" aria-hidden="true" class="xo-lb"
       title="${this.label}">${this.label}${this.renderRequired()}</label>

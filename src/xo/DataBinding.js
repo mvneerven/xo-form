@@ -1,43 +1,5 @@
 import PropertyMapper from "./PropertyMapper";
-
-const objectEquals = (x, y) => {
-    if (x === null || x === undefined || y === null || y === undefined) { return x === y; }
-    // after this just checking type of one would be enough
-    if (x.constructor !== y.constructor) { return false; }
-    // if they are functions, they should exactly refer to same one (because of closures)
-    if (x instanceof Function) { return x === y; }
-    // if they are regexps, they should exactly refer to same one (it is hard to better equality check on current ES)
-    if (x instanceof RegExp) { return x === y; }
-    if (x === y || x.valueOf() === y.valueOf()) { return true; }
-    if (Array.isArray(x) && x.length !== y.length) { return false; }
-
-    // if they are dates, they must had equal valueOf
-    if (x instanceof Date) { return false; }
-
-    // if they are strictly equal, they both need to be object at least
-    if (!(x instanceof Object)) { return false; }
-    if (!(y instanceof Object)) { return false; }
-
-    // recursive object equality check
-    var p = Object.keys(x);
-    return Object.keys(y).every(function (i) { return p.indexOf(i) !== -1; }) &&
-        p.every(function (i) { return objectEquals(x[i], y[i]); });
-}
-
-const equals = (x, y) => {
-    if (Array.isArray(x))
-        return arrayEquals(x, y);
-    if (typeof (x) === "object")
-        return objectEquals(x, y)
-    return x === y;
-}
-
-const arrayEquals = (a, b) => {
-    return Array.isArray(a) &&
-        Array.isArray(b) &&
-        a.length === b.length &&
-        a.every((val, index) => val === b[index]);
-}
+import Util from "./Util";
 
 class DataBinding {
 
@@ -69,8 +31,10 @@ class DataBinding {
         })
     }
 
-    initialize(schemaModel = {}) {
+    initialize(schemaModel = {}, options = {}) {
         const me = this;
+        this.options = options;
+
         const proxify = (instanceName, target, path) => {
             path = path || instanceName;
 
@@ -82,7 +46,7 @@ class DataBinding {
                         return target[key];
                 },
                 set: function (target, key, value) {
-                    if (equals(target[key], value)) return true;
+                    if (Util.equals(target[key], value)) return true;
 
                     let bindingPath = "#/" + path + "/" + key;
 
@@ -96,7 +60,7 @@ class DataBinding {
                         me.bound[bindingPath].forEach(binding => {
                             let prop = binding.property === "bind" ? "value" : binding.property;
                             let boundPropertyValue = me.context.mapper.replaceVar(binding, prop, value)
-                            me.context.mapper.map(binding.control, prop, boundPropertyValue);
+                            me.context.mapper.mapProperties(binding.control, prop, boundPropertyValue);
                             console.log(`Set property '${prop}' on ${binding.control} to ${value}`)
                         })
                     }
@@ -142,13 +106,14 @@ class DataBinding {
 
     addBuiltinModelState(schemaModel) {
         schemaModel.instance["_xo"] = {
-            page: 1,
             disabled: {
                 back: true,
                 next: false,
                 send: true
             },
             nav: {
+                page: 1,
+                total: this.options.pageCount,
                 back: 0,
                 next: 0,
                 send: 0
@@ -222,16 +187,6 @@ class DataBinding {
 
     }
 
-    /**
-     * Evaluates a script in the given scope
-     * @param {Object} scope - the 'this' scope for the script to run in
-     * @param {String} script - the script to execute
-     * @returns The return value of the script, if any
-     */
-    static scopeEval(scope, script) {
-        return Function('"use strict";' + script).bind(scope)();
-    }
-
     applyRules(bindingPath, value) {
         const me = this;
 
@@ -257,7 +212,7 @@ class DataBinding {
                             result = expression.value(obj);
                         }
                         else {
-                            result = DataBinding.scopeEval(obj, "return " + expression.value);
+                            result = Util.scopeEval(obj, "return " + expression.value);
                         }
                         me.set(expression.set, result)
                     }

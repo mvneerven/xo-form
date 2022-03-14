@@ -1,6 +1,7 @@
 import { html } from 'lit';
 import Control from './Control';
 import Validation from './Validation';
+import Navigation from './Navigation';
 import { EventBus } from './EventBus';
 import Context from './Context';
 
@@ -11,8 +12,6 @@ class Form extends Control {
         super();
         this._context = new Context(this)
         this._page = 1
-
-
     }
 
     static get properties() {
@@ -50,13 +49,14 @@ class Form extends Control {
     set schema(schema) {
         this._schema = schema;
 
-
         if (typeof (schema) !== "object")
             throw Error("Invalid schema");
 
-        schema.page = "#/_xo/page";
+        schema.page = "#/_xo/nav/page";
 
-        this.context.data.initialize(schema.model)
+        this.context.data.initialize(schema.model, {
+            pageCount: schema.pages.length
+        })
 
         let index = 1;
         for (let page of schema.pages) {
@@ -67,6 +67,8 @@ class Form extends Control {
         }
 
         this.nav = this.createControl(this.context, "xo-nav", schema);
+
+        this.nav.controls = this.nav.controls;
         this.nav.setAttribute("slot", "n")
         this.appendChild(this.nav);
     }
@@ -95,7 +97,7 @@ class Form extends Control {
         </div>
         <div class="xo-n">
             <slot name="n"></slot>
-            <div>
+        <div>
     </form>
     <div>`
     }

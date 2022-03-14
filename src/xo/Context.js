@@ -1,8 +1,8 @@
 import PropertyMapper from './PropertyMapper';
 import DataBinding from './DataBinding';
 
-class Context{
-    constructor(form){
+class Context {
+    constructor(form) {
         this._form = form;
         this._db = new DataBinding(this);
         this._mapper = new PropertyMapper(this)
@@ -12,11 +12,11 @@ class Context{
         return this._form;
     }
 
-    get data(){
+    get data() {
         return this._db;
     }
 
-    get mapper(){
+    get mapper() {
         return this._mapper;
     }
 }

@@ -5,7 +5,8 @@ class Group extends Control {
 
     static get properties() {
         return {
-            layout: { type: String, attribute: true }
+            layout: { type: String, attribute: true },
+            fields: { type: Array }
         };
     }
 
@@ -15,14 +16,19 @@ class Group extends Control {
     <div>`;
     }
 
-    loadXoSchema(schema) {
-        for (let field of schema.fields) {
-            let element = this.createControl(this.context, field.type, field)
+    set fields(value) {
+        this._fields = value;
 
+        for (let field of this._fields) {
+            let element = this.createControl(this.context, field.type, field)
             this.appendChild(element);
         }
     }
 
+    get fields() {
+        return this._fields;
+    }
+    
     getClasses() {
         let c = super.getClasses();
         return (c + " " + (this.layout === "horizontal" ? "horizontal" : "vertical")).trim();

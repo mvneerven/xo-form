@@ -9,14 +9,24 @@ class Repeat extends Group {
             },
             layout: {
                 type: String
+            },
+            fields: {
+                type: Array
             }
         }
     }
 
-    loadXoSchema(schema) {
-        this.schema = schema;
+    set fields(value){
+        if(!Array.isArray(value))
+            throw Error("Invalid fields property value for repeat.")
+        
+        this._fields = value;
         this.refresh();
-    };
+    }
+    
+    get fields(){
+        return this._fields;
+    }
 
     set items(value) {
         this._items = value;
@@ -35,10 +45,9 @@ class Repeat extends Group {
         this.innerHTML = "";
 
         let index = 0;
-        this.schema.layout = this.layout || "horizontal";
         this.items.forEach(item => {
             let group = this.createControl(this.context, "group", {
-                ...this.schema,
+                fields: this.fields,
                 index: index
             }, {
 

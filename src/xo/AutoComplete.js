@@ -381,8 +381,6 @@ class AutoComplete {
         });
     }
 
-
-
     formatSearch(url, options) {
         if (url.indexOf("%search%")) {
             return url.replace("%search%", options.search || "");

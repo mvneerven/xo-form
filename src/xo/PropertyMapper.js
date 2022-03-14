@@ -16,7 +16,7 @@ class PropertyMapper {
         return this._context;
     }
 
-    map(element, properties, value) {
+    mapProperties(element, properties, value) {
         const nested = element.nestedElement;
         let isInitialState = true;
 
@@ -25,6 +25,11 @@ class PropertyMapper {
             properties = {};
             properties[prop] = value;
             isInitialState = false;
+        }
+        else {
+            if (element.beforeMap) {
+                element.beforeMap();
+            }
         }
 
         if (!properties.name)
@@ -77,7 +82,7 @@ class PropertyMapper {
                 else
                     m = m.parentNode;
 
-                if(!m)
+                if (!m)
                     return;
 
                 if (f(m))
@@ -88,8 +93,6 @@ class PropertyMapper {
 
             if (properties.click) {
                 nested.addEventListener("click", e => {
-                    console.log("BUTTON CLICK")
-
                     e.preventDefault();
                     e.stopPropagation();
 
@@ -99,17 +102,18 @@ class PropertyMapper {
                         return x.nodeName === "XO-REPEAT"
                     });
                     let index = -1;
-                    [...repeat.childNodes].forEach(x=>{
-                        if(index === -1){
-                            getParent(node, x=>{
-                                let ix = x.getAttribute ? x.getAttribute("data-index") : null;
-                                if(ix){
-                                    index = parseInt(ix)-1
-                                }
-                            })
-                        }
-                    })
-                    
+                    if (repeat) {
+                        [...repeat.childNodes].forEach(x => {
+                            if (index === -1) {
+                                getParent(node, x => {
+                                    let ix = x.getAttribute ? x.getAttribute("data-index") : null;
+                                    if (ix) {
+                                        index = parseInt(ix) - 1
+                                    }
+                                })
+                            }
+                        })
+                    }
 
                     let ee = {
                         target: e.target,
@@ -124,9 +128,7 @@ class PropertyMapper {
                 })
             }
         }
-
     }
-
 
     getCurrentValue(element, properties, prop) {
         if (["type", "bind"].includes(prop))
@@ -137,11 +139,11 @@ class PropertyMapper {
             let result = PropertyMapper.match(element.data[prop], variable => {
                 i++;
                 varRes = this.context.data.get(variable);
-                
+
                 return varRes;
             });
-            if (i === 1 && typeof (varRes) !== "undefined" ) {
-                if(varRes.toString().length === result.length)
+            if (i === 1 && typeof (varRes) !== "undefined") {
+                if (varRes.toString().length === result.length)
                     return varRes; // keep type (non-string)
             }
 
@@ -152,14 +154,14 @@ class PropertyMapper {
     }
 
     static isReservedProperty(name) {
-        return ["type", "label"].includes(name);
+        return ["type", "label", "bind"].includes(name);
     }
 
     static match(s, callback) {
         if (typeof (s) !== "string" || s.length < 5) // #/a/b
             return s;
 
-        return s.replace(/(#\/[A-Za-z_]+[A-Za-z_0-9:/]*[A-Za-z_:]+[A-Za-z_0-9]*)(?=[\s+/*,.?!;)]|$)/gm,
+        return s.replace(/(#\/[A-Za-z_]+[A-Za-z_0-9:\/]*[A-Za-z_:]+[A-Za-z_0-9]*)(?=[\s+\/*,.?!;'")]|$)/gm,
             (match, token) => {
                 return callback(token);
             })

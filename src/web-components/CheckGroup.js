@@ -2,7 +2,7 @@ import xo from '../xo'
 import { html } from 'lit';
 import { repeat } from 'lit/directives/repeat.js';
 
-class CheckboxList extends xo.control {
+class CheckGroup extends xo.control {
 
     _value = [];
 
@@ -77,5 +77,5 @@ class CheckboxList extends xo.control {
         this._value = value;
     }
 }
-export default CheckboxList;
-window.customElements.define('xo-checkboxlist', CheckboxList);
+export default CheckGroup;
+window.customElements.define('xo-checkgroup', CheckGroup);

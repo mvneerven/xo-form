@@ -1,9 +1,9 @@
 import xo from '../xo'
 import { html } from 'lit';
 import { repeat } from 'lit/directives/repeat.js';
-import CheckboxList from './CheckboxList';
+import CheckGroup from './CheckGroup';
 
-class Checkbox extends CheckboxList {
+class Checkbox extends CheckGroup {
 
     static get properties() {
         return {

@@ -1,4 +1,5 @@
-import CheckboxList from "./CheckboxList";
+import CheckGroup from "./CheckGroup";
+import RadioGroup from "./RadioGroup";
 import Switch from "./Switch";
 import Select from "./Select";
 import Tags from './Tags';
@@ -8,7 +9,8 @@ import Checkbox from "./Checkbox";
 export const LIT_COMPONENTS = {
     Switch: Switch,
     select: Select,
-    checkboxlist: CheckboxList,
+    checkgroup: CheckGroup,
+    radiogroup: RadioGroup,
     tags: Tags,
     filedrop: FileDrop,
     checkbox: Checkbox
