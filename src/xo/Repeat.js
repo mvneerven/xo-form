@@ -29,6 +29,7 @@ class Repeat extends Group {
 
   set items(value) {
     this._items = value;
+    console.log("ITEMS: ", value)
 
     if (this.hasUpdated) {
       this.refresh();
@@ -50,6 +51,7 @@ class Repeat extends Group {
         "group",
         {
           fields: this.fields,
+          classes: ["xo-ri"],
           index: index,
         },
         {
@@ -62,11 +64,11 @@ class Repeat extends Group {
     });
   }
 
-  getClasses() {
-    let c = super.getClasses();
+  getContainerClasses() {
+    let c = super.getContainerClasses();
     return c + " xo-rep";
   }
 }
 
 export default Repeat;
-window.customElements.define("xo-repeat", Repeat);
+window.customElements.define("xo-repeat", Repeat); 

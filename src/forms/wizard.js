@@ -14,6 +14,7 @@ export const wizard = {
       mail: {
         emailAddress: "",
         message: "",
+        tags: [],
       },
     },
   },
@@ -36,6 +37,14 @@ export const wizard = {
           type: "textarea",
           label: "Message",
           bind: "#/mail/message",
+        },
+        {
+          type: "tags",
+          label: "Tags",
+          bind: "#/mail/tags",
+          autocomplete: {
+            items: ["Test", "Bla"]
+          }
         },
       ],
     },

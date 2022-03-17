@@ -21,6 +21,7 @@ class Control extends LitElement {
       valid: { type: Boolean },
       value: { type: Object },
       prefix: { type: Object },
+      classes: { type: Array },
     };
   }
 
@@ -36,15 +37,27 @@ class Control extends LitElement {
 
     this.acceptMappedState();
 
-    this.shadowRoot.addEventListener("focus", this.onfocus.bind(this));
-    this.shadowRoot.addEventListener("blur", this.onblur.bind(this));
+    this.nestedElement?.addEventListener("focus", this.onfocus.bind(this));
+    this.nestedElement?.addEventListener("blur", this.onblur.bind(this));
     this.shadowRoot.addEventListener("input", this.onInput.bind(this));
     this.shadowRoot.addEventListener("change", this.onInput.bind(this));
   }
 
+  disconnectedCallback(){
+    console.log("cleanup")
+    this.nestedElement?.removeEventListener("focus", this.onfocus);
+    this.nestedElement?.removeEventListener("blur", this.onblur);
+    this.shadowRoot.removeEventListener("input", this.onInput);
+    this.shadowRoot.removeEventListener("change", this.onInput);
+  }
+
   firstUpdated() {
     if (this.nestedElement instanceof HTMLInputElement) {
-      this.context.mapper.tryAutoComplete(this, this.autocomplete);
+      this.context.mapper.tryAutoComplete(
+        this,
+        this.nestedElement,
+        this.autocomplete
+      );
     }
   }
 
@@ -55,6 +68,8 @@ class Control extends LitElement {
   }
 
   onfocus(e) {
+    e.stopPropagation();
+    console.log("FOCUS")
     this.focus = true;
   }
 
@@ -76,12 +91,14 @@ class Control extends LitElement {
       source: source,
       value: source.value,
     };
+
     eventBus.fire("xo-interaction", detail);
   }
 
   // special case: button hosted
   click(e) {
     e.preventDefault();
+    e.stopImmediatePropagation();
     e.stopPropagation();
 
     const source = e.composedPath()[0];
@@ -105,6 +122,7 @@ class Control extends LitElement {
   }
 
   onblur(e) {
+    e.stopPropagation();
     this.focus = false;
   }
 
@@ -179,7 +197,7 @@ class Control extends LitElement {
     return type;
   }
 
-  getClasses() {
+  getContainerClasses() {
     let cls = [];
     if (this.hidden) {
       cls.push("xo-hd");
@@ -190,11 +208,17 @@ class Control extends LitElement {
     if (this.disabled) {
       cls.push("xo-ds");
     }
+    if(!this.valid){
+      cls.push("xo-iv");
+    }
+    if (this.classes) {
+      cls.push(...this.classes);
+    }
     return cls.join(" ");
   }
 
   render() {
-    this.setAttribute("type", this.type);
+    if (this.type) this.setAttribute("data-type", this.type);
 
     let nav = this.closest("xo-nav");
     if (nav) {
@@ -208,7 +232,10 @@ class Control extends LitElement {
     }
 
     return html`${this.injectedStyles}
-      <div ${this.hidden ? " hidden" : ""} class="xo-cn ${this.getClasses()}">
+      <div
+        ${this.hidden ? " hidden" : ""}
+        class="xo-cn ${this.getContainerClasses()}"
+      >
         <div class="xo-ct">
           <label
             for="${this.id}"
@@ -280,20 +307,6 @@ class Control extends LitElement {
 
   get invalidMessage() {
     return this._invalidMessage;
-  }
-
-  //declared as method on a Custom Element:
-  closestElement(
-    selector, // selector like in .closest()
-    base = this, // extra functionality to skip a parent
-    __Closest = (el, found = el && el.closest(selector)) =>
-      !el || el === document || el === window
-        ? null // standard .closest() returns null for non-found selectors also
-        : found
-        ? found // found a selector INside this element
-        : __Closest(el.getRootNode().host) // recursion!! break out to parent DOM
-  ) {
-    return __Closest(base);
   }
 
   query(e) {

@@ -1,10 +1,20 @@
 import PropertyMapper from "./PropertyMapper";
 import Util from "./Util";
 
+const isIrelevantChange = (oldValue, newValue) => {
+  if (Util.equals(oldValue, newValue)) {
+    if (Array.isArray(oldValue) && newValue.length === 0) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+};
+
 class DataBinding {
   instance = {};
   bound = {};
-  hooks = {};
+  rules = {};
 
   constructor(context) {
     if (!context) throw Error("Missing context");
@@ -16,21 +26,13 @@ class DataBinding {
       console.log("interaction detected", e);
 
       if (e.detail.source.bind) {
-        console.log(
-          "Map back UI update to instance 1",
-          e.detail.source?.bind,
-          e.detail.value
-        );
+        //console.log(">>", e.detail.value);
         me.set(
           this.processBindingIndex(e.detail.source, e.detail.source.bind),
           e.detail.value
         );
       } else if (e.detail.control?.bind) {
-        console.log(
-          "Map back UI update to instance 2",
-          e.detail.control.bind,
-          e.detail.value
-        );
+        //console.log("|>>", e.detail.value);
         me.set(
           this.processBindingIndex(e.detail.control, e.detail.control?.bind),
           e.detail.value
@@ -48,12 +50,17 @@ class DataBinding {
 
       return new Proxy(target, {
         get: function (target, key) {
-          if (typeof target[key] === "object" && target[key] !== null)
+          if (
+            ["[object Object]", "[object Array]"].indexOf(
+              Object.prototype.toString.call(target[key])
+            ) > -1
+          ) {
             return proxify(instanceName, target[key], path + "/" + key);
-          else return target[key];
+          }
+          return target[key];
         },
         set: function (target, key, value) {
-          if (Util.equals(target[key], value)) return true;
+          if (isIrelevantChange(target[key], value)) return true;
 
           let bindingPath = "#/" + path + "/" + key;
 
@@ -61,12 +68,15 @@ class DataBinding {
 
           target[key] = value;
 
-          me.applyRules(bindingPath, value); // apply rules on change
+          value = me.applyRules(bindingPath, value); // apply rules on change
 
-          if (me.bound[bindingPath]) {
-            me.bound[bindingPath].forEach((binding) => {
+          let matchPattern = me.matchArrays(bindingPath);
+
+          if (me.bound[matchPattern]) {
+            me.bound[matchPattern].forEach((binding) => {
               let prop =
                 binding.property === "bind" ? "value" : binding.property;
+
               let boundPropertyValue = me.context.mapper.replaceVar(
                 binding,
                 prop,
@@ -77,8 +87,10 @@ class DataBinding {
                 prop,
                 boundPropertyValue
               );
+
               console.log(
-                `Set property '${prop}' on ${binding.control} to ${value}`
+                `Set property '${prop}' on ${binding.control} to`,
+                value
               );
             });
           }
@@ -96,6 +108,8 @@ class DataBinding {
       ...schemaModel,
     };
 
+    
+
     this.addBuiltinModelState(schemaModel);
 
     // create Proxy for each instance
@@ -104,18 +118,26 @@ class DataBinding {
       this.instance[key] = proxify(key, item[1]);
     });
 
-    // set up change hooks & run logic
+    // set up change rules & run logic
     Object.entries(schemaModel.rules || {}).forEach((entry) => {
       let key = entry[0];
-      me.hooks[key] = entry[1];
+
+      me.rules[key] = entry[1];
 
       try {
-        key = this.processBindingIndex(null, key); // process [@index]
+        key = this.processBindingIndex(null, key); // process @index
         let value = me.get(key);
 
         if (typeof value !== "undefined") me.applyRules(key, value);
       } catch {}
     });
+
+    setTimeout(() => {
+      eventBus.fire("xo-modelchange", {
+        model: schemaModel,
+      });  
+    }, 1);
+    
   }
 
   addBuiltinModelState(schemaModel) {
@@ -140,11 +162,11 @@ class DataBinding {
   }
 
   processBindingIndex(element, value) {
-    if (typeof value === "string" && value.indexOf("[@index]") !== -1) {
+    if (typeof value === "string" && value.indexOf("@index") !== -1) {
       let scope = this.getParentScope(element);
       if (!scope) throw "No scope for @index";
 
-      value = value.replace("[@index]", "/:" + scope.options.index);
+      value = value.replace("@index", scope.options.index);
     }
     return value;
   }
@@ -167,72 +189,127 @@ class DataBinding {
       let value = properties[prop];
 
       if (prop === "bind") {
-        value = this.processBindingIndex(element, value); // process [@index]
+        let orig = value;
+        value = this.processBindingIndex(element, value); // process @index
         properties["value"] = me.get(value);
+
+        this.addBinding({
+          control: element,
+          rawValue: orig,
+          property: prop,
+          binding: orig,
+        });
       } else {
         PropertyMapper.match(value, (variable) => {
-          const binding = {
+          this.addBinding({
             control: element,
             rawValue: value,
             property: prop,
             binding: variable,
-          };
+          });
 
-          this.bound[variable] = this.bound[variable] || [];
-          this.bound[variable].push(binding);
-
-          element.data = element.data ?? {};
-          element.data[prop] = this.processBindingIndex(element, value);
+          // element.data = element.data ?? {};
+          // element.data[prop] = this.processBindingIndex(element, variable);
+          variable = this.processBindingIndex(element, variable);
 
           let v = me.get(variable);
 
           if (typeof v !== "undefined") {
             properties[prop === "bind" ? "value" : prop] = v;
           }
+
+          //return "aaa";
         });
       }
+    }
+  }
+
+  addBinding(options) {
+    const boundPath = this.matchArrays(options.binding);
+    this.bound[boundPath] = this.bound[boundPath] || [];
+
+    if (
+      this.bound[boundPath].findIndex((i) => {
+        return i.control === options.control;
+      }) === -1
+    ) {
+      this.bound[boundPath].push(options);
     }
   }
 
   applyRules(bindingPath, value) {
     const me = this;
 
-    if (me.hooks[bindingPath]) {
-      let ar = me.hooks[bindingPath];
+    const path = this.matchArrays(bindingPath);
+    console.log("Match ", bindingPath, path);
+
+    if (me.rules[path]) {
+      let ar = me.rules[path];
 
       if (Array.isArray(ar)) {
         ar.forEach((expression) => {
+          expression.set = expression.set ?? bindingPath;
+
           if (expression.set) {
-            // the 'this' scope for expressions to evaluate
-            let obj = {
+            let context = {
               value: value,
+              path: path,
+              binding: bindingPath,
               get: (name) => {
                 let v = me.get(name);
                 return v;
               },
+              set: (name, v) => {
+                me.set(name, v);
+                if (name === bindingPath) value = v;
+              },
             };
             let result;
             if (typeof expression.value === "function") {
-              result = expression.value(obj);
+              result = expression.value(context);
             } else {
-              result = Util.scopeEval(obj, "return " + expression.value);
+              result = Util.scopeEval(context, "return " + expression.value);
             }
+
             me.set(expression.set, result);
+
+            if (expression.set === bindingPath) value = result;
           }
         });
       }
     }
+
+    return value;
+  }
+
+  matchArrays(s) {
+    let m = s.split("/");
+    s = "";
+    let count = m.length,
+      index = 0;
+    m.forEach((e) => {
+      index++;
+      if (!isNaN(parseInt(e))) {
+        s += "*";
+      } else {
+        s += e;
+      }
+      if (index < count) s += "/";
+    });
+
+    return s;
   }
 
   parseKey(key) {
-    if (key.startsWith(":"))
-      // numeric - array index
-      key = parseInt(key.substring(1));
-
+    let number = parseInt(key); // numeric - array index
+    if (!isNaN(number)) return number;
     return key;
   }
 
   get(path) {
+    if (path.indexOf("*") !== -1 || path.indexOf("@index") !== -1)
+      throw Error("Invalid binding path: " + path);
+
     let pathElements = path.substring(2).split("/");
     let instanceName = pathElements.shift();
     var current = this.instance[instanceName];
@@ -241,7 +318,7 @@ class DataBinding {
     for (var i = 0; i < pathElements.length; i++) {
       let key = this.parseKey(pathElements[i]);
       if (i === pathElements.length - 1) {
-        // console.log("GET: ", path, current[key]);
+        if (typeof key === "number") console.log("GET: ", path, current[key]);
         return current[key];
       }
       current = current[key];

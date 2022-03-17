@@ -16,6 +16,7 @@ class FileDrop extends xo.control {
     .drop {
       position: relative;
       height: var(--image-height, DEF_HEIGHT);
+      min-width: 200px;
     }
     input {
       position: absolute;
@@ -52,24 +53,26 @@ class FileDrop extends xo.control {
     .thumb > a {
       position: absolute;
       display: inline-block;
-      top: 5px;
-      right: 5px;
-      padding: 0.3rem;
+      top: 0px;
+      right: 0px;
+      padding: 0.2rem 0.3rem;
       color: black;
-      background-color: rgba(40, 40, 40, 0.1);
+      background-color: rgba(40, 40, 40, 0.3);
       border-radius: 1rem;
       cursor: pointer;
     }
 
     .thumb > a:hover {
-      color: red;
+      color: white;
+      background-color: rgba(40, 40, 40, 0.8);
+      transition: all 0.2s ease;
     }
   `;
 
   static get properties() {
     return {
       value: {
-        type: Array,
+        type: Object,
       },
       height: {
         type: Number,
@@ -91,10 +94,6 @@ class FileDrop extends xo.control {
     this._height = height;
   }
 
-  get value() {
-    return this._value;
-  }
-
   set max(value) {
     this._max = value;
   }
@@ -104,9 +103,15 @@ class FileDrop extends xo.control {
   }
 
   set value(value) {
-    if (!Array.isArray(value)) return;
+    if (typeof value === "undefined") return;
+
+    if (!Array.isArray(value)) throw Error("Invalid value for filedrop");
 
     this._value = value;
+  }
+
+  get value() {
+    return this._value;
   }
 
   set types(value) {
@@ -183,15 +188,15 @@ class FileDrop extends xo.control {
   }
 
   readFiles(files) {
+    this._readCount = files.length;
+    this._readIndex = 0;
     [...files].forEach((file) => {
       this.readFile(file);
     });
   }
 
   readFile(file) {
-    this.checkFileType(file.type);
-
-    this.checkMax();
+    this.checkConstraints(file);
 
     const me = this;
     const reader = new FileReader();
@@ -207,7 +212,15 @@ class FileDrop extends xo.control {
         date: new Date(file.lastModified).toISOString(),
         dataUrl: reader.result,
       });
-      me.requestUpdate();
+      me._readIndex++;
+
+      if (me._readIndex === me._readCount) {
+        console.log("FileDrop ready reading all files");
+        me._readCount = 0;
+        me._readIndex = 0;
+        me.fireChange();
+        me.requestUpdate();
+      }
     };
 
     reader.addEventListener("progress", (event) => {
@@ -221,8 +234,14 @@ class FileDrop extends xo.control {
     });
   }
 
+  checkConstraints(file) {
+    this.checkMax();
+    this.checkFileType(file.type);
+    this.checkSizeLimit(file);
+  }
+
   checkMax() {
-    if (this.max !== -1 && this.value.length >= max)
+    if (this.max !== -1 && this.value.length >= this.max)
       throw Error("Maximum number of files reached");
   }
 
@@ -233,6 +252,16 @@ class FileDrop extends xo.control {
     });
 
     if (!found) throw Error("Invalid file type");
+  }
+
+  checkSizeLimit(file) {
+    let totalSize = 0;
+    this.value.forEach((f) => {
+      totalSize += f.size;
+    });
+    if (totalSize > this.limit) {
+      throw Error("File size limit exceeded");
+    }
   }
 
   onInput(e) {

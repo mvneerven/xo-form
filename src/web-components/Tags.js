@@ -3,9 +3,16 @@ import { repeat } from "lit/directives/repeat.js";
 import xo from "../xo";
 
 class Tags extends xo.control {
-    _value = [];
+  _value = [];
 
-    static styles = css`
+  constructor() {
+    super(...arguments);
+    this.textInput = document.createElement("input");
+    this.textInput.type = "text";
+    this.textInput.addEventListener("keydown", this.input.bind(this));
+  }
+
+  static styles = css`
     .tags {
       display: flex;
     }
@@ -13,83 +20,118 @@ class Tags extends xo.control {
       white-space: nowrap;
       display: inline-block;
       margin: 0.4rem;
-      border-radius: 1rem;
+      border-radius: 0.3rem 1rem 1rem 0.3rem;
       background-color: rgb(50, 50, 50);
       padding: 0.6rem 1rem;
     }
-    .r90 {
+    .eye {
       display: inline-block;
-      transform: rotate(90deg);
+      margin-right: 0.4rem;
+      margin-left: -0.4rem;
+      opacity: 0.5;
+    }
+
+    a {
+      display: "inline-block";
+      margin-left: 0.3rem;
+      cursor: pointer;
+      opacity: 0.5;
+    }
+
+    a:hover {
+      opacity: 1;
     }
   `;
 
-    static get properties() {
-        return {
-            value: {
-                type: Array,
-            },
-        };
+  static get properties() {
+    return {
+      value: {
+        type: Array,
+      },
+    };
+  }
+
+  onInput(e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
+  get value() {
+    return this._value;
+  }
+
+  set value(value) {
+    if (!Array.isArray(value)) {
+      console.warn("Tags value must be array");
+      return;
     }
 
-    onInput(e) {
-        e.preventDefault();
-        e.stopPropagation();
-    }
+    this._value = value;
+  }
 
-    get value() {
-        return this._value;
-    }
-
-    set value(value) {
-        if (!Array.isArray(value)) {
-            console.warn("Tags value must be array");
-            return;
-        }
-
-        this._value = value;
-    }
-
-    renderInput() {
-        return html`<div class="tags">
-    ${repeat(
+  renderInput() {
+    return html`<div class="tags">
+      ${repeat(
         this.value,
         (item) => item.id,
         (item, index) => {
-          return this.renderTag(item);
+          return this.renderTag(item, index);
         }
       )}
-    <input @keydown=${this.input} type="text" />
-</div>`;
-    }
+      ${this.textInput}
+    </div>`;
+  }
 
-    input(e) {
-        switch (e.key) {
-            case "Enter":
-                if (e.target.value !== "") {
-                    if (this.value.indexOf(e.target.value) === -1) {
-                        this.value.push(e.target.value);
-                        this.fireChange();
-                        this.requestUpdate();
-                        e.target.value = "";
-                    }
-                }
+  firstUpdated() {
+    super.firstUpdated();
+    this.context.mapper.tryAutoComplete(
+      this,
+      this.textInput,
+      this.autocomplete
+    );
+  }
 
-                break;
-            case "Backspace":
-                if (e.target.value === "") {
-                    this.value.pop();
-                    this.fireChange();
-                    this.requestUpdate();
-                }
-
-                break
+  input(e) {
+    switch (e.key) {
+      case "Enter":
+        if (e.target.value !== "") {
+          if (this.value.indexOf(e.target.value) === -1) {
+            this.value.push(e.target.value);
+            this.fireChange();
+            this.requestUpdate();
+            e.target.value = "";
+          }
         }
 
-    }
+        break;
+      case "Backspace":
+        if (e.target.value === "") {
+          this.value.pop();
+          this.fireChange();
+          this.requestUpdate();
+        }
 
-    renderTag(value) {
-        return html`<div class="tag"><span class="r90">⌂</span><span>${value}</span><a>x</a></div>`;
+        break;
     }
+  }
+
+  renderTag(value, index) {
+    return html`<div data-index="${index}" class="tag">
+      <span class="eye">○</span><span>${value}</span>
+      <a @click=${this.deleteTag}>x</a>
+    </div>`;
+  }
+
+  deleteTag(e) {
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    e.preventDefault();
+    let index = parseInt(
+      e.target.closest("[data-index]").getAttribute("data-index")
+    );
+    this.value.splice(index, 1);
+    this.requestUpdate();
+  }
 }
 
 customElements.define("xo-tags", Tags);

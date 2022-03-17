@@ -3,6 +3,8 @@ import { LIT_COMPONENTS } from "../web-components";
 import { bookATable } from "../forms/book-a-table";
 import { managePets } from "../forms/manage-pets";
 import { wizard } from "../forms/wizard";
+import { movies } from "../forms/movies";
+import { onboarding } from '../forms/onboarding';
 
 class PWA {
   constructor() {
@@ -21,7 +23,7 @@ class PWA {
     this.checkDarkTheme();
     this.form = document.querySelector("xo-form");
 
-    this.form.schema = managePets;
+    this.form.schema = onboarding;
   }
 
   checkDarkTheme() {

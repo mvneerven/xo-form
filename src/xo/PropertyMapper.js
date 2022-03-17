@@ -31,7 +31,8 @@ class PropertyMapper {
       }
     }
 
-    if (!properties.name) properties.name = getUniqueName();
+    if(!properties.id) properties.id = getUniqueName();
+    if (!properties.name) properties.name = properties.id;
 
     if (isInitialState) {
       // first distill all bindings to manage
@@ -44,7 +45,7 @@ class PropertyMapper {
       let value = this.getCurrentValue(element, properties, prop);
 
       element[prop] = value;
-
+      
       let hyphenAttrName = PropertyMapper.camelCaseToHyphen(prop);
 
       if (nested) {
@@ -107,7 +108,7 @@ class PropertyMapper {
             });
           }
 
-          let ee = {
+          let event = {
             target: e.target,
             path: e.path,
             detail: {
@@ -116,7 +117,7 @@ class PropertyMapper {
             },
           };
 
-          properties.click(ee);
+          properties.click(event);
         });
       }
     }
@@ -148,28 +149,31 @@ class PropertyMapper {
   }
 
   static match(s, callback) {
-    if (typeof s !== "string" || s.length < 5)
-      // #/a/b
+    const origString = s;
+    if (typeof s !== "string" || s.length < 5){ // minimum variable length: #/a/b
       return s;
+    }
 
     return s.replace(
-      /(#\/[A-Za-z_]+[A-Za-z_0-9:\/]*[A-Za-z_:]+[A-Za-z_0-9]*)(?=[\s+\/*,.?!;'")]|$)/gm,
-      (match, token) => {
-        return callback(token);
+      /(#\/[A-Za-z_]+[A-Za-z_0-9\/@]*[A-Za-z_]+[A-Za-z_0-9]*)(?=[\s+\/*,.?!;'")]|$)/gm,
+      (match, token, r) => {
+        return callback(token, origString);
       }
     );
   }
 
   replaceVar(binding, prop, value) {
+    let combinedString = false;
     let varRes,
-      i = 0,
-      result = PropertyMapper.match(binding.rawValue, (variable) => {
-        i++;
+      result = PropertyMapper.match(binding.rawValue, (variable, origString) => {
+        if(origString!==variable)
+          combinedString = true;
 
         varRes = value;
         return varRes;
       });
-    if (i === 1 && typeof varRes !== "undefined") {
+    
+    if (!combinedString) {
       return varRes;
     }
     return result;
@@ -184,9 +188,9 @@ class PropertyMapper {
     }
   }
 
-  tryAutoComplete(input, autoComplete) {
+  tryAutoComplete(input, textInput, autoComplete) {
     if (autoComplete && autoComplete.items) {
-      let ac = new AutoComplete(input, autoComplete);
+      let ac = new AutoComplete(input, textInput, autoComplete);
       ac.attach(input);
     }
   }
@@ -202,7 +206,7 @@ class PropertyMapper {
     var test = document.createElement(element.nodeName.toLowerCase());
     return (
       attribute in test ||
-      ["role"].includes(attribute) ||
+      ["role", "readonly"].includes(attribute) ||
       attribute.startsWith("aria-")
     );
   }

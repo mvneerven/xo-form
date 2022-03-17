@@ -9,12 +9,47 @@
     margin-top: 0.4rem;
 
     .xo-in {
-        padding: 0.8rem 1.3rem;
+        padding: 0.9rem 1.3rem;
         border: 1px solid var(--xo-input-border-color);
         border-radius: 1rem;
         background-color: var(--xo-input-bg);
+        transition: all .3s ease;
     }
-    
+
+    &:hover{
+        .xo-in {
+            border-color: var(--xo-input-border-color-hover);
+            transition: all .3s ease;
+        }
+    }
+
+    &.xo-fc {
+        .xo-in {
+            border-color: var(--xo-input-border-color-active);
+            transition: all .3s ease;
+        }
+    }
+}
+.xo-cn:not(.xo-rep):not(.xo-ri) {
+    .xo-in {
+        .xo-grp {
+            padding: 0;
+        }
+    }
+}
+
+.xo-ri {
+    margin: 0;
+    padding: 0 !important;
+
+    .xo-ct {
+        margin: 0;
+        padding: 0;
+    }
+    .xo-in {
+        border: 0;
+        padding: 0 !important;
+    }
 }
 
 .xo-ct {
@@ -32,13 +67,15 @@ input,
 select,
 textarea {
     background-color: transparent;
+    color: var(--text-color);
 }
 
 input:not([type="checkbox"], [type="radio"]),
 select,
 textarea {
-    min-width: 20rem;
+    min-width: 8rem;
     padding: 0.4rem 0.8rem;
+    line-height: 1rem;
 }
 
 .xo-hd {
@@ -66,6 +103,9 @@ label {
 }
 
 button {
+    text-transform: uppercase;
+    background-color: var(--xo-btn-bg, rgba(127,127,127, .8));
+    
     padding: 0.4rem 0.8rem;
     border-radius: 1rem;
     border: 1px solid var(--xo-input-border-color);
@@ -98,7 +138,6 @@ button {
     }
 }
 
-
 .xo-nv {
     margin-top: 2rem;
 }
@@ -115,29 +154,27 @@ legend {
     color: rgb(250, 94, 94);
 }
 
-.xo-cn.horizontal {
+.xo-grp.hor {
     display: flex;
-    gap: 1rem;
+    gap: .6rem;
 }
 
 option {
     background-color: var(--bg-color);
 }
 
-
-.autocomplete {
-    
+[data-autocomplete] {
     //position: relative;
     margin: auto;
 
-    .xo-in{
+    .xo-in {
         position: relative;
     }
 
     .xo-ac-rs {
         font-size: 0.9rem;
         text-align: left;
-        background-color: rgb(40, 40, 40);
+        background-color: var(--bg-color);
         position: absolute;
         box-shadow: 0 5px 10px 2px rgba(0, 0, 0, 0.1);
         border: 1px solid rgba(0, 0, 0, 0.1);
@@ -147,19 +184,22 @@ option {
         overflow-y: auto;
         z-index: 9999;
 
-        .exf-ac-itm {
+        .xo-ac-itm {
             display: grid;
-            grid-template-columns: var(--exf-ac-itm-grid, 30px 1fr 7rem);
+            grid-template-columns: var(--xo-ac-itm-grid, 30px 1fr 7rem);
             cursor: pointer;
             overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
             padding: 0.5rem;
-            height: var(--exf-ac-itm-height, auto);
+            color: var(--text-color);
+            height: var(--xo-ac-itm-height, auto);
 
-            .exf-ac-img {
+            .xo-ac-img {
                 background-repeat: no-repeat;
                 background-size: contain;
-                width: var(--exf-ac-itm-width, 1.1rem);
-                height: var(--exf-ac-itm-height, auto);
+                width: var(--xo-ac-itm-width, 1.1rem);
+                height: var(--xo-ac-itm-height, auto);
                 display: inline-block;
             }
 
@@ -173,7 +213,7 @@ option {
                 min-width: 100px;
 
                 small {
-                    color: rgba(0, 0, 0, 0.5);
+                    //color: rgba(0, 0, 0, 0.5);
                     word-wrap: normal;
                     display: inline-block;
                 }
@@ -186,7 +226,7 @@ option {
             span.category {
                 float: right;
                 text-align: right;
-                color: rgba(0, 0, 0, 0.5);
+                //color: rgba(0, 0, 0, 0.5);
                 font-size: smaller;
             }
 
@@ -202,19 +242,17 @@ option {
     }
 
     &.simple {
-
-        .exf-ac-rs {
-            .exf-ac-itm {
+        .xo-ac-rs {
+            .xo-ac-itm {
                 grid-template-columns: var(--exf-ac-itm-grid, 1px 1fr 7rem);
             }
         }
     }
-
 }
 
 html.theme-dark {
-    .exf-ctl-cnt.autocomplete {
-        .exf-ac-rs {
+    [data-autocomplete] {
+        .xo-ac-rs {
             background-color: rgb(40, 40, 40);
 
             box-shadow: 0 5px 10px 2px rgba(0, 0, 0, 0.5);

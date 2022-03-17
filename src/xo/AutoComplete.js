@@ -4,14 +4,15 @@ import Util from "./Util";
 class AutoComplete {
   cssClasses = {
     result: "xo-ac-rs",
-    item: "exf-ac-itm",
+    item: "xo-ac-itm",
   };
 
-  constructor(control, settings) {
+  constructor(control, textInput, settings) {
     this.settings = settings;
 
     this.control = control;
-    this.htmlElement = control.nestedElement;
+    this.htmlElement = textInput; 
+    this.htmlElement.setAttribute("autocomplete", "off");
     this.categories = settings.categories || {};
 
     if (!settings.items)
@@ -44,9 +45,7 @@ class AutoComplete {
 
     this.clear();
 
-    this.control.shadowRoot
-      .querySelector(".xo-cn")
-      .classList.add("autocomplete");
+    this.control.shadowRoot.querySelector(".xo-cn")?.setAttribute("data-autocomplete", "on");
   }
 
   moveResult(add) {
@@ -150,6 +149,7 @@ class AutoComplete {
     return this._categories || {};
   }
 
+  
   blurHandler(e) {
     setTimeout(() => {
       if (!this.resultClicked) this.clear();
@@ -181,7 +181,7 @@ class AutoComplete {
       categories: this.categories,
     };
 
-    this.getItems(options).then((r) => {
+    this.getItems(options, e).then((r) => {
       this.clear();
       this.resultsHandler(r, options);
     });
@@ -231,21 +231,21 @@ class AutoComplete {
   clickHandler(e) {
     this.clear();
     let value = e.target.value;
-    this.suggest(value);
+    this.suggest(value, e);
   }
 
   /**
    * Shows suggestion box
    * @param {string} value - String to suggest results for
    */
-  suggest(value) {
+  suggest(value, e) {
     this.htmlElement.focus();
     const options = {
       suggest: true,
       search: value || "",
       categories: this.categories,
     };
-    this.getItems(options).then((r) => {
+    this.getItems(options, e).then((r) => {
       this.resultsHandler(r, options);
     });
   }
@@ -259,7 +259,7 @@ class AutoComplete {
       let image = null,
         catHandler = options.categories[i.category] || {};
       if (i.image) {
-        i.icon = "exf-ac-img";
+        i.icon = "xo-ac-img";
         image = `style="background-image: url('${i.image}')"`;
       }
       if (i.element) {
@@ -323,7 +323,7 @@ class AutoComplete {
     return str.replace(reg, '<span class="txt-hl">$1</span>');
   }
 
-  async getItems(options) {
+  async getItems(options, e) {
     const prop = this.settings.map;
 
     const map = (list) => {
@@ -394,8 +394,9 @@ class AutoComplete {
           )
         );
       } else if (typeof this.items === "function") {
-        resolve(map(this.items(options)));
+        resolve(map(this.items(options, e)));
       } else {
+        debugger;
         return resolve(Promise.resolve(this.items.apply(this, options)));
       }
     });

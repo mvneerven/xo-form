@@ -1,36 +1,58 @@
+import { css } from 'lit';
 import Group from "./Group";
 
 class Navigation extends Group {
-  beforeMap() {
-    this._controls = [
-      {
-        type: "button",
-        name: "prev",
-        label: "Previous",
-        bind: "#/_xo/nav/back",
-        disabled: "#/_xo/disabled/back",
-        click: this.prev.bind(this),
-      },
-      {
-        type: "button",
-        name: "nxt",
-        label: "Next",
-        bind: "#/_xo/nav/next",
-        disabled: "#/_xo/disabled/next",
-        click: this.next.bind(this),
-      },
-    ];
 
-    if (this.parent.submit !== false) {
-      this._controls.push({
-        type: "button",
-        name: "send",
-        label: "Submit",
-        bind: "#/_xo/nav/send",
-        disabled: "#/_xo/disabled/send",
-        click: this.submit.bind(this),
-      });
+  static styles = css`
+  :host{
+    display: flex
+  }
+  .xo-grp {
+    display: inline-block;
+    margin: auto;
+  }
+  `
+
+  beforeMap() {
+    this.layout = "horizontal";
+
+    this._controls = [];
+
+    const totalPages = this.context.data.get("#/_xo/nav/total");
+
+    if (totalPages > 1) {
+      this._controls.push(
+        ...[
+          {
+            type: "button",
+            name: "prev",
+            label: "Back",
+            bind: "#/_xo/nav/back",
+            disabled: "#/_xo/disabled/back",
+            click: this.prev.bind(this),
+          },
+          {
+            type: "button",
+            name: "nxt",
+            label: "Next",
+            bind: "#/_xo/nav/next",
+            disabled: "#/_xo/disabled/next",
+            click: this.next.bind(this),
+          },
+        ]
+      );
     }
+
+    // if (this.parent.submit !== false) {
+    //   this._controls.push({
+    //     type: "button",
+    //     name: "send",
+    //     label: "Submit",
+    //     bind: "#/_xo/nav/send",
+    //     disabled: "#/_xo/disabled/send",
+    //     click: this.submit.bind(this),
+    //   });
+    // }
   }
 
   static get properties() {
@@ -46,9 +68,16 @@ class Navigation extends Group {
 
   set page(value) {
     if (typeof value !== "number") throw Error("Invalid value for page");
-
     this.context.form.page = value;
     this.context.form.dispatchEvent(new CustomEvent("xo-page"));
+    this.updateUrl();
+  }
+
+  updateUrl() {
+    let href = document.location.origin;
+    href += "/page/" + this.context.form.page;
+    history.replaceState(null, null, href);
+    window.history.pushState({ page: this.context.form.page }, null, href);
   }
 
   get page() {

@@ -18,7 +18,7 @@ class Page extends Group {
       <fieldset
         ${this.hidden ? "hidden" : ""}
         data-page="${this.index}"
-        class="xo-cn ${this.getClasses()}"
+        class="xo-cn ${this.getContainerClasses()}"
       >
         <legend>${this.label}</legend>
         <slot></slot>
@@ -30,14 +30,6 @@ class Page extends Group {
       index: { type: Number, attribute: true },
     };
   }
-
-  // loadXoSchema(schema) {
-  //     this.hidden = this.index !== 1;
-  //     for (let field of schema.fields) {
-  //         let element = this.createControl(this.context, field.type, field);
-  //         this.appendChild(element);
-  //     }
-  // }
 }
 
 window.customElements.define("xo-page", Page);

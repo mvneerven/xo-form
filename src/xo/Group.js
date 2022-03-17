@@ -1,7 +1,10 @@
 import Control from "./Control";
-import { html } from "lit";
+import { css, html } from "lit";
 
 class Group extends Control {
+
+ 
+
   static get properties() {
     return {
       layout: { type: String, attribute: true },
@@ -11,9 +14,8 @@ class Group extends Control {
 
   renderInput() {
     return html`${this.injectedStyles}
-      <div class="xo-cn ${this.getClasses()}">
+      <div class="${this.getGroupClasses()}">
         <slot></slot>
-        <div></div>
       </div>`;
   }
 
@@ -30,13 +32,8 @@ class Group extends Control {
     return this._fields;
   }
 
-  getClasses() {
-    let c = super.getClasses();
-    return (
-      c +
-      " " +
-      (this.layout === "horizontal" ? "horizontal" : "vertical")
-    ).trim();
+  getGroupClasses() {
+    return `xo-grp ${this.layout?.startsWith("hor") ? "hor" : "ver"}`;
   }
 }
 export default Group;

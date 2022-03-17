@@ -1,3 +1,5 @@
+import Util from "./Util";
+
 class Validation {
   constructor(xoForm) {
     this.xo = xoForm;
@@ -16,17 +18,18 @@ class Validation {
   }
 
   checkValid() {
-    let pv = this.isPageValid(this.xo.page);
-    console.log("Page ", this.xo.page, "valid: ", pv);
-    this.xo.context.data.set("#/_xo/disabled/next", !pv);
+    let pageValid = this.isPageValid(this.xo.page);
+    let totalPages = this.xo.context.data.get("#/_xo/nav/total");
+    console.log("Pages: ", totalPages);
+    console.log("Page ", this.xo.page, "valid: ", pageValid);
+    this.xo.context.data.set("#/_xo/disabled/next", !pageValid || (this.xo.page >= totalPages));
     this.xo.context.data.set("#/_xo/disabled/back", this.xo.page <= 1);
   }
 
   processValidation(elm) {
     let validState = elm.checkValidity();
-    console.log("Valid: ", validState, elm.nodeName + "@" + elm.name);
 
-    let xoc = this.xo.closestElement("xo-control", elm);
+    let xoc = Util.closestElement("xo-control", elm);
 
     try {
       xoc.invalidMessage = elm.validationMessage;
