@@ -38,6 +38,14 @@ export const onboarding = {
           set: "#/_xo/nav/page",
           value: 2,
         },
+        {
+          set: "#/state/breedPlaceholder",
+          value: (context) => {
+            let s = context.value;
+            s = s.charAt(0).toUpperCase() + s.slice(1);
+            return s + " breed or mix";
+          },
+        },
       ],
     },
   },
@@ -46,12 +54,12 @@ export const onboarding = {
       fields: [
         {
           type: "info",
-          title: "Petplan. Het plan dat je huisdier niet zelf kan maken",
+          title: "Petplan. The plan your pet can't make",
         },
         {
           type: "radiogroup",
           layout: "cards",
-          label: "Wat voor huisdier wil je verzekeren?",
+          label: "What type of pet do you wish to insure?",
           required: true,
           style: "--card-width: 110px; --card-height: 110px",
           bind: "#/insurance/type",
@@ -76,12 +84,13 @@ export const onboarding = {
       fields: [
         {
           type: "info",
-          title: "Basisgegevens #/insurance/type",
-          body: "Wat voor huisdier wil je verzekeren?",
+          title: "Base data (#/insurance/type)",
+          body: "Enter your pet's details",
         },
         {
           type: "text",
           label: "Name",
+          placeholder: "Your #/insurance/type's name",
           required: true,
           bind: "#/insurance/name",
         },
@@ -89,6 +98,7 @@ export const onboarding = {
         {
           type: "search",
           label: "Breed",
+          placeholder: "#/state/breedPlaceholder",
           bind: "#/insurance/breed",
           required: true,
           autocomplete: {
@@ -100,7 +110,7 @@ export const onboarding = {
           label: "Age",
           bind: "#/insurance/ageGroup",
           required: true,
-          items: ["1-2 years", "3-5 years", "> 5 years"],
+          items: ["0-1 year", "2-5 years", "5 years+"],
         },
       ],
     },
@@ -108,8 +118,8 @@ export const onboarding = {
       fields: [
         {
           type: "info",
-          title: "Verzekeringen",
-          body: "Kies een pakket",
+          title: "Insurance type",
+          body: "Select a plan",
         },
         {
           type: "radiogroup",
@@ -117,8 +127,37 @@ export const onboarding = {
           style: "--card-width: 100%; --card-height: 110px",
           bind: "#/insurance/plan",
           items: [
-            { label: "Standaard", value: "std" },
+            { label: "Standard", value: "std" },
             { label: "Premium", value: "premium" },
+            { label: "Excellence", value: "excellence" },
+          ],
+        },
+      ],
+    },
+    {
+      fields: [
+        {
+          type: "info",
+          title: "Check your data",
+          body: "File your request for #/insurance/name, a #/insurance/type of breed/mix #/insurance/breed (#/insurance/ageGroup)",
+        },
+        {
+          type: "group",
+          layout: "horizontal",
+          fields: [
+            {
+              type: "email",
+              required: true,
+              bind: "#/insurance/email",
+              label: "Your email address",
+              placeholder: "john@doe.com",
+            },
+
+            {
+              type: "button",
+              label: "Send request",
+              classes: ["cta"],
+            },
           ],
         },
       ],

@@ -5,8 +5,7 @@ class Validation {
     this.xo = xoForm;
     this.form = xoForm.query("form").pop();
 
-    eventBus.register("xo-interaction", (e) => {
-      //console.log("interaction detected", e)
+    eventBus.register("xo-interaction", (e) => {      
       let elm = e.detail.control;
       this.processValidation(elm);
       this.checkValid();
@@ -20,9 +19,10 @@ class Validation {
   checkValid() {
     let pageValid = this.isPageValid(this.xo.page);
     let totalPages = this.xo.context.data.get("#/_xo/nav/total");
-    console.log("Pages: ", totalPages);
-    console.log("Page ", this.xo.page, "valid: ", pageValid);
-    this.xo.context.data.set("#/_xo/disabled/next", !pageValid || (this.xo.page >= totalPages));
+    this.xo.context.data.set(
+      "#/_xo/disabled/next",
+      !pageValid || this.xo.page >= totalPages
+    );
     this.xo.context.data.set("#/_xo/disabled/back", this.xo.page <= 1);
   }
 

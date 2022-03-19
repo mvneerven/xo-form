@@ -2,6 +2,10 @@
 @import "controls";
 @import "scrollbar";
 
+html {
+	scroll-behavior: smooth;
+}
+
 body > * {
 	padding: 1rem;
 }
@@ -34,12 +38,13 @@ header {
 		width: 40px;
 
 		> a {
-			display: none;
+			opacity: 0;
 		}
 	}
 }
 
 main {
+	display: flex;
 	min-width: 100vw;
 	margin: 0 auto;
 
@@ -50,7 +55,7 @@ main {
 
 @media screen and (min-width: 800px) {
 	main {
-		display: flex;
+		
 		min-width: 600px;
 		margin: auto;
 	}

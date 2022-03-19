@@ -23,8 +23,6 @@ class DataBinding {
     this._context = context;
 
     eventBus.register("xo-interaction", (e) => {
-      console.log("interaction detected", e);
-
       if (e.detail.source.bind) {
         //console.log(">>", e.detail.value);
         me.set(
@@ -64,8 +62,6 @@ class DataBinding {
 
           let bindingPath = "#/" + path + "/" + key;
 
-          console.log("Set", bindingPath, value);
-
           target[key] = value;
 
           value = me.applyRules(bindingPath, value); // apply rules on change
@@ -88,7 +84,7 @@ class DataBinding {
                 boundPropertyValue
               );
 
-              console.log(
+              console.debug(
                 `Set property '${prop}' on ${binding.control} to`,
                 value
               );
@@ -208,8 +204,6 @@ class DataBinding {
             binding: variable,
           });
 
-          // element.data = element.data ?? {};
-          // element.data[prop] = this.processBindingIndex(element, variable);
           variable = this.processBindingIndex(element, variable);
 
           let v = me.get(variable);
@@ -217,8 +211,6 @@ class DataBinding {
           if (typeof v !== "undefined") {
             properties[prop === "bind" ? "value" : prop] = v;
           }
-
-          //return "aaa";
         });
       }
     }
@@ -238,10 +230,7 @@ class DataBinding {
   }
 
   applyRules(bindingPath, value) {
-    const me = this;
-
-    const path = this.matchArrays(bindingPath);
-    console.log("Match ", bindingPath, path);
+    const me = this, path = this.matchArrays(bindingPath);
 
     if (me.rules[path]) {
       let ar = me.rules[path];

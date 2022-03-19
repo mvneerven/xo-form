@@ -1,4 +1,4 @@
-import { html } from "lit";
+import { html, css } from "lit";
 import Control from "./Control";
 import Validation from "./Validation";
 import Navigation from "./Navigation";
@@ -10,9 +10,22 @@ class Form extends Control {
 
   constructor() {
     super();
+    this._url = new URL(document.location.href);
     this._context = new Context(this);
     this._page = 1;
   }
+
+  static styles = css`
+    .xo-c {
+      opacity: 0;
+    }
+
+    .xo-c.ready {
+      opacity: 1;
+      transition: all .3s;
+      transition-delay: 350ms;
+    }
+  `
 
   static get properties() {
     return {
@@ -85,8 +98,6 @@ class Form extends Control {
   }
 
   render() {
-    console.log("Render form", this);
-
     return html`${this.injectedStyles}<div class="xo-c" data-page="${this.page}">
     <form>
         <div class="xo-w">
@@ -101,6 +112,23 @@ class Form extends Control {
 
   firstUpdated() {
     this.validation = new Validation(this);
+
+    this.checkUrlState();
+
+    this.shadowRoot.querySelector(".xo-c").classList.add("ready")
+  }
+
+  get url() {
+    return this._url;
+  }
+
+  checkUrlState() {
+    // if (this.url.pathname.startsWith("/page/")) {
+    //   let pg = parseInt(this.url.pathname.substring(6));
+    //   if (pg) {
+    //     this.context.data.set("#/_xo/nav/page", pg);
+    //   }
+    // }
   }
 
   getSlotted(node) {

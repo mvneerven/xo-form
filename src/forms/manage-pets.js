@@ -90,6 +90,20 @@ export const managePets = {
           },
         },
       ],
+
+      "#/_xo/nav/page":[
+        {
+          value: context=>{
+            debugger;
+            if(context.value > 1 ){
+              
+              let noType = typeof(context.get("#/insurance/type") === "undefined" )
+
+              debugger;
+            }
+          }
+        }
+      ]
     },
   },
   pages: [

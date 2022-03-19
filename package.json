@@ -1,7 +1,7 @@
 {
-  "name": "caas",
-  "version": "1.2.1",
-  "description": "Neerventure CTO-as-a-Service",
+  "name": "@mvneerven/xo-form",
+  "version": "1.0.0",
+  "description": "XO - Declarative Forms using Web Components",
   "main": "js/index.js",
   "scripts": {
     "dev1": "esbuild js/index.js --bundle --watch --outfile=dist/index.js",
@@ -14,11 +14,13 @@
     "url": "https://github.com/mvneerven/ttc-lemmer"
   },
   "keywords": [
-    "CTO",
-    "SaaS"
+    "ES6",
+    "Web Components",
+    "Web Forms",
+    "Declarative"
   ],
   "author": "Marc van Neerven",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@es-pack/esbuild-sass-plugin": "^2.0.0",
     "cross-env": "^7.0.3",

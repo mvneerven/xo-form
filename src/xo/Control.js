@@ -43,8 +43,8 @@ class Control extends LitElement {
     this.shadowRoot.addEventListener("change", this.onInput.bind(this));
   }
 
-  disconnectedCallback(){
-    console.log("cleanup")
+  disconnectedCallback() {
+    console.log("cleanup");
     this.nestedElement?.removeEventListener("focus", this.onfocus);
     this.nestedElement?.removeEventListener("blur", this.onblur);
     this.shadowRoot.removeEventListener("input", this.onInput);
@@ -69,7 +69,6 @@ class Control extends LitElement {
 
   onfocus(e) {
     e.stopPropagation();
-    console.log("FOCUS")
     this.focus = true;
   }
 
@@ -208,7 +207,7 @@ class Control extends LitElement {
     if (this.disabled) {
       cls.push("xo-ds");
     }
-    if(!this.valid){
+    if (!this.valid) {
       cls.push("xo-iv");
     }
     if (this.classes) {
@@ -228,7 +227,7 @@ class Control extends LitElement {
     if (this.nestedElement?.nodeName === "BUTTON") {
       this.nestedElement.removeEventListener("click", this.click);
       this.nestedElement.addEventListener("click", this.click.bind(this));
-      return html`${this.injectedStyles}${this.renderInput()}`;
+      return html`${this.injectedStyles}${this.renderInput(true)}`;
     }
 
     return html`${this.injectedStyles}
@@ -256,11 +255,19 @@ class Control extends LitElement {
     return this.required ? html`<sup>*</sup>` : "";
   }
 
-  renderInput() {
-    return this.renderNestedElement();
+  renderInput(noContainer) {
+    return this.renderNestedElement(noContainer);
   }
 
-  renderNestedElement() {
+  renderNestedElement(noContainer) {
+    if (noContainer) {
+      this.nestedElement.setAttribute(
+        "class",
+        this.nestedElement.getAttribute("class") +
+          " " +
+          this.getContainerClasses()
+      );
+    }
     return this.nestedElement;
   }
 

@@ -13,7 +13,7 @@
         border: 1px solid var(--xo-input-border-color);
         border-radius: 1rem;
         background-color: var(--xo-input-bg);
-        transition: all .3s ease;
+        //transition: all .3s ease;
     }
 
     &:hover{
@@ -115,6 +115,12 @@ button {
     &:active {
         transform: translateY(2px);
         transition: all 0.1s ease-out;
+    }
+
+    &.cta {
+        margin: 1rem 2rem;
+        font-size: 1.3rem;
+        margin: 3rem auto;
     }
 }
 

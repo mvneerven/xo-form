@@ -1,5 +1,7 @@
 import AutoComplete from "./AutoComplete";
 
+const RESERVED_PROPERTIES = ["type", "label", "bind", "classes"];
+
 let ctlNr = 1000;
 const getUniqueName = () => {
   return `xo${(ctlNr++).toString(16)}`;
@@ -145,7 +147,7 @@ class PropertyMapper {
   }
 
   static isReservedProperty(name) {
-    return ["type", "label", "bind"].includes(name);
+    return RESERVED_PROPERTIES.includes(name);
   }
 
   static match(s, callback) {
@@ -163,13 +165,17 @@ class PropertyMapper {
   }
 
   replaceVar(binding, prop, value) {
+    const me = this;
+    // if(binding.rawValue.startsWith("File your request "))
+    //   debugger;
+
     let combinedString = false;
     let varRes,
       result = PropertyMapper.match(binding.rawValue, (variable, origString) => {
         if(origString!==variable)
           combinedString = true;
 
-        varRes = value;
+        varRes =  me.context.data.get(variable);// value;
         return varRes;
       });
     

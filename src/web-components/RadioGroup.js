@@ -40,16 +40,18 @@ class RadioGroup extends xo.control {
       border-color: var(--accent)!important;
     }
 
-    .cards label.selected {
+    .cards label.selected,
+    .list label.selected {
       position: relative;
       transition: all 0.2s;
     }
-    .cards label.selected:after {
+    .cards label.selected:after,
+    .list label.selected:after {
       font-size: 1.2rem;
       font-weight: 800;
       content: "✓";
       position: absolute;
-      top: 0px;
+      top: 5px;
       right: 5px;
       color: white;
     }
@@ -151,7 +153,7 @@ class RadioGroup extends xo.control {
         (item, index) => {
           item = this.makeItem(item);
           const checked = this.isSelected(item);
-          return html`<label
+          return html`<label title="${item.label}"
             class="${checked ? "selected" : ""}"
             style="--image: url(${item.image})"
             ><input

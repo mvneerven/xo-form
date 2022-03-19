@@ -3,6 +3,12 @@ import Control from "./Control";
 import { html } from "lit";
 
 class Page extends Group {
+
+  constructor(){
+    super(...arguments);
+    this.hidden = true;
+    
+  }
   connectedCallback() {
     super.connectedCallback();
 
