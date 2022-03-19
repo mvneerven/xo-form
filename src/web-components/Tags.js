@@ -1,8 +1,9 @@
 import { LitElement, html, css } from "lit";
 import { repeat } from "lit/directives/repeat.js";
 import xo from "../xo";
+import Context from "../xo/Context";
 
-class Tags extends xo.control {
+class Tags extends xo.Control {
   _value = [];
 
   constructor() {
@@ -12,36 +13,42 @@ class Tags extends xo.control {
     this.textInput.addEventListener("keydown", this.input.bind(this));
   }
 
-  static styles = css`
-    .tags {
-      display: flex;
-    }
-    .tag {
-      white-space: nowrap;
-      display: inline-block;
-      margin: 0.4rem;
-      border-radius: 0.3rem 1rem 1rem 0.3rem;
-      background-color: rgb(50, 50, 50);
-      padding: 0.6rem 1rem;
-    }
-    .eye {
-      display: inline-block;
-      margin-right: 0.4rem;
-      margin-left: -0.4rem;
-      opacity: 0.5;
-    }
+  static get styles() {
+    return [
+      Context.sharedStyles,
+      css`
+        .tags {
+          display: flex;
+        }
+        .tag {
+          white-space: nowrap;
+          display: inline-block;
+          margin: 0.4rem;
+          border-radius: 0.3rem 1rem 1rem 0.3rem;
+          background-color: var(--xo-card-background);
+          color: var(--xo-card-color);
+          padding: .3rem .6rem;
+        }
+        .eye {
+          display: inline-block;
+          margin-right: 0.4rem;
+          margin-left: -0.4rem;
+          opacity: 0.5;
+        }
 
-    a {
-      display: "inline-block";
-      margin-left: 0.3rem;
-      cursor: pointer;
-      opacity: 0.5;
-    }
+        a {
+          display: "inline-block";
+          margin-left: 0.3rem;
+          cursor: pointer;
+          opacity: 0.5;
+        }
 
-    a:hover {
-      opacity: 1;
-    }
-  `;
+        a:hover {
+          opacity: 1;
+        }
+      `,
+    ];
+  }
 
   static get properties() {
     return {

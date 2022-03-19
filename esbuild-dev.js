@@ -4,6 +4,25 @@ const { markdownPlugin } = require("esbuild-plugin-markdown");
 
 console.log("Building");
 
+
+esbuild.build({
+  plugins: [
+      markdownPlugin()
+  ],
+  entryPoints: ['src/xo/index.js'],
+  bundle: true,
+  watch: {
+    onRebuild(error, result) {
+      if (error) console.error('watch build failed:', error)
+      else console.log('watch build succeeded:', result)
+    },
+  },
+  outfile: 'dist/xo-form.js',
+}).catch(ex => {
+  console.error(ex);
+  process.exit(1)
+})
+
 esbuild.build({
     plugins: [
         markdownPlugin()

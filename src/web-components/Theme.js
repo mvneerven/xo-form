@@ -1,7 +1,8 @@
 import xo from "../xo";
 import { css, html } from "lit";
+import Context from "../xo/Context";
 
-class Theme extends xo.control {
+class Theme extends xo.Control {
   static get properties() {
     return {
       dark: {
@@ -9,24 +10,31 @@ class Theme extends xo.control {
       },
     };
   }
-  static styles = css`
-    button { 
-      outline: none;
-      padding: 0.5rem;
-      border-radius: 100%;
-      background-color: var(--theme-bg);
-      position: fixed;
-      top: 5px;
-      right: 5px;
-    }
-  `;
+  static get styles() {
+    return [
+      Context.sharedStyles,
+      css`
+        button {
+          outline: none;
+          padding: 0.5rem;
+          border-radius: 100%;
+          background-color: var(--theme-bg);
+          position: fixed;
+          top: 5px;
+          right: 5px;
+        }
+      `,
+    ];
+  }
 
   render() {
     return html`<button
       @click=${this.click}
-      style="--theme-bg: ${this.dark ? "rgba(100,100,100,.8)" : "rgba(50,50,50,.8)"}"
+      style="--theme-bg: ${this.dark
+        ? "rgba(100,100,100,.8)"
+        : "rgba(50,50,50,.8)"}"
     >
-      ${this.dark? "🔆" : "🌙"}
+      ${this.dark ? "🔆" : "🌙"}
     </button>`;
   }
 

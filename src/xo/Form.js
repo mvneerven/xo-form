@@ -4,6 +4,8 @@ import Validation from "./Validation";
 import Navigation from "./Navigation";
 import { EventBus } from "./EventBus";
 import Context from "./Context";
+import { until } from "lit/directives/until.js";
+
 
 class Form extends Control {
   elements = {};
@@ -13,20 +15,15 @@ class Form extends Control {
     this._url = new URL(document.location.href);
     this._context = new Context(this);
     this._page = 1;
+
+    
+    // this.sharedStyleSheet = new CSSStyleSheet();
+    // this.sharedStyleSheet.replaceSync(xoStyles);
+  
   }
 
-  static styles = css`
-    .xo-c {
-      opacity: 0;
-    }
 
-    .xo-c.ready {
-      opacity: 1;
-      transition: all .3s;
-      transition-delay: 350ms;
-    }
-  `
-
+  
   static get properties() {
     return {
       ...Control.properties,
@@ -37,6 +34,10 @@ class Form extends Control {
       schema: {
         type: Object,
       },
+      src: {
+        type: String,
+        attribute: true,
+      },
     };
   }
 
@@ -45,6 +46,8 @@ class Form extends Control {
   }
 
   set page(value) {
+    if (value === this._page) return;
+
     if (value < 1) return;
     else if (value > this.querySelectorAll("xo-page").length) return;
 
@@ -53,12 +56,56 @@ class Form extends Control {
     }
 
     this._page = value;
-
-    this.requestUpdate();
   }
 
   set schema(schema) {
     this._schema = schema;
+    this.requestUpdate();
+  }
+
+  get schema() {
+    return this._schema;
+  }
+
+  get page() {
+    return this._page;
+  }
+
+  registerElement(elm) {
+    if (elm.name) {
+      this.elements[elm.name] = elm;
+    }
+  }
+
+  set src(url) {
+    this._src = url;
+  }
+
+  get src() {
+    return this._src;
+  }
+
+  async readSchema() {
+    if (!this.schema) {
+      if (this.src) {
+        try {
+          let r = await import(this.src);
+          const key = Object.keys(r)[0];
+          this._schema = r[key];
+        } catch (x) {
+          throw Error("Could not load schema from " + this.src);
+        }
+      }
+    }
+    if (!this.schema) return false;
+
+    this.interpretSchema(this.schema);
+    
+    return true;
+  }
+
+  interpretSchema(schema) {
+    console.log("INTERPRET schema");
 
     if (typeof schema !== "object") throw Error("Invalid schema");
 
@@ -83,31 +130,28 @@ class Form extends Control {
     this.appendChild(this.nav);
   }
 
-  get schema() {
-    return this._schema;
-  }
-
-  get page() {
-    return this._page;
-  }
-
-  registerElement(elm) {
-    if (elm.name) {
-      this.elements[elm.name] = elm;
-    }
-  }
-
   render() {
-    return html`${this.injectedStyles}<div class="xo-c" data-page="${this.page}">
-    <form>
-        <div class="xo-w">
-            <slot name="w"></slot>
-        </div>
-        <div class="xo-n">
-            <slot name="n"></slot>
-        <div>
-    </form>
-    <div>`;
+    return html`
+      ${until(
+        this.readSchema().then((ready) => {
+          if (!ready) {
+            return html``;
+          }
+
+          return html`${this.injectedStyles}<div class="xo-c" data-page="${this.page}">
+            <form>
+                <div class="xo-w">
+                    <slot name="w"></slot>
+                </div>
+                <div class="xo-n">
+                    <slot name="n"></slot>
+                <div>
+            </form>
+            <div>`;
+        }),
+        html`Loading...`
+      )}
+    `;
   }
 
   firstUpdated() {
@@ -115,7 +159,7 @@ class Form extends Control {
 
     this.checkUrlState();
 
-    this.shadowRoot.querySelector(".xo-c").classList.add("ready")
+    //this.shadowRoot.querySelector(".xo-c").classList.add("ready");
   }
 
   get url() {

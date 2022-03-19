@@ -41,14 +41,16 @@ class Validation {
 
   isPageValid(page) {
     let pg = this.xo.childNodes[page - 1];
-    let elms = pg.childNodes;
-    let count = elms.length;
-    let i = 0;
-    elms.forEach((elm) => {
-      elm.checkValidity();
-      if (elm.valid) i++;
-    });
-    return i === count;
+    if(pg){
+      let elms = pg?.childNodes;
+      let count = elms.length ;
+      let i = 0;
+      elms.forEach((elm) => {
+        elm.checkValidity();
+        if (elm.valid) i++;
+      });
+      return i === count;
+    }
   }
 }
 

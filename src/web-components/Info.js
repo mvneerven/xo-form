@@ -1,7 +1,7 @@
 import xo from "../xo";
 import { html, css } from "lit";
 
-class Info extends xo.control {
+class Info extends xo.Control {
     static get properties (){
         return {
             title: {

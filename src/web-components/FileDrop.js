@@ -1,9 +1,10 @@
 import { html, css } from "lit";
 import { repeat } from "lit/directives/repeat.js";
+import Context from "../xo/Context";
 
 const DEF_HEIGHT = "100px";
 
-class FileDrop extends xo.control {
+class FileDrop extends xo.Control {
   _value = [];
 
   _max = -1;
@@ -12,62 +13,67 @@ class FileDrop extends xo.control {
 
   _types = ["image/"];
 
-  static styles = css`
-    .drop {
-      position: relative;
-      height: var(--image-height, DEF_HEIGHT);
-      min-width: 200px;
-    }
-    input {
-      position: absolute;
-      width: 100%;
-      height: var(--image-height, DEF_HEIGHT);
-      opacity: 0;
-    }
-    progress {
-      width: 100%;
-      visibility: hidden;
-    }
+  static get styles() {
+    return [
+      Context.sharedStyles,
+      css`
+        .drop {
+          position: relative;
+          height: var(--image-height, DEF_HEIGHT);
+          min-width: 200px;
+        }
+        input {
+          position: absolute;
+          width: 100%;
+          height: var(--image-height, DEF_HEIGHT);
+          opacity: 0;
+        }
+        progress {
+          width: 100%;
+          visibility: hidden;
+        }
 
-    .dropping {
-      border: 2px dotted rgba(127, 127, 127, 0.5);
-    }
+        .dropping {
+          border: 2px dotted rgba(127, 127, 127, 0.5);
+        }
 
-    .files {
-      height: 100%;
-    }
+        .files {
+          height: 100%;
+        }
 
-    .thumb {
-      position: relative;
-      border: 6px solid white;
-      background-color: white;
-      display: inline-block;
-      height: 100%;
-      width: 120px;
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position-y: center;
-      margin-right: 0.5rem;
-    }
+        .thumb {
+          position: relative;
+          border: 6px solid white;
+          background-color: white;
+          display: inline-block;
+          height: 100%;
+          width: 120px;
+          background-size: contain;
+          background-repeat: no-repeat;
+          background-position-y: center;
+          margin-right: 0.5rem;
+        }
 
-    .thumb > a {
-      position: absolute;
-      display: inline-block;
-      top: 0px;
-      right: 0px;
-      padding: 0.2rem 0.3rem;
-      color: black;
-      background-color: rgba(40, 40, 40, 0.3);
-      border-radius: 1rem;
-      cursor: pointer;
-    }
+        .thumb > a {
+          position: absolute;
+          display: inline-block;
+          top: 0px;
+          right: 0px;
+          padding: 0.2rem 0.3rem;
+          color: black;
+          background-color: rgba(40, 40, 40, 0.3);
+          border-radius: 1rem;
+          cursor: pointer;
+        }
 
-    .thumb > a:hover {
-      color: white;
-      background-color: rgba(40, 40, 40, 0.8);
-      transition: all 0.2s ease;
-    }
-  `;
+        .thumb > a:hover {
+          color: white;
+          background-color: rgba(40, 40, 40, 0.8);
+          transition: all 0.2s ease;
+        }
+      `,
+    ];
+  }
 
   static get properties() {
     return {

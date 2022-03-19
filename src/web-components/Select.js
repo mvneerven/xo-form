@@ -2,7 +2,7 @@
 import { html } from 'lit';
 import { repeat } from 'lit/directives/repeat.js';
 
-class Select extends xo.control {
+class Select extends xo.Control {
     _value = [];
 
     static get properties() {

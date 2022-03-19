@@ -416,7 +416,6 @@ class AutoComplete {
   }
 
   isMatch(options, i) {
-    console.log(options.search, i.text);
     if (i.text?.indexOf("%search%") >= 0) return true;
 
     return options.search

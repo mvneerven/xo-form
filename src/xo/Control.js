@@ -1,6 +1,10 @@
+//import { adoptStyles, LitElement, html, css } from "lit";
 import { LitElement, html, css } from "lit";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import AutoComplete from "../xo/AutoComplete";
+import Context from "./Context";
+
+const useAdoptedStyleSheets = false;
 
 class Control extends LitElement {
   _disabled = false;
@@ -29,22 +33,37 @@ class Control extends LitElement {
     return this.checkValidity();
   }
 
+  static get styles(){
+    return [
+      Context.sharedStyles
+
+    ]
+  }
+
   connectedCallback() {
     super.connectedCallback();
-
     this.form = this.closest("xo-form");
     this.form?.registerElement(this);
-
     this.acceptMappedState();
-
+    this.adoptDefaultStyles()
     this.nestedElement?.addEventListener("focus", this.onfocus.bind(this));
     this.nestedElement?.addEventListener("blur", this.onblur.bind(this));
     this.shadowRoot.addEventListener("input", this.onInput.bind(this));
     this.shadowRoot.addEventListener("change", this.onInput.bind(this));
   }
 
+  adoptDefaultStyles(){
+    // if(!useAdoptedStyleSheets) return;
+
+    // let form = this.form ?? this;
+    
+    // if(form.sharedStyleSheet){
+      
+    //   adoptStyles(this.renderRoot, [form.sharedStyleSheet]);
+    // }
+  }
+
   disconnectedCallback() {
-    console.log("cleanup");
     this.nestedElement?.removeEventListener("focus", this.onfocus);
     this.nestedElement?.removeEventListener("blur", this.onblur);
     this.shadowRoot.removeEventListener("input", this.onInput);
@@ -64,19 +83,15 @@ class Control extends LitElement {
   acceptMappedState() {}
 
   get injectedStyles() {
-    return html`<link rel="stylesheet" href="/css/controls.css" />`;
+    // if(!useAdoptedStyleSheets)
+    //   return html`<link rel="stylesheet" href="/css/controls.css" />`;
   }
 
   onfocus(e) {
     e.stopPropagation();
     this.focus = true;
   }
-
-  onInvalid(e) {
-    debugger;
-    e.preventDefault();
-  }
-
+  
   onInput(e) {
     e.preventDefault();
     e.stopPropagation();

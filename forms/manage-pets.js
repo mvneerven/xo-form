@@ -1,6 +1,5 @@
-import breeds from "../../data/pet-breeds.json";
-import Util from "../xo/Util";
-import ImageResizer from "../modules/ImageResizer";
+import breeds from "../data/pet-breeds.json";
+import Util from "../src/xo/Util";
 
 const breedAutocomplete = (options, e) => {
   let rp = Util.closestElement("xo-repeat", e.target);
@@ -83,27 +82,22 @@ export const managePets = {
             window.breedData = breeds[context.value.toLowerCase()];
           },
         },
-        {
-          set: "#/state/breed",
-          value: (context) => {
-            context.value = "aassss";
-          },
-        },
+        
       ],
 
-      "#/_xo/nav/page":[
-        {
-          value: context=>{
-            debugger;
-            if(context.value > 1 ){
+      // "#/_xo/nav/page":[
+      //   {
+      //     value: context=>{
+      //       debugger;
+      //       if(context.value > 1 ){
               
-              let noType = typeof(context.get("#/insurance/type") === "undefined" )
+      //         let noType = typeof(context.get("#/insurance/type") === "undefined" )
 
-              debugger;
-            }
-          }
-        }
-      ]
+      //         debugger;
+      //       }
+      //     }
+      //   }
+      // ]
     },
   },
   pages: [

@@ -28,16 +28,18 @@ export const wizard = {
           required: true,
           bind: "#/mail/emailAddress",
         },
+        {
+          type: "textarea",
+          label: "Message",
+          bind: "#/mail/message",
+          maxlength: 150
+        },
       ],
     },
     {
       label: "Page 2",
       fields: [
-        {
-          type: "textarea",
-          label: "Message",
-          bind: "#/mail/message",
-        },
+        
         {
           type: "tags",
           label: "Tags",

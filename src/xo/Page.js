@@ -20,6 +20,9 @@ class Page extends Group {
   }
 
   render() {
+    if(this.hidden)
+      return html``;
+      
     return html`${this.injectedStyles}
       <fieldset
         ${this.hidden ? "hidden" : ""}

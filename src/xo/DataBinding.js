@@ -24,13 +24,11 @@ class DataBinding {
 
     eventBus.register("xo-interaction", (e) => {
       if (e.detail.source.bind) {
-        //console.log(">>", e.detail.value);
         me.set(
           this.processBindingIndex(e.detail.source, e.detail.source.bind),
           e.detail.value
         );
       } else if (e.detail.control?.bind) {
-        //console.log("|>>", e.detail.value);
         me.set(
           this.processBindingIndex(e.detail.control, e.detail.control?.bind),
           e.detail.value
@@ -99,23 +97,21 @@ class DataBinding {
       });
     };
 
-    schemaModel = {
+    me.schemaModel = {
       instance: {},
       ...schemaModel,
-    };
+    };  
 
-    
-
-    this.addBuiltinModelState(schemaModel);
+    this.addBuiltinModelState();
 
     // create Proxy for each instance
-    Object.entries(schemaModel.instance).forEach((item) => {
+    Object.entries(me.schemaModel.instance).forEach((item) => {
       const key = item[0];
       this.instance[key] = proxify(key, item[1]);
     });
 
     // set up change rules & run logic
-    Object.entries(schemaModel.rules || {}).forEach((entry) => {
+    Object.entries(me.schemaModel.rules || {}).forEach((entry) => {
       let key = entry[0];
 
       me.rules[key] = entry[1];
@@ -130,14 +126,14 @@ class DataBinding {
 
     setTimeout(() => {
       eventBus.fire("xo-modelchange", {
-        model: schemaModel,
+        model: me.schemaModel,
       });  
     }, 1);
     
   }
 
-  addBuiltinModelState(schemaModel) {
-    schemaModel.instance["_xo"] = {
+  addBuiltinModelState() {
+    this.schemaModel.instance["_xo"] = {
       disabled: {
         back: true,
         next: false,
@@ -252,6 +248,7 @@ class DataBinding {
                 me.set(name, v);
                 if (name === bindingPath) value = v;
               },
+              model: this.schemaModel
             };
             let result;
             if (typeof expression.value === "function") {

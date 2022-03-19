@@ -1,63 +1,70 @@
 //import Control from "./Control";
 import { LitElement, html, css } from "lit";
+import Context from "../xo/Context";
 
-class Switch extends xo.control {
-  static styles = css`
-    label.switch {
-      display: inline-block;
-      height: 24px;
-      position: relative;
-    }
+class Switch extends xo.Control {
+  static get styles() {
+    return [
+      Context.sharedStyles,
+      css`
+        label.switch {
+          display: inline-block;
+          height: 24px;
+          position: relative;
+        }
 
-    .switch input {
-      display: none;
-    }
+        .switch input {
+          display: none;
+        }
 
-    .knob {
-      width: 40px;
+        .knob {
+          width: 40px;
 
-      background-color: #ccc;
-      bottom: 0;
-      cursor: pointer;
-      left: 0;
-      position: absolute;
-      right: 0;
-      top: 0;
-      transition: 0.4s;
-    }
+          background-color: #ccc;
+          bottom: 0;
+          cursor: pointer;
+          left: 0;
+          position: absolute;
+          right: 0;
+          top: 0;
+          transition: 0.4s;
+        }
 
-    .knob:before {
-      background-color: #fff;
-      bottom: 4px;
-      content: "";
-      height: 16px;
-      left: 4px;
-      position: absolute;
-      transition: 0.4s;
-      width: 16px;
-    }
+        .knob:before {
+          background-color: #fff;
+          bottom: 4px;
+          content: "";
+          height: 16px;
+          left: 4px;
+          position: absolute;
+          transition: 0.4s;
+          width: 16px;
+        }
 
-    input:checked + .knob {
-      background-color: #66bb6a;
-    }
+        input:checked + .knob {
+          background-color: #66bb6a;
+        }
 
-    input:checked + .knob:before {
-      transform: translateX(16px);
-    }
+        input:checked + .knob:before {
+          transform: translateX(16px);
+        }
 
-    .knob.round {
-      border-radius: 24px;
-    }
+        .knob.round {
+          border-radius: 24px;
+        }
 
-    .knob.round:before {
-      border-radius: 50%;
-    }
+        .knob.round:before {
+          border-radius: 50%;
+        }
 
-    .knob-lbl {
-      margin-left: 50px;
-      width: auto;
-    }
-  `;
+        .knob-lbl {
+          margin-left: 50px;
+          width: auto;
+        }
+      `,
+    ];
+  }
+
   _value = false;
 
   renderInput() {

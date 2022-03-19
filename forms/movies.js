@@ -20,7 +20,7 @@ export const movies = {
       state: {
         name: "",
         noname: true,
-        genre: "[Unknown]",
+        genre: "",
         movies: [],
       },
     },

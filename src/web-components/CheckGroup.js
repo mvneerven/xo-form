@@ -2,7 +2,7 @@ import xo from "../xo";
 import { html } from "lit";
 import { repeat } from "lit/directives/repeat.js";
 
-class CheckGroup extends xo.control {
+class CheckGroup extends xo.Control {
   _value = [];
 
   static get properties() {

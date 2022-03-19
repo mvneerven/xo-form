@@ -47,6 +47,7 @@ class PropertyMapper {
       let value = this.getCurrentValue(element, properties, prop);
 
       element[prop] = value;
+      //if(prop==="maxlength") debugger;
       
       let hyphenAttrName = PropertyMapper.camelCaseToHyphen(prop);
 
@@ -166,9 +167,6 @@ class PropertyMapper {
 
   replaceVar(binding, prop, value) {
     const me = this;
-    // if(binding.rawValue.startsWith("File your request "))
-    //   debugger;
-
     let combinedString = false;
     let varRes,
       result = PropertyMapper.match(binding.rawValue, (variable, origString) => {
@@ -212,7 +210,7 @@ class PropertyMapper {
     var test = document.createElement(element.nodeName.toLowerCase());
     return (
       attribute in test ||
-      ["role", "readonly"].includes(attribute) ||
+      ["role", "readonly", "maxlength"].includes(attribute) ||
       attribute.startsWith("aria-")
     );
   }

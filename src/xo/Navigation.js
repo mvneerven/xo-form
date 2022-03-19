@@ -1,17 +1,22 @@
-import { css } from 'lit';
+import { css } from "lit";
+import Context from "./Context";
 import Group from "./Group";
 
 class Navigation extends Group {
-
-  static styles = css`
-  :host{
-    display: flex
+  static get styles() {
+    return [
+      Context.sharedStyles,
+      css`
+        :host {
+          display: flex;
+        }
+        .xo-grp {
+          display: inline-block;
+          margin: auto;
+        }
+      `,
+    ];
   }
-  .xo-grp {
-    display: inline-block;
-    margin: auto;
-  }
-  `
 
   beforeMap() {
     this.layout = "horizontal";
@@ -74,6 +79,8 @@ class Navigation extends Group {
   }
 
   updateUrl() {
+    return;
+
     let href = document.location.origin;
     href += "/page/" + this.context.form.page;
     history.replaceState(null, null, href);

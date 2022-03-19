@@ -1,25 +1,24 @@
 {
   "name": "@mvneerven/xo-form",
-  "version": "1.0.0",
+  "version": "1.0.5",
   "description": "XO - Declarative Forms using Web Components",
-  "main": "js/index.js",
+  "main": "dist/xo-form.js",
   "scripts": {
-    "dev1": "esbuild js/index.js --bundle --watch --outfile=dist/index.js",
     "build1": "esbuild js/index.js --bundle --format=esm --minify --outfile=dist/index.js",
     "dev": "node esbuild-dev.js",
     "build": "node esbuild-build.js"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/mvneerven/ttc-lemmer"
+    "url": "git+https://github.com/mvneerven/xo-form.git"
   },
+  "author": "Marc van Neerven <cto@neerventure.com> (https://neerventure.com/)",
   "keywords": [
     "ES6",
     "Web Components",
     "Web Forms",
     "Declarative"
   ],
-  "author": "Marc van Neerven",
   "license": "MIT",
   "devDependencies": {
     "@es-pack/esbuild-sass-plugin": "^2.0.0",
@@ -29,5 +28,9 @@
   },
   "dependencies": {
     "lit": "^2.2.0"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/mvneerven/xo-form/issues"
+  },
+  "homepage": "https://github.com/mvneerven/xo-form#readme"
 }
