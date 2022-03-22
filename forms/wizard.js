@@ -12,8 +12,9 @@ export const wizard = {
     },
     instance: {
       mail: {
-        emailAddress: "",
+        emailAddress: "marc@van-neerven.net",
         message: "",
+        copy: "No",
         tags: [],
       },
     },
@@ -25,28 +26,36 @@ export const wizard = {
         {
           type: "email",
           label: "Email address",
+          placeholder: "john@doe.com",
           required: true,
           bind: "#/mail/emailAddress",
         },
         {
           type: "textarea",
-          label: "Message",
+          label: "Message to send",
+          placeholder: "Type a message",
           bind: "#/mail/message",
-          maxlength: 150
+          maxlength: 150,
+        },
+        {
+          type: "select",
+          label: "Copy to self",
+          bind: "#/mail/copy",
+          items: ["Yes", "No"],
         },
       ],
     },
     {
       label: "Page 2",
       fields: [
-        
         {
           type: "tags",
           label: "Tags",
           bind: "#/mail/tags",
+          placeholder: "Add tag",
           autocomplete: {
-            items: ["Test", "Bla"]
-          }
+            items: ["Test", "Bla"],
+          },
         },
       ],
     },

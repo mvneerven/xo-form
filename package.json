@@ -1,10 +1,10 @@
 {
   "name": "@mvneerven/xo-form",
-  "version": "1.0.5",
+  "version": "1.0.17",
   "description": "XO - Declarative Forms using Web Components",
   "main": "dist/xo-form.js",
   "scripts": {
-    "build1": "esbuild js/index.js --bundle --format=esm --minify --outfile=dist/index.js",
+    "compile": "esbuild src/xo/index.js --bundle --minify --platform=node --target=node12 --format=esm --outfile=dist/xo-form.min.js&&tsc",
     "dev": "node esbuild-dev.js",
     "build": "node esbuild-build.js"
   },
@@ -12,7 +12,11 @@
     "type": "git",
     "url": "git+https://github.com/mvneerven/xo-form.git"
   },
-  "author": "Marc van Neerven <cto@neerventure.com> (https://neerventure.com/)",
+  "author": {
+    "name": "Marc van Neerven",
+    "email": "cto@neerventure.com",
+    "url": "https://neerventure.com"
+  },
   "keywords": [
     "ES6",
     "Web Components",
@@ -23,11 +27,13 @@
   "devDependencies": {
     "@es-pack/esbuild-sass-plugin": "^2.0.0",
     "cross-env": "^7.0.3",
-    "esbuild": "^0.13.15",
-    "esbuild-plugin-markdown": "^0.0.3"
+    "esbuild": "^0.13.15"
   },
   "dependencies": {
-    "lit": "^2.2.0"
+    "esbuild-plugin-lit-css": "^1.2.4",
+    "jsdoc": "^3.6.10",
+    "lit": "^2.2.0",
+    "typescript": "^4.6.2"
   },
   "bugs": {
     "url": "https://github.com/mvneerven/xo-form/issues"

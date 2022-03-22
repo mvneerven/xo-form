@@ -47,7 +47,6 @@ class PropertyMapper {
       let value = this.getCurrentValue(element, properties, prop);
 
       element[prop] = value;
-      //if(prop==="maxlength") debugger;
       
       let hyphenAttrName = PropertyMapper.camelCaseToHyphen(prop);
 

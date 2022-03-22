@@ -1,14 +1,20 @@
-//import { adoptStyles, LitElement, html, css } from "lit";
 import { LitElement, html, css } from "lit";
+import xo from "../xo";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import AutoComplete from "../xo/AutoComplete";
 import Context from "./Context";
 
-const useAdoptedStyleSheets = false;
-
 class Control extends LitElement {
   _disabled = false;
   _clicked = 0;
+  _context = null;
+
+  // /**
+  //  * @returns {Context}
+  //  */
+  get context() {
+    return this._context;
+  }
 
   static get properties() {
     return {
@@ -29,15 +35,29 @@ class Control extends LitElement {
     };
   }
 
+  // /**
+  //  * @returns {Boolean}
+  //  */
   get valid() {
     return this.checkValidity();
   }
 
-  static get styles(){
-    return [
-      Context.sharedStyles
+  static get styles() {
+    return [Context.sharedStyles];
+  }
 
-    ]
+  //declared as method on a Custom Element:
+  closestElement(
+    selector, // selector like in .closest()
+    base = this, // extra functionality to skip a parent
+    __Closest = (el, found = el && el.closest(selector)) =>
+      !el || el === document || el === window
+        ? null // standard .closest() returns null for non-found selectors also
+        : found
+        ? found // found a selector INside this element
+        : __Closest(el.getRootNode().host) // recursion!! break out to parent DOM
+  ) {
+    return __Closest(base);
   }
 
   connectedCallback() {
@@ -45,22 +65,10 @@ class Control extends LitElement {
     this.form = this.closest("xo-form");
     this.form?.registerElement(this);
     this.acceptMappedState();
-    this.adoptDefaultStyles()
     this.nestedElement?.addEventListener("focus", this.onfocus.bind(this));
     this.nestedElement?.addEventListener("blur", this.onblur.bind(this));
     this.shadowRoot.addEventListener("input", this.onInput.bind(this));
     this.shadowRoot.addEventListener("change", this.onInput.bind(this));
-  }
-
-  adoptDefaultStyles(){
-    // if(!useAdoptedStyleSheets) return;
-
-    // let form = this.form ?? this;
-    
-    // if(form.sharedStyleSheet){
-      
-    //   adoptStyles(this.renderRoot, [form.sharedStyleSheet]);
-    // }
   }
 
   disconnectedCallback() {
@@ -82,16 +90,11 @@ class Control extends LitElement {
 
   acceptMappedState() {}
 
-  get injectedStyles() {
-    // if(!useAdoptedStyleSheets)
-    //   return html`<link rel="stylesheet" href="/css/controls.css" />`;
-  }
-
   onfocus(e) {
     e.stopPropagation();
     this.focus = true;
   }
-  
+
   onInput(e) {
     e.preventDefault();
     e.stopPropagation();
@@ -106,7 +109,11 @@ class Control extends LitElement {
       value: source.value,
     };
 
-    eventBus.fire("xo-interaction", detail);
+    this.form.emit("interaction", {
+      control: this,
+      source: source,
+      value: source.value,
+    });
   }
 
   // special case: button hosted
@@ -117,12 +124,14 @@ class Control extends LitElement {
 
     const source = e.composedPath()[0];
     this._clicked++;
-    const detail = {
-      control: this,
-      source: source,
-      value: source.value || this._clicked,
-    };
-    eventBus.fire("xo-interaction", detail);
+
+    if (this.form) {
+      this.form.emit("interaction", {
+        control: this,
+        source: source,
+        value: source.defaultValue || this._clicked,
+      });
+    }
   }
 
   checkValidity() {
@@ -132,7 +141,7 @@ class Control extends LitElement {
   }
 
   reportValidity() {
-    return this.nestedElement ? this.nestedElement.reportValidity() : undefined;
+    return this.nestedElement ? this.nestedElement.reportValidity() : true;
   }
 
   onblur(e) {
@@ -158,11 +167,19 @@ class Control extends LitElement {
         });
         this.nestedElement.selectedIndex = index;
       } else {
-        this.nestedElement.value = value ?? ""; // setAttribute("value", value ?? "")
+        this.nestedElement.value = value ?? "";
       }
     }
   }
 
+  // /**
+  //  *
+  //  * @param {Context} context
+  //  * @param {String} type
+  //  * @param {Object} properties
+  //  * @param {Object} options
+  //  * @returns Control
+  //  */
   createControl(context, type, properties, options = {}) {
     if (!context || !context.data) throw Error("Invalid or missing context");
 
@@ -198,7 +215,7 @@ class Control extends LitElement {
       elm.parent = this;
       elm.options = options;
       context.parent = this;
-      elm.context = context;
+      elm._context = context;
       context.mapper.mapProperties(elm, properties);
     }
 
@@ -228,7 +245,29 @@ class Control extends LitElement {
     if (this.classes) {
       cls.push(...this.classes);
     }
+    if (this.nestedElement) {
+      if (this.nestedElement.value) {
+        cls.push("xo-ne");
+      }
+      if (this.isTextual) {
+        cls.push("xo-tx");
+      }
+    }
+
+    const theme = this.form?.theme ?? "standard";
+    cls.push(theme);
+
     return cls.join(" ");
+  }
+
+  get isTextual() {
+    return (
+      this.nestedElement instanceof HTMLTextAreaElement ||
+      (this.nestedElement instanceof HTMLInputElement &&
+        ["text", "url", "tel", "password", "email"].includes(
+          this.nestedElement.getAttribute("type")
+        ))
+    );
   }
 
   render() {
@@ -236,34 +275,35 @@ class Control extends LitElement {
 
     let nav = this.closest("xo-nav");
     if (nav) {
-      return html`${this.injectedStyles}${this.renderInput()}`;
+      return html`${this.renderInput()}`;
     }
 
-    if (this.nestedElement?.nodeName === "BUTTON") {
+    if (this.nestedElement instanceof HTMLButtonElement) {
+      if (typeof this.nestedElement.defaultValue == "undefined")
+        this.nestedElement.defaultValue = this.nestedElement.value;
       this.nestedElement.removeEventListener("click", this.click);
       this.nestedElement.addEventListener("click", this.click.bind(this));
-      return html`${this.injectedStyles}${this.renderInput(true)}`;
+      return html`${this.renderInput(true)}`;
     }
 
-    return html`${this.injectedStyles}
-      <div
-        ${this.hidden ? " hidden" : ""}
-        class="xo-cn ${this.getContainerClasses()}"
-      >
-        <div class="xo-ct">
-          <label
-            for="${this.id}"
-            aria-hidden="true"
-            class="xo-lb"
-            title="${this.label}"
-            >${this.label}${this.renderRequired()}</label
-          >
-          <div class="xo-in">${this.renderInput()}</div>
-        </div>
-        <div class="xo-io">
-          <div class="xo-hl">${this.getValidation()}</div>
-        </div>
-      </div>`;
+    return html`<div
+      ${this.hidden ? " hidden" : ""}
+      class="xo-cn ${this.getContainerClasses()}"
+    >
+      <div class="xo-ct">
+        <label
+          for="${this.id}"
+          aria-hidden="true"
+          class="xo-lb"
+          title="${this.label}"
+          >${this.label}${this.renderRequired()}</label
+        >
+        <div class="xo-in">${this.renderInput()}</div>
+      </div>
+      <div class="xo-io">
+        <div class="xo-hl">${this.getValidation()}</div>
+      </div>
+    </div>`;
   }
 
   renderRequired() {

@@ -1,29 +1,27 @@
 import { html, css } from "lit";
 import Control from "./Control";
 import Validation from "./Validation";
-import Navigation from "./Navigation";
-import { EventBus } from "./EventBus";
 import Context from "./Context";
 import { until } from "lit/directives/until.js";
-
+import { version } from "../../package.json";
 
 class Form extends Control {
   elements = {};
+
+  /**
+   * Returns package version
+   */
+  static get version() {
+    return version;
+  }
 
   constructor() {
     super();
     this._url = new URL(document.location.href);
     this._context = new Context(this);
     this._page = 1;
-
-    
-    // this.sharedStyleSheet = new CSSStyleSheet();
-    // this.sharedStyleSheet.replaceSync(xoStyles);
-  
   }
 
-
-  
   static get properties() {
     return {
       ...Control.properties,
@@ -38,13 +36,23 @@ class Form extends Control {
         type: String,
         attribute: true,
       },
+      theme: {
+        type: String,
+        attribute: true,
+      },
     };
   }
 
+  /**
+   * @returns {Context}
+   */
   get context() {
     return this._context;
   }
 
+  /**
+   * @param value {Number}
+   */
   set page(value) {
     if (value === this._page) return;
 
@@ -58,29 +66,48 @@ class Form extends Control {
     this._page = value;
   }
 
+  /**
+   * @returns {Number}
+   */
+  get page() {
+    return this._page;
+  }
+
+  /**
+   * Sets the XO Form Schema to read.
+   */
   set schema(schema) {
     this._schema = schema;
     this.requestUpdate();
   }
 
+  /**
+   * Gets the XO Form Schema
+   */
   get schema() {
     return this._schema;
   }
 
-  get page() {
-    return this._page;
-  }
-
-  registerElement(elm) {
-    if (elm.name) {
-      this.elements[elm.name] = elm;
+  /**
+   * 
+   * @param {HTMLElement} element 
+   */
+  registerElement(element) {
+    if (element.name) {
+      this.elements[element.name] = element;
     }
   }
 
+  /**
+   * Sets the URL to read an XO Form Schema from
+   */
   set src(url) {
     this._src = url;
   }
 
+  /**
+   * Returns the URL to read an XO Form Schema from
+   */
   get src() {
     return this._src;
   }
@@ -100,13 +127,11 @@ class Form extends Control {
     if (!this.schema) return false;
 
     this.interpretSchema(this.schema);
-    
+
     return true;
   }
 
   interpretSchema(schema) {
-    console.log("INTERPRET schema");
-
     if (typeof schema !== "object") throw Error("Invalid schema");
 
     schema.page = "#/_xo/nav/page";
@@ -138,7 +163,7 @@ class Form extends Control {
             return html``;
           }
 
-          return html`${this.injectedStyles}<div class="xo-c" data-page="${this.page}">
+          return html`<div class="xo-c" data-page="${this.page}" >
             <form>
                 <div class="xo-w">
                     <slot name="w"></slot>
@@ -156,10 +181,16 @@ class Form extends Control {
 
   firstUpdated() {
     this.validation = new Validation(this);
-
     this.checkUrlState();
+    this.emit("first-updated");
+  }
 
-    //this.shadowRoot.querySelector(".xo-c").classList.add("ready");
+  emit(name, detail = {}) {
+    this.dispatchEvent(
+      new CustomEvent(name, {
+        detail: detail,
+      })
+    );
   }
 
   get url() {

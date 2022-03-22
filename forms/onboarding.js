@@ -1,4 +1,4 @@
-import breeds from "../data/pet-breeds.json";
+import breeds from "../data/pet-breeds.json" assert { type: "json" };
 
 const breedAutoComplete = (options) => {
   let bd = window.breedData;

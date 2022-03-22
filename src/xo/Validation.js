@@ -2,10 +2,8 @@ import Util from "./Util";
 
 class Validation {
   constructor(xoForm) {
-    this.xo = xoForm;
-    this.form = xoForm.query("form").pop();
-
-    eventBus.register("xo-interaction", (e) => {      
+    this.form = xoForm;
+    this.form.addEventListener("interaction", (e) => {
       let elm = e.detail.control;
       this.processValidation(elm);
       this.checkValid();
@@ -17,19 +15,19 @@ class Validation {
   }
 
   checkValid() {
-    let pageValid = this.isPageValid(this.xo.page);
-    let totalPages = this.xo.context.data.get("#/_xo/nav/total");
-    this.xo.context.data.set(
+    let pageValid = this.isPageValid(this.form.page);
+    let totalPages = this.form.context.data.get("#/_xo/nav/total");
+    this.form.context.data.set(
       "#/_xo/disabled/next",
-      !pageValid || this.xo.page >= totalPages
+      !pageValid || this.form.page >= totalPages
     );
-    this.xo.context.data.set("#/_xo/disabled/back", this.xo.page <= 1);
+    this.form.context.data.set("#/_xo/disabled/back", this.form.page <= 1);
   }
 
   processValidation(elm) {
     let validState = elm.checkValidity();
 
-    let xoc = Util.closestElement("xo-control", elm);
+    let xoc = elm.closestElement("xo-control");
 
     try {
       xoc.invalidMessage = elm.validationMessage;
@@ -40,10 +38,10 @@ class Validation {
   }
 
   isPageValid(page) {
-    let pg = this.xo.childNodes[page - 1];
-    if(pg){
+    let pg = this.form.childNodes[page - 1];
+    if (pg) {
       let elms = pg?.childNodes;
-      let count = elms.length ;
+      let count = elms.length;
       let i = 0;
       elms.forEach((elm) => {
         elm.checkValidity();

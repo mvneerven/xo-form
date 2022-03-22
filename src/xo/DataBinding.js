@@ -22,7 +22,7 @@ class DataBinding {
     const me = this;
     this._context = context;
 
-    eventBus.register("xo-interaction", (e) => {
+    this.context.form.addEventListener("interaction", (e) => {
       if (e.detail.source.bind) {
         me.set(
           this.processBindingIndex(e.detail.source, e.detail.source.bind),
@@ -89,9 +89,10 @@ class DataBinding {
             });
           }
 
-          eventBus.fire("xo-modelchange", {
+          me.context.form.emit("modelchange", {
             model: schemaModel,
           });
+
           return true;
         },
       });
@@ -100,7 +101,7 @@ class DataBinding {
     me.schemaModel = {
       instance: {},
       ...schemaModel,
-    };  
+    };
 
     this.addBuiltinModelState();
 
@@ -125,11 +126,10 @@ class DataBinding {
     });
 
     setTimeout(() => {
-      eventBus.fire("xo-modelchange", {
+      this.context.form.emit("modelchange", {
         model: me.schemaModel,
-      });  
+      });
     }, 1);
-    
   }
 
   addBuiltinModelState() {
@@ -149,6 +149,9 @@ class DataBinding {
     };
   }
 
+  /**
+   * @returns Context
+   */
   get context() {
     return this._context;
   }
@@ -226,7 +229,8 @@ class DataBinding {
   }
 
   applyRules(bindingPath, value) {
-    const me = this, path = this.matchArrays(bindingPath);
+    const me = this,
+      path = this.matchArrays(bindingPath);
 
     if (me.rules[path]) {
       let ar = me.rules[path];
@@ -248,7 +252,7 @@ class DataBinding {
                 me.set(name, v);
                 if (name === bindingPath) value = v;
               },
-              model: this.schemaModel
+              model: this.schemaModel,
             };
             let result;
             if (typeof expression.value === "function") {

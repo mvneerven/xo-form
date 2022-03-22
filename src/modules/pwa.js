@@ -1,5 +1,4 @@
 import Router from "./Router";
-import { LIT_COMPONENTS } from "../web-components";
 import xo from '../xo';
 import { bookATable } from "../../forms/book-a-table";
 import { managePets } from "../../forms/manage-pets";
@@ -22,9 +21,7 @@ class PWA {
     // });
 
     this.checkDarkTheme();
-    this.form = document.querySelector("xo-form");
-
-    this.form.schema = wizard;
+    
   }
 
   checkDarkTheme() {

@@ -12,7 +12,7 @@ class Page extends Group {
   connectedCallback() {
     super.connectedCallback();
 
-    this.closest("xo-form").addEventListener("xo-page", (e) => {
+    this.closest("xo-form").addEventListener("page", (e) => {
       this.hidden = e.target.page !== this.index;
     });
 
@@ -23,8 +23,7 @@ class Page extends Group {
     if(this.hidden)
       return html``;
       
-    return html`${this.injectedStyles}
-      <fieldset
+    return html`<fieldset
         ${this.hidden ? "hidden" : ""}
         data-page="${this.index}"
         class="xo-cn ${this.getContainerClasses()}"
@@ -36,7 +35,7 @@ class Page extends Group {
 
   static get properties() {
     return {
-      index: { type: Number, attribute: true },
+      index: { type: Number, attribute: true }, 
     };
   }
 }

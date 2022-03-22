@@ -1,51 +1,43 @@
 // https://esbuild.github.io/api/
 const esbuild = require("esbuild");
-const { markdownPlugin } = require("esbuild-plugin-markdown");
-const { sassPlugin } = require('@es-pack/esbuild-sass-plugin');
+const { sassPlugin } = require("@es-pack/esbuild-sass-plugin");
+const { litCssPlugin } = require("esbuild-plugin-lit-css");
 
 esbuild.build({
-  plugins: [
-      markdownPlugin()
-  ],
-  entryPoints: ['src/xo/index.js'],
-  bundle: true,
-  format: "esm",
+  plugins: [sassPlugin(), litCssPlugin()],
+  entryPoints: ["scss/main.scss"],
   minify: true,
-  outfile: 'dist/xo-form.js',
-}).catch(ex => {
-  console.error(ex);
-  process.exit(1)
-})
-
+  outfile: "css/main.css",
+});
 
 esbuild.build({
-    plugins: [
-        markdownPlugin()
-    ],
-    entryPoints: ['js/index.js'],
+  plugins: [sassPlugin(), litCssPlugin()],
+  entryPoints: ["scss/controls.scss"],
+  minify: true,
+  outfile: "css/controls.css",
+});
+
+esbuild
+  .build({
+    plugins: [sassPlugin(), litCssPlugin()],
+    entryPoints: ["src/xo/index.js"],
     bundle: true,
     format: "esm",
     minify: true,
-    outfile: 'dist/index.js',
-  }).catch(() => process.exit(1))
+    outfile: "dist/xo-form.js",
+  })
+  .catch((ex) => {
+    console.error(ex);
+    process.exit(1);
+  });
 
-
-  esbuild.build({
-    plugins: [
-        sassPlugin()
-    ],
-    entryPoints: ['scss/main.scss'],
+esbuild
+  .build({
+    plugins: [sassPlugin(), litCssPlugin()],
+    entryPoints: ["js/index.js"],
+    bundle: true,
+    format: "esm",
     minify: true,
-    outfile: 'css/main.css'
-  }) 
-
-  esbuild.build({
-    plugins: [
-        sassPlugin()
-    ],
-    entryPoints: ['scss/controls.scss'],
-    minify: true,
-    outfile: 'css/controls.css'
-  }) 
-
-  
+    outfile: "dist/index.js",
+  })
+  .catch(() => process.exit(1));

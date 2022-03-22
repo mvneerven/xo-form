@@ -73,8 +73,12 @@ class Navigation extends Group {
 
   set page(value) {
     if (typeof value !== "number") throw Error("Invalid value for page");
+    const old = this.context.form.page;
     this.context.form.page = value;
-    this.context.form.dispatchEvent(new CustomEvent("xo-page"));
+    this.context.form.emit("page", {
+      from: old,
+      to: value,
+    });
     this.updateUrl();
   }
 

@@ -2,21 +2,19 @@ import Control from "./Control";
 import { css, html } from "lit";
 
 class Group extends Control {
-
- 
-
   static get properties() {
     return {
       layout: { type: String, attribute: true },
+      align: { type: String, attribute: true },
+      ui: { type: String, attribute: true },
       fields: { type: Array },
     };
   }
 
   renderInput() {
-    return html`${this.injectedStyles}
-      <div class="${this.getGroupClasses()}">
-        <slot></slot>
-      </div>`;
+    return html`<div class="${this.getGroupClasses()}">
+      <slot></slot>
+    </div>`;
   }
 
   set fields(value) {
@@ -33,7 +31,15 @@ class Group extends Control {
   }
 
   getGroupClasses() {
-    return `xo-grp ${this.layout?.startsWith("hor") ? "hor" : "ver"}`;
+    return `xo-grp ${this.layout?.startsWith("hor") ? "hor" : "ver"} ${
+      this.align ?? ""
+    }`;
+  }
+
+  getContainerClasses() {
+    return (
+      `${super.getContainerClasses()} xo-gc ${this.ui ? 'type-' + this.ui : '' }` 
+    );
   }
 }
 export default Group;
