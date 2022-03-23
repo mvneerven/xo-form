@@ -47,17 +47,6 @@ class Navigation extends Group {
         ]
       );
     }
-
-    // if (this.parent.submit !== false) {
-    //   this._controls.push({
-    //     type: "button",
-    //     name: "send",
-    //     label: "Submit",
-    //     bind: "#/_xo/nav/send",
-    //     disabled: "#/_xo/disabled/send",
-    //     click: this.submit.bind(this),
-    //   });
-    // }
   }
 
   static get properties() {

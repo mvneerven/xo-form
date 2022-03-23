@@ -4,14 +4,16 @@ import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import AutoComplete from "../xo/AutoComplete";
 import Context from "./Context";
 
+const ERR_INVALID_BINDING = "Invalid binding value";
+
 class Control extends LitElement {
   _disabled = false;
   _clicked = 0;
   _context = null;
 
-  // /**
-  //  * @returns {Context}
-  //  */
+  /**
+   * @returns {Context} a reference to the Context instance
+   */
   get context() {
     return this._context;
   }
@@ -35,9 +37,9 @@ class Control extends LitElement {
     };
   }
 
-  // /**
-  //  * @returns {Boolean}
-  //  */
+  /**
+   * @returns {Boolean} true if the control is currently valid
+   */
   get valid() {
     return this.checkValidity();
   }
@@ -46,7 +48,10 @@ class Control extends LitElement {
     return [Context.sharedStyles];
   }
 
-  //declared as method on a Custom Element:
+  /**
+   * @returns {HTMLElement} closest element up in hierarchy that matches the given selector.
+   * @param selector {String} Selector string
+   */
   closestElement(
     selector, // selector like in .closest()
     base = this, // extra functionality to skip a parent
@@ -155,10 +160,16 @@ class Control extends LitElement {
     );
   }
 
+  /**
+   * @returns {Object} value of the control - if any
+   */
   get value() {
     return this.nestedElement?.value;
   }
 
+  /**
+   * Sets the value of the control - especially when a nested value-managing control is present
+   */
   set value(value) {
     if (this.nestedElement) {
       if (this.nestedElement instanceof HTMLSelectElement) {
@@ -172,14 +183,14 @@ class Control extends LitElement {
     }
   }
 
-  // /**
-  //  *
-  //  * @param {Context} context
-  //  * @param {String} type
-  //  * @param {Object} properties
-  //  * @param {Object} options
-  //  * @returns Control
-  //  */
+  /**
+   * Instantiates a Control in the Form Context
+   * @param {Context} context
+   * @param {String} type
+   * @param {Object} properties
+   * @param {Object} options
+   * @returns {Control}
+   */
   createControl(context, type, properties, options = {}) {
     if (!context || !context.data) throw Error("Invalid or missing context");
 
@@ -228,6 +239,16 @@ class Control extends LitElement {
     return type;
   }
 
+  /**
+   * Returns a space-separated string of all classes for the control, based on state and .classes property
+   * - hidden: xo-hd
+   * - invalid: xo-iv
+   * - disabled: xo-ds
+   * - focus: xo-fc
+   * - textual control: xo-tx
+   * - nested element: xo-ne
+   * @returns {String}
+   */
   getContainerClasses() {
     let cls = [];
     if (this.hidden) {
@@ -260,6 +281,9 @@ class Control extends LitElement {
     return cls.join(" ");
   }
 
+  /**
+   * Returns true if the control contains a nested textual input
+   */
   get isTextual() {
     return (
       this.nestedElement instanceof HTMLTextAreaElement ||
@@ -287,27 +311,29 @@ class Control extends LitElement {
     }
 
     return html`<div
+      part="xo-cn"
       ${this.hidden ? " hidden" : ""}
       class="xo-cn ${this.getContainerClasses()}"
     >
-      <div class="xo-ct">
+      <div class="xo-ct" part="xo-ct">
         <label
+          part="xo-lb"
           for="${this.id}"
           aria-hidden="true"
           class="xo-lb"
           title="${this.label}"
-          >${this.label}${this.renderRequired()}</label
+          >${this.label}${this.renderRequiredState()}</label
         >
-        <div class="xo-in">${this.renderInput()}</div>
+        <div class="xo-in" part="xo-in">${this.renderInput()}</div>
       </div>
-      <div class="xo-io">
-        <div class="xo-hl">${this.getValidation()}</div>
+      <div class="xo-io" part="xo-io">
+        <div class="xo-hl" part="xo-hl">${this.getValidation()}</div>
       </div>
     </div>`;
   }
 
-  renderRequired() {
-    return this.required ? html`<sup>*</sup>` : "";
+  renderRequiredState() {
+    return this.label ? (this.required ? html`<sup>*</sup>` : "") : "";
   }
 
   renderInput(noContainer) {
@@ -326,13 +352,30 @@ class Control extends LitElement {
     return this.nestedElement;
   }
 
+  /**
+   * Sets the dual binding for this control, using the syntax #/<instancename>/<property-path>
+   * Example: `
+   *  {
+   *    model: {
+   *      instance: {
+   *        data: {
+   *          userName: "john"
+   *        }
+   *      }
+   *  }
+   *  -> #/data/userName
+   * `
+   */
   set bind(value) {
-    if (typeof value !== "string") throw Error("Invalid binding value");
-    if (!value.startsWith("#/")) throw Error("Invalid binding value");
+    if (typeof value !== "string" || !value.startsWith("#/"))
+      throw Error(ERR_INVALID_BINDING);
 
     this._bind = value;
   }
 
+  /**
+   * Gets the current dual binding path.
+   */
   get bind() {
     return this._bind;
   }
@@ -345,6 +388,17 @@ class Control extends LitElement {
     }
   }
 
+  /**
+   * Sets the disabled state of the control
+   * @param {Boolean} value
+   */
+  set disabled(value) {
+    this._disabled = value;
+  }
+
+  /**
+   * @returns {Boolean} true if the control is currently disabled
+   */
   get disabled() {
     return this._disabled;
   }
@@ -359,34 +413,15 @@ class Control extends LitElement {
     return this.nodeName;
   }
 
-  set disabled(value) {
-    this._disabled = value;
-  }
-
+  /**
+   * Sets the invalid state message to show
+   */
   set invalidMessage(value) {
     this._invalidMessage = value;
   }
 
   get invalidMessage() {
     return this._invalidMessage;
-  }
-
-  query(e) {
-    let nodes = [];
-    const recursion = (c, e) => {
-      let result = [
-        ...c.querySelectorAll(e),
-        ...(c.shadowRoot?.querySelectorAll(e) || []),
-      ];
-      nodes.push(...result);
-      for (let item of [...c.childNodes]) {
-        if (item.nodeType === 1) {
-          recursion(item, e);
-        }
-      }
-    };
-    recursion(this, e);
-    return nodes;
   }
 }
 

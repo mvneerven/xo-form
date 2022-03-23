@@ -2,7 +2,6 @@ import PropertyMapper from "./PropertyMapper";
 import DataBinding from "./DataBinding";
 import xoStyles from "../../css/controls.css";
 
-
 /**
  * XO Context Object
  */
