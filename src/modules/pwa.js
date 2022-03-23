@@ -8,6 +8,7 @@ import { onboarding } from "../../forms/onboarding";
 
 class PWA {
   constructor() {
+
     // this.router = new Router({
     //   type: "history",
     //   routes: {

@@ -11,6 +11,9 @@ const isIrelevantChange = (oldValue, newValue) => {
   }
 };
 
+/**
+ * XO DataBinding - Manages dual-databinding within the form
+ */
 class DataBinding {
   instance = {};
   bound = {};

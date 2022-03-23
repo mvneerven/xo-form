@@ -1,6 +1,9 @@
 import Control from "./Control";
 import { css, html } from "lit";
 
+/**
+ * XO Group Control (```<xo-group/>```)
+ */
 class Group extends Control {
   static get properties() {
     return {
@@ -17,6 +20,10 @@ class Group extends Control {
     </div>`;
   }
 
+  /**
+   * Sets the declarative fields Array to append children with.
+   * @param value {Array}
+   */
   set fields(value) {
     this._fields = value;
 
@@ -26,6 +33,9 @@ class Group extends Control {
     }
   }
 
+  /**
+   * @returns {Array} - Array of schema fields that define the children to be appended.
+   */
   get fields() {
     return this._fields;
   }
@@ -37,9 +47,9 @@ class Group extends Control {
   }
 
   getContainerClasses() {
-    return (
-      `${super.getContainerClasses()} xo-gc ${this.ui ? 'type-' + this.ui : '' }` 
-    );
+    return `${super.getContainerClasses()} xo-gc ${
+      this.ui ? "type-" + this.ui : ""
+    }`;
   }
 }
 export default Group;

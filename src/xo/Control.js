@@ -6,6 +6,9 @@ import Context from "./Context";
 
 const ERR_INVALID_BINDING = "Invalid binding value";
 
+/**
+ * XO Control (```<xo-control/>```) - both Base Control for XO, and wrapping Control for other HTML elements
+ */
 class Control extends LitElement {
   _disabled = false;
   _clicked = 0;

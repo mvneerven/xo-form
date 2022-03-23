@@ -8,6 +8,9 @@ const getUniqueName = () => {
 };
 const propMappings = {};
 
+/**
+ * XO Property Mapper
+ */
 class PropertyMapper {
   constructor(context) {
     this._context = context;
@@ -33,7 +36,7 @@ class PropertyMapper {
       }
     }
 
-    if(!properties.id) properties.id = getUniqueName();
+    if (!properties.id) properties.id = getUniqueName();
     if (!properties.name) properties.name = properties.id;
 
     if (isInitialState) {
@@ -47,7 +50,7 @@ class PropertyMapper {
       let value = this.getCurrentValue(element, properties, prop);
 
       element[prop] = value;
-      
+
       let hyphenAttrName = PropertyMapper.camelCaseToHyphen(prop);
 
       if (nested) {
@@ -152,7 +155,8 @@ class PropertyMapper {
 
   static match(s, callback) {
     const origString = s;
-    if (typeof s !== "string" || s.length < 5){ // minimum variable length: #/a/b
+    if (typeof s !== "string" || s.length < 5) {
+      // minimum variable length: #/a/b
       return s;
     }
 
@@ -168,14 +172,16 @@ class PropertyMapper {
     const me = this;
     let combinedString = false;
     let varRes,
-      result = PropertyMapper.match(binding.rawValue, (variable, origString) => {
-        if(origString!==variable)
-          combinedString = true;
+      result = PropertyMapper.match(
+        binding.rawValue,
+        (variable, origString) => {
+          if (origString !== variable) combinedString = true;
 
-        varRes =  me.context.data.get(variable);// value;
-        return varRes;
-      });
-    
+          varRes = me.context.data.get(variable); // value;
+          return varRes;
+        }
+      );
+
     if (!combinedString) {
       return varRes;
     }

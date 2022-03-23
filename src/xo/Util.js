@@ -1,3 +1,6 @@
+/**
+ * Util Class - contains static helper methods
+ */
 class Util {
   /**
    * Checks whether the fiven string is a valid URL.
@@ -18,7 +21,7 @@ class Util {
   /**
    * Generates an Html Element from the given HTML string
    * @param {String} html
-   * @returns DOM element
+   * @returns {HTMLElement} DOM element
    */
   static parseHTML(html) {
     let parser = new DOMParser(),
@@ -26,6 +29,12 @@ class Util {
     return doc.body.firstChild;
   }
 
+  /**
+   * Throttles fast-repeating events
+   * @param {Function} listener 
+   * @param {Number} delay 
+   * @returns 
+   */
   static throttle(listener, delay = 500) {
     var timeout;
     var throttledListener = function (e) {
@@ -34,8 +43,6 @@ class Util {
     };
     return throttledListener;
   }
-
- 
 
   static objectEquals(x, y) {
     if (x === null || x === undefined || y === null || y === undefined) {

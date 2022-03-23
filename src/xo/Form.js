@@ -5,6 +5,9 @@ import Context from "./Context";
 import { until } from "lit/directives/until.js";
 import { version } from "../../package.json";
 
+/**
+ * XO Form Control (```<xo-form/>```)
+ */
 class Form extends Control {
   elements = {};
 
@@ -89,8 +92,8 @@ class Form extends Control {
   }
 
   /**
-   * 
-   * @param {HTMLElement} element 
+   *
+   * @param {HTMLElement} element
    */
   registerElement(element) {
     if (element.name) {

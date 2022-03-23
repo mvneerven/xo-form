@@ -2,12 +2,13 @@ import Group from "./Group";
 import Control from "./Control";
 import { html } from "lit";
 
+/**
+ * XO Page Control (```<xo-page/>```)
+ */
 class Page extends Group {
-
-  constructor(){
+  constructor() {
     super(...arguments);
     this.hidden = true;
-    
   }
   connectedCallback() {
     super.connectedCallback();
@@ -20,22 +21,21 @@ class Page extends Group {
   }
 
   render() {
-    if(this.hidden)
-      return html``;
-      
+    if (this.hidden) return html``;
+
     return html`<fieldset
-        ${this.hidden ? "hidden" : ""}
-        data-page="${this.index}"
-        class="xo-cn ${this.getContainerClasses()}"
-      >
-        <legend>${this.label}</legend>
-        <slot></slot>
-      </fieldset>`;
+      ${this.hidden ? "hidden" : ""}
+      data-page="${this.index}"
+      class="xo-cn ${this.getContainerClasses()}"
+    >
+      <legend>${this.label}</legend>
+      <slot></slot>
+    </fieldset>`;
   }
 
   static get properties() {
     return {
-      index: { type: Number, attribute: true }, 
+      index: { type: Number, attribute: true },
     };
   }
 }

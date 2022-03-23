@@ -3,7 +3,7 @@ import DataBinding from "./DataBinding";
 import xoStyles from "../../css/controls.css";
 
 /**
- * XO Context Object
+ * XO Context - Gives access to contextual properties
  */
 class Context {
   static _sheet;

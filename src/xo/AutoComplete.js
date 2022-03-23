@@ -1,6 +1,8 @@
 import Util from "./Util";
 
-// Autocomplete helper for all textbox derived controls.
+/**
+ * Autocomplete helper for all textbox derived controls.
+ */
 class AutoComplete {
   cssClasses = {
     result: "xo-ac-rs",
@@ -11,7 +13,7 @@ class AutoComplete {
     this.settings = settings;
 
     this.control = control;
-    this.htmlElement = textInput; 
+    this.htmlElement = textInput;
     this.htmlElement.setAttribute("autocomplete", "off");
     this.categories = settings.categories || {};
 
@@ -45,7 +47,9 @@ class AutoComplete {
 
     this.clear();
 
-    this.control.shadowRoot.querySelector(".xo-cn")?.setAttribute("data-autocomplete", "on");
+    this.control.shadowRoot
+      .querySelector(".xo-cn")
+      ?.setAttribute("data-autocomplete", "on");
   }
 
   moveResult(add) {
@@ -149,7 +153,6 @@ class AutoComplete {
     return this._categories || {};
   }
 
-  
   blurHandler(e) {
     setTimeout(() => {
       if (!this.resultClicked) this.clear();

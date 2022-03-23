@@ -2,6 +2,10 @@ import { css } from "lit";
 import Context from "./Context";
 import Group from "./Group";
 
+/**
+ * Navigation - Manages multi-step form navigation
+ */
+
 class Navigation extends Group {
   static get styles() {
     return [

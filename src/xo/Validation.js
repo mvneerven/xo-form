@@ -1,5 +1,7 @@
-import Util from "./Util";
 
+/**
+ * Validation - manages form validation
+ */
 class Validation {
   constructor(xoForm) {
     this.form = xoForm;

@@ -1,5 +1,8 @@
 import Group from "./Group";
 
+/**
+ * XO Repeat Control (```<xo-repeat/>```) - Repeats underlying structure for all items in *.items* Array.
+ */
 class Repeat extends Group {
   static get properties() {
     return {
@@ -29,7 +32,7 @@ class Repeat extends Group {
 
   set items(value) {
     this._items = value;
-    console.log("ITEMS: ", value)
+    console.log("ITEMS: ", value);
 
     if (this.hasUpdated) {
       this.refresh();
@@ -71,4 +74,4 @@ class Repeat extends Group {
 }
 
 export default Repeat;
-window.customElements.define("xo-repeat", Repeat); 
+window.customElements.define("xo-repeat", Repeat);
