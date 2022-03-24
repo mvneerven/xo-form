@@ -10,6 +10,7 @@ esbuild
     ],
     entryPoints: ["src/xo/index.js"],
     bundle: true,
+    keepNames: true,
     watch: {
       onRebuild(error, result) {
         if (error) console.error("watch build failed:", error);
@@ -31,6 +32,7 @@ esbuild
     ],
     entryPoints: ["js/index.js"],
     bundle: true,
+    keepNames: true,
     watch: {
       onRebuild(error, result) {
         if (error) console.error("watch build failed:", error);

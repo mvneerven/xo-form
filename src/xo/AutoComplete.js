@@ -11,7 +11,6 @@ class AutoComplete {
 
   constructor(control, textInput, settings) {
     this.settings = settings;
-
     this.control = control;
     this.htmlElement = textInput;
     this.htmlElement.setAttribute("autocomplete", "off");
@@ -329,6 +328,10 @@ class AutoComplete {
   async getItems(options, e) {
     const prop = this.settings.map;
 
+    const normalizeItem = (i) => {
+      return { text: i.text ?? i };
+    };
+
     const map = (list) => {
       if (!prop) {
         return list;
@@ -397,9 +400,19 @@ class AutoComplete {
           )
         );
       } else if (typeof this.items === "function") {
-        resolve(map(this.items(options, e)));
+        options.control = this.control;
+        let ar = this.items(options, e).map((i) => {
+          return normalizeItem(i);
+        });
+
+        ar = map(
+          ar.filter((i) => {
+            return this.isMatch(options, i);
+          })
+        );
+
+        resolve(ar);
       } else {
-        debugger;
         return resolve(Promise.resolve(this.items.apply(this, options)));
       }
     });

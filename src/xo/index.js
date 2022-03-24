@@ -10,6 +10,9 @@ import DataBinding from "./DataBinding";
 import PropertyMapper from "./PropertyMapper";
 import Validation from "./Validation";
 
+/**
+ * XO - Namespace
+ */
 class xo {
   /**
    * XO Context
@@ -89,5 +92,5 @@ class xo {
   }
 }
 
-window.xo = xo;
+//window.xo = xo;
 export default xo;

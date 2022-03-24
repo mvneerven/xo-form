@@ -111,13 +111,8 @@ class Control extends LitElement {
     const source = e.composedPath()[0];
     this.value = source.value;
 
-    const detail = {
-      control: this,
-      source: source,
-      value: source.value,
-    };
-
     this.form.emit("interaction", {
+      type: "input",
       control: this,
       source: source,
       value: source.value,
@@ -135,6 +130,7 @@ class Control extends LitElement {
 
     if (this.form) {
       this.form.emit("interaction", {
+        type: "click",
         control: this,
         source: source,
         value: source.defaultValue || this._clicked,
@@ -320,6 +316,7 @@ class Control extends LitElement {
     >
       <div class="xo-ct" part="xo-ct">
         <label
+          exportparts="xo-lb: label"
           part="xo-lb"
           for="${this.id}"
           aria-hidden="true"
@@ -327,7 +324,9 @@ class Control extends LitElement {
           title="${this.label}"
           >${this.label}${this.renderRequiredState()}</label
         >
-        <div class="xo-in" part="xo-in">${this.renderInput()}</div>
+        <div class="xo-in" part="xo-in" exportparts="xo-in">
+          ${this.renderInput()}
+        </div>
       </div>
       <div class="xo-io" part="xo-io">
         <div class="xo-hl" part="xo-hl">${this.getValidation()}</div>

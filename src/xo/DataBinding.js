@@ -94,6 +94,7 @@ class DataBinding {
 
           me.context.form.emit("modelchange", {
             model: schemaModel,
+            change: bindingPath,
           });
 
           return true;
@@ -131,6 +132,8 @@ class DataBinding {
     setTimeout(() => {
       this.context.form.emit("modelchange", {
         model: me.schemaModel,
+        initial: true,
+        change: undefined,
       });
     }, 1);
   }

@@ -1,12 +1,11 @@
 {
-  "name": "@mvneerven/xo-form",
-  "version": "1.0.20",
+  "name": "xo-form",
+  "version": "1.0.4",
   "description": "XO - Declarative Forms using Web Components",
   "main": "dist/xo-form.js",
   "scripts": {
-    "compile": "esbuild src/xo/index.js --bundle --minify --platform=node --target=node12 --format=esm --outfile=dist/xo-form.min.js&&tsc",
     "dev": "node esbuild-dev.js",
-    "build": "node esbuild-build.js"
+    "build": "node esbuild-build.js&&tsc"
   },
   "repository": {
     "type": "git",
@@ -33,7 +32,7 @@
     "esbuild-plugin-lit-css": "^1.2.4",
     "jsdoc": "^3.6.10",
     "lit": "^2.2.0",
-    "typescript": "^4.6.2"
+    "typescript": "^4.2.4"
   },
   "bugs": {
     "url": "https://github.com/mvneerven/xo-form/issues"

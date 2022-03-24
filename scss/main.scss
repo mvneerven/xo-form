@@ -65,3 +65,8 @@ footer {
 	font-size: x-small;
 	opacity: 0.7;
 }
+
+xo-control::part(label) {
+	border: 2px solid #3477f3 !important;
+	font-family: 'Courier New', Courier, monospace;
+}

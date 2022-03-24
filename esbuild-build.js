@@ -24,6 +24,8 @@ esbuild
     bundle: true,
     format: "esm",
     minify: true,
+    sourcemap: true,
+    keepNames: true,
     outfile: "dist/xo-form.js",
   })
   .catch((ex) => {
@@ -37,7 +39,9 @@ esbuild
     entryPoints: ["js/index.js"],
     bundle: true,
     format: "esm",
+    sourcemap: true,
     minify: true,
+    keepNames: true,
     outfile: "dist/index.js",
   })
   .catch(() => process.exit(1));

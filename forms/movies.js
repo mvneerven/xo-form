@@ -13,7 +13,11 @@ const genres = [
   "Sci-Fi",
   "Thriller",
 ];
+const getGenres = options => {
+  
+  return genres;
 
+}
 export const movies = {
   model: {
     instance: {
@@ -63,7 +67,7 @@ export const movies = {
             {
               type: "search",
               autocomplete: {
-                items: genres,
+                items: getGenres,
               },
               bind: "#/state/genre",
               label: "Genre",
