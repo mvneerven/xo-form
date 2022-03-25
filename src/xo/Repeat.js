@@ -32,8 +32,6 @@ class Repeat extends Group {
 
   set items(value) {
     this._items = value;
-    console.log("ITEMS: ", value);
-
     if (this.hasUpdated) {
       this.refresh();
       this.requestUpdate();

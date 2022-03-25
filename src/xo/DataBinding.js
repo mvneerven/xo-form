@@ -26,16 +26,13 @@ class DataBinding {
     this._context = context;
 
     this.context.form.addEventListener("interaction", (e) => {
-      if (e.detail.source.bind) {
-        me.set(
-          this.processBindingIndex(e.detail.source, e.detail.source.bind),
-          e.detail.value
+      if (e.detail.control?.bind) {
+        const path = this.processBindingIndex(
+          e.detail.control,
+          e.detail.control?.bind
         );
-      } else if (e.detail.control?.bind) {
-        me.set(
-          this.processBindingIndex(e.detail.control, e.detail.control?.bind),
-          e.detail.value
-        );
+
+        me.set(path, e.detail.value, e.detail);
       }
     });
   }
@@ -62,6 +59,8 @@ class DataBinding {
           if (isIrelevantChange(target[key], value)) return true;
 
           let bindingPath = "#/" + path + "/" + key;
+
+          const oldValue = target[key];
 
           target[key] = value;
 
@@ -92,10 +91,17 @@ class DataBinding {
             });
           }
 
-          me.context.form.emit("modelchange", {
-            model: schemaModel,
-            change: bindingPath,
-          });
+          try {
+            me.context.form.emit("modelchange", {
+              model: schemaModel,
+              change: bindingPath,
+              oldValue: oldValue,
+              newValue: value,
+              context: me.originatingEventContext,
+            });
+          } finally {
+            me.originatingEventContext = null;
+          }
 
           return true;
         },
@@ -321,7 +327,7 @@ class DataBinding {
     }
   }
 
-  set(path, value) {
+  set(path, value, originatingEventContext) {
     let pathElements = path.substring(2).split("/");
     let instanceName = pathElements.shift();
     var current = this.instance[instanceName];
@@ -330,10 +336,22 @@ class DataBinding {
     for (var i = 0; i < pathElements.length; i++) {
       let key = this.parseKey(pathElements[i]);
       if (i === pathElements.length - 1) {
+        this.originatingEventContext = this.createDataBindingOriginContext(originatingEventContext);
         current[key] = value;
         break;
       }
       current = current[key];
+    }
+  }
+
+  createDataBindingOriginContext(originatingEventContext){
+    if(!originatingEventContext)
+      return;
+    return {
+      eventType: originatingEventContext.type,
+      sourceControl: originatingEventContext.control,
+      eventSourceElement: originatingEventContext.source,
+      controlValue: originatingEventContext.value
     }
   }
 }

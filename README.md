@@ -1,15 +1,20 @@
 # Introduction
 
-XO Form is a tiny web forms library that translates declarative JavaScript schemas to complex data-bound web forms.
+The `xo-form` component library generates web forms from a declarative schema.
 
-XO Form is written as [Web Components](https://developer.mozilla.org/en-US/docs/Web/Web_Components) in pure [ES6+](https://en.wikipedia.org/wiki/ECMAScript) JavaScript modules, and has just one dependency: [Lit](https://www.npmjs.com/package/lit).
+`xo-form` schemas are [JavaScript Object Literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_Objects#object_initializers) that are easily written, or generated from your code.
+
+`xo-form` supports full two-way databinding to map a form to a data model and interface with APIs directly as the model changes.
+
+The library is written as pure native [Web Components](https://developer.mozilla.org/en-US/docs/Web/Web_Components) in [ES6+](https://en.wikipedia.org/wiki/ECMAScript) Modules, and has just one dependency: [Lit](https://www.npmjs.com/package/lit).
 
 ## Features
 
-- Reactive rendering
-- Full two-way databinding
-- Multi-page forms/wizards
-- Rules engine for conditional logic
+- Reactive Rendering
+- Direct Model Binding to Element Properties
+- Full two-way Databinding
+- Multi-page Forms/Wizards
+- Powerful Rules engine for Conditional Logic
 - Supports all HTML elements, including Custom Elements (Web Components)
 
 # Setup

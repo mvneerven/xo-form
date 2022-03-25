@@ -107,15 +107,12 @@ class Control extends LitElement {
     e.preventDefault();
     e.stopPropagation();
     e.stopImmediatePropagation();
-
     const source = e.composedPath()[0];
-    this.value = source.value;
-
     this.form.emit("interaction", {
       type: "input",
       control: this,
       source: source,
-      value: source.value,
+      value: this.value,
     });
   }
 

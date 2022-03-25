@@ -1,4 +1,3 @@
-
 /**
  * Validation - manages form validation
  */

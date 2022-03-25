@@ -20,7 +20,7 @@ export const getNewsLetter = {
       label: "Newsletter",
       fields: [
         {
-          type: "switch",
+          type: "checkbox",
           label: "I want to receive the newsletter",
           bind: "#/data/receive",
         },

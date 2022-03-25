@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8" />
-  <title>XO 3.0</title>
+  <title>XO-FORM</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
   <meta name="color-scheme" content="dark light" />
   <meta name="theme-color" content="#ffffff" />
@@ -26,7 +26,7 @@
   </header>
 
   <main>
-    <xo-form theme="material" src="/forms/movies.js"></xo-form>
+    <xo-form theme="material" src="/forms/wizard.js"></xo-form>
   </main>
 
   <details id="model-state" title="View XO Model State">
@@ -36,9 +36,13 @@
     <div>
       <textarea readonly id="model" rows="20" cols="80" style="border: 1px solid rgba(125, 125, 125.5)"></textarea>
     </div>
+    <div>
+      <input style="width: 80px; border: 2px solid yellow" type="text" id="ext-input" /> <button id="ext-button">Update
+        model</button>
+    </div>
   </details>
 
-  <footer>&copy; 2022 - built with 💗 by Veterfina Software</footer>
+  <footer>&copy; 2022 - built with 💗 by Neerventure</footer>
 
   <script type="module">
     let form = document.querySelector("xo-form");
@@ -51,6 +55,19 @@
           return value;
         }, 2);
     });
+    // form.addEventListener("interaction", e => {
+    //   console.log("interaction", e.detail);
+    // })
+    form.addEventListener("modelchange", e => {
+      console.log("modelchange", e.detail);
+    })
+
+    document.getElementById("ext-button").addEventListener("click", e => {
+      let txt = document.getElementById("ext-input");
+      form.context.data.instance.data.msg = txt.value;
+    })
+
+
   </script>
 </body>
 
