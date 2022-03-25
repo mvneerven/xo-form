@@ -9,6 +9,7 @@ import Util from "./Util";
 import DataBinding from "./DataBinding";
 import PropertyMapper from "./PropertyMapper";
 import Validation from "./Validation";
+import AutoComplete from "./AutoComplete";
 
 /**
  * XO - Namespace
@@ -16,6 +17,7 @@ import Validation from "./Validation";
 class xo {
   /**
    * XO Context
+   * @returns {Context}
    */
   static get Context() {
     return Context;
@@ -23,6 +25,7 @@ class xo {
 
   /**
    * XO Control (```<xo-control/>```) - both Base Control for XO, and wrapping Control for other HTML elements
+   * @returns {Control}
    */
   static get Control() {
     return Control;
@@ -30,6 +33,7 @@ class xo {
 
   /**
    * XO DataBinding - Manages dual-databinding within the form
+   * @returns {DataBinding}
    */
   static get DataBinding() {
     return DataBinding;
@@ -37,6 +41,7 @@ class xo {
 
   /**
    * XO Form Control (```<xo-form/>```)
+   * @returns {Form}
    */
   static get Form() {
     return Form;
@@ -44,6 +49,7 @@ class xo {
 
   /**
    * XO Group Control (```<xo-group/>```)
+   * @returns {Group}
    */
   static get Group() {
     return Group;
@@ -51,6 +57,7 @@ class xo {
 
   /**
    * XO Property Mapper
+   * @returns {PropertyMapper}
    */
   static get PropertyMapper() {
     return PropertyMapper;
@@ -58,6 +65,7 @@ class xo {
 
   /**
    * XO Page Control (```<xo-page/>```)
+   * @returns {Page}
    */
   static get Page() {
     return Page;
@@ -65,6 +73,7 @@ class xo {
 
   /**
    * XO Repeat Control (```<xo-repeat/>```) - Repeats underlying structure for all items in *.items* Array.
+   * @returns {Repeat}
    */
   static get Repeat() {
     return Repeat;
@@ -72,6 +81,7 @@ class xo {
 
   /**
    * Util Class - contains static helper methods
+   * @returns {Util}
    */
   static get Util() {
     return Util;
@@ -79,6 +89,7 @@ class xo {
 
   /**
    * Navigation - Manages multi-step form navigation
+   * @returns {Navigation}
    */
   static get Navigation() {
     return Navigation;
@@ -86,10 +97,19 @@ class xo {
 
   /**
    * Validation - manages form validation
+   * @returns {Validation}
    */
   static get Validation() {
     return Validation;
   }
+
+   /**
+   * Validation - manages form validation
+   * @returns {AutoComplete}
+   */
+   static get AutoComplete() {
+     return AutoComplete;
+   }
 }
 
 //window.xo = xo;
