@@ -1,4 +1,6 @@
 import Util from "./Util";
+import autoCompleteStyles from "../../css/autocomplete.css";
+import Control from "./Control";
 
 /**
  * Autocomplete helper for all textbox derived controls.
@@ -8,6 +10,17 @@ class AutoComplete {
     result: "xo-ac-rs",
     item: "xo-ac-itm",
   };
+
+  /**
+   * @returns {CSSStyleSheet}
+   */
+  static get sharedStyles() {
+    if (!this._sheet) {
+      this._sheet = new CSSStyleSheet();
+      this._sheet.replaceSync(autoCompleteStyles);
+    }
+    return this._sheet;
+  }
 
   constructor(control, textInput, settings) {
     this.settings = settings;
@@ -25,6 +38,8 @@ class AutoComplete {
   }
 
   attach() {
+    const isXoControl = this.control instanceof Control;
+
     const on = (a, b) => {
       this.htmlElement.addEventListener(a, b);
     };
@@ -40,15 +55,15 @@ class AutoComplete {
     this.resultsDiv.classList.add(this.cssClasses.result);
     this.resultsDiv.addEventListener("mousedown", this.resultClick.bind(this));
 
-    this.control.shadowRoot
-      .querySelector(".xo-in")
-      .appendChild(this.resultsDiv);
+    let cn = isXoControl
+      ? this.control.shadowRoot.querySelector(".xo-cn")
+      : this.control.shadowRoot.querySelector("*");
+
+    cn.appendChild(this.resultsDiv);
 
     this.clear();
 
-    this.control.shadowRoot
-      .querySelector(".xo-cn")
-      ?.setAttribute("data-autocomplete", "on");
+    cn.setAttribute("data-autocomplete", "on");
   }
 
   moveResult(add) {
@@ -117,8 +132,9 @@ class AutoComplete {
             this.tabWindow.close();
           }
         }
+
         var event = new Event("change", { bubbles: true });
-        this.control.dispatchEvent(event);
+        this.htmlElement.dispatchEvent(event);
 
         this.clear();
 
@@ -248,6 +264,15 @@ class AutoComplete {
       categories: this.categories,
     };
     this.getItems(options, e).then((r) => {
+
+
+      this.htmlElement.dispatchEvent(new CustomEvent("show-results", {
+        detail: {
+          results: r
+        }
+      }))
+
+
       this.resultsHandler(r, options);
     });
   }

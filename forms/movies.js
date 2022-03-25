@@ -80,6 +80,15 @@ export const movies = {
               label: "Name",
             },
             {
+              type: "xw-tags",
+              maxWidth: "300px",
+              bind: "#/state/tags",
+              label: "Tags",
+              autocomplete: {
+                items: ["Test", "Aap", "Noot"]
+              }
+            },
+            {
               type: "button",
               label: "Add",
               bind: "#/state/add",
@@ -116,7 +125,8 @@ export const movies = {
                       bind: "#/state/movies/@index/genre",
                     },
                     {
-                      type: "tags",
+                      type: "xw-tags",
+                      maxWidth: "300px",
                       bind: "#/state/movies/@index/tags",
                       label: "Tags",
                     },

@@ -198,13 +198,6 @@ class PropertyMapper {
     }
   }
 
-  tryAutoComplete(input, textInput, autoComplete) {
-    if (autoComplete && autoComplete.items) {
-      let ac = new AutoComplete(input, textInput, autoComplete);
-      ac.attach(input);
-    }
-  }
-
   // Convert 'actionHandler' to 'action-handler'
   static camelCaseToHyphen(camelCase) {
     return camelCase.replace(/[A-Z]/g, (x) => {

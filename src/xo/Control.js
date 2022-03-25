@@ -1,6 +1,4 @@
 import { LitElement, html, css } from "lit";
-import xo from "../xo";
-import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import AutoComplete from "../xo/AutoComplete";
 import Context from "./Context";
 
@@ -37,6 +35,7 @@ class Control extends LitElement {
       value: { type: Object },
       prefix: { type: Object },
       classes: { type: Array },
+      autocomplete: { type: Object },
     };
   }
 
@@ -48,7 +47,7 @@ class Control extends LitElement {
   }
 
   static get styles() {
-    return [Context.sharedStyles];
+    return [Context.sharedStyles, AutoComplete.sharedStyles];
   }
 
   /**
@@ -73,6 +72,7 @@ class Control extends LitElement {
     this.form = this.closest("xo-form");
     this.form?.registerElement(this);
     this.acceptMappedState();
+
     this.nestedElement?.addEventListener("focus", this.onfocus.bind(this));
     this.nestedElement?.addEventListener("blur", this.onblur.bind(this));
     this.shadowRoot.addEventListener("input", this.onInput.bind(this));
@@ -87,13 +87,28 @@ class Control extends LitElement {
   }
 
   firstUpdated() {
-    if (this.nestedElement instanceof HTMLInputElement) {
-      this.context.mapper.tryAutoComplete(
-        this,
-        this.nestedElement,
-        this.autocomplete
-      );
+    if (this.autocomplete && this.autocomplete.items) {
+      if (this.nestedElement instanceof HTMLInputElement) {
+        this.tryApplyAutoComplete();
+      }
     }
+  }
+
+  set autocomplete(options) {
+    this._autocomplete = options;
+  }
+
+  get autocomplete() {
+    return this._autocomplete;
+  }
+
+  tryApplyAutoComplete() {
+    this._autoCompleter = new AutoComplete(
+      this,
+      this.nestedElement,
+      this.autocomplete
+    );
+    this._autoCompleter.attach();
   }
 
   acceptMappedState() {}

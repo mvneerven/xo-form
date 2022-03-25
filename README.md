@@ -23,6 +23,10 @@ The library is written as pure native [Web Components](https://developer.mozilla
 
 # How it works
 
+```xo-form``` is a Web Component (```<xo-form></xo-form>```). You pass a form schema either by setting the ```schema``` property directly, or by setting ```src``` to a path to dynamically load a js module from.
+
+In the case below, we're loading a js module:
+
 ```html
 <xo-form theme="material" src="/forms/my-form.js"></xo-form>
 ```
@@ -43,7 +47,11 @@ export const form = {
       "#/state/submit": [
         {
           value: (context) => {
-            alert(JSON.stringify(context.model.instance.data, null, 2));
+            alert(
+              JSON.stringify(
+                context.model.instance.data, 
+                null, 
+                2));
           },
         },
       ],

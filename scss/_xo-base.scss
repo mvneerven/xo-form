@@ -175,92 +175,6 @@ option {
   background-color: var(--bg-color);
 }
 
-[data-autocomplete] {
-  margin: auto;
-
-  .xo-in {
-    position: relative;
-  }
-
-  .xo-ac-rs {
-    font-size: 0.9rem;
-    text-align: left;
-    background-color: var(--bg-color);
-    position: absolute;
-    box-shadow: 0 5px 10px 2px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    padding: 0.2rem;
-    max-height: 300px;
-    max-width: 500px;
-    overflow-y: auto;
-    z-index: 9999;
-
-    .xo-ac-itm {
-      display: grid;
-      grid-template-columns: var(--xo-ac-itm-grid, 30px 1fr 7rem);
-      cursor: pointer;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      padding: 0.5rem;
-      color: var(--text-color);
-      height: var(--xo-ac-itm-height, auto);
-
-      .xo-ac-img {
-        background-repeat: no-repeat;
-        background-size: contain;
-        width: var(--xo-ac-itm-width, 1.1rem);
-        height: var(--xo-ac-itm-height, auto);
-        display: inline-block;
-      }
-
-      &:hover {
-        background-color: rgba(0, 0, 0, 0.05);
-      }
-
-      span.text {
-        display: inline-block;
-
-        min-width: 100px;
-
-        small {
-          //color: rgba(0, 0, 0, 0.5);
-          word-wrap: normal;
-          display: inline-block;
-        }
-
-        .txt-hl {
-          text-decoration: underline;
-        }
-      }
-
-      span.category {
-        float: right;
-        text-align: right;
-        //color: rgba(0, 0, 0, 0.5);
-        font-size: smaller;
-      }
-
-      &.selected {
-        background-color: rgba(0, 0, 0, 0.1);
-      }
-
-      &.active {
-        background-color: rgba(0, 0, 0, 0.05);
-        transition: all 0.1s;
-      }
-    }
-  }
-
-  &.simple {
-    .xo-ac-rs {
-      .xo-ac-itm {
-        grid-template-columns: var(--exf-ac-itm-grid, 1px 1fr 7rem);
-      }
-    }
-  }
-}
-
 html.theme-dark {
   [data-autocomplete] {
     .xo-ac-rs {
@@ -318,6 +232,7 @@ html.theme-dark {
 
       label {
         position: absolute;
+        z-index: 1;
         top: 20px;
         left: 25px;
         padding: 0px;

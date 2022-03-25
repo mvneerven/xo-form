@@ -24,44 +24,23 @@ export const form = {
 
       fields: [
         {
+          type: "xw-tags",
+          maxWidth: "300px",
+          bind: "#/state/tags",
+          label: "Tags",
+          placeholder: "Type tag ↵",
+          autocomplete: {
+            items: ["Test", "Aap", "Noot"],
+          },
+        },
+        {
           type: "text",
-          bind: "#/data/name",
-          required: true,
           label: "Your name",
-          placeholder: "Enter your name",
-        },
-        {
-          type: "textarea",
-          bind: "#/data/msg",
-          label: "Your message",
-          required: true,
-          placeholder: "Enter a message",
-          maxlength: 100,
-          rows: 6,
-        },
-        {
-          type: "group",
-          label: "Range",
-          layout: "horizontal",
-          fields: [
-            {
-              type: "range",
-              min: 0,
-              max: 100,
-              step: 1,
-              bind: "#/data/range",
-            },
-            {
-              type: "output",
-              bind: "#/data/range",
-            },
-          ],
-        },
-
-        {
-          type: "button",
-          bind: "#/state/submit",
-          label: "Submit",
+          placeholder: "Enter your name...",
+          bind: "#/state/msg",
+          autocomplete: {
+            items: ["Test", "Aap", "Noot"],
+          },
         },
       ],
     },

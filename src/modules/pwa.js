@@ -7,9 +7,8 @@ class PWA {
 
   checkDarkTheme() {
     const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
-    if (prefersDarkScheme.matches) {
-      document.documentElement.classList.toggle("theme-dark");
-    }
+    document.documentElement.classList.toggle("theme-dark", prefersDarkScheme.matches);
+    document.documentElement.classList.toggle("theme-light", !prefersDarkScheme.matches);
   }
 }
 
