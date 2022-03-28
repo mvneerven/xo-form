@@ -3,14 +3,16 @@
 }
 
 .xo-cn:not(.xo-rep) {
+  // container - not repeat
   margin-top: 0.4rem;
-  margin-bottom: .4rem;
+  margin-bottom: 0.4rem;
 
   .xo-in {
+    // input
     padding: 0;
   }
 
-  &:not(.xo-gc),
+  &:not(.xo-gc), // xo-gc = group container
   &.type-panel {
     .xo-in {
       padding: 15px;
@@ -28,6 +30,7 @@
   }
 
   &.xo-fc {
+    // focus
     .xo-in {
       border-color: var(--xo-input-border-color-active);
       transition: all 0.3s ease;
@@ -35,6 +38,7 @@
   }
 }
 .xo-cn:not(.xo-rep):not(.xo-ri) {
+  // xo-ri = repeat-item
   .xo-in {
     .xo-grp {
       padding: 0;
@@ -58,6 +62,10 @@
 
 .xo-ct {
   padding: 0.5rem 0px 0px 0.5rem;
+}
+
+.xo-pp {
+  display: inline;
 }
 
 label {
@@ -107,7 +115,7 @@ label {
 }
 
 button {
-  margin-top: .5rem;
+  margin-top: 0.5rem;
   text-transform: uppercase;
   background-color: var(--xo-btn-bg, rgba(127, 127, 127, 0.8));
 
@@ -163,15 +171,13 @@ legend {
 
 .xo-hl {
   display: inline-block;
-   width: 80%;
-   margin-left: 1rem;
-   margin-top: -1rem;
-
+  width: 80%;
+  margin-left: 1rem;
+  margin-top: -1rem;
 }
 
 .xo-vl {
   color: var(--color-validation-warning, rgb(250, 94, 94));
-  
 }
 
 .xo-grp.hor {

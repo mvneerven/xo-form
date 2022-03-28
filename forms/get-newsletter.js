@@ -31,14 +31,14 @@ export const getNewsLetter = {
           bind: "#/data/email",
           type: "email",
           disabled: "#/data/noreceive",
-          prefix: {
+          prepend: {
             icon: "fas fa-envelope"
           },
         },
         {
           type: "button",
           label: "Test",
-          prefix: {
+          prepend: {
             icon: "fas fa-share",
           }
         }

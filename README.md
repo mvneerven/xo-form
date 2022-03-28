@@ -19,7 +19,7 @@ The library is written as pure native [Web Components](https://developer.mozilla
 
 # Setup
 
-`npm i @mvneerven/xo-form`
+`npm i xo-form`
 
 # How it works
 

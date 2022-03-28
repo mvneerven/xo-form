@@ -1,5 +1,6 @@
 export const form = {
   validation: "inline",
+  layout: "static",
   model: {
     instance: {
       state: {},
@@ -22,8 +23,9 @@ export const form = {
   pages: [
     {
       label: "My Form",
-
+      //type: "group",
       fields: [
+        
         {
           type: "text",
           label: "Your name",

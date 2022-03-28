@@ -1,3 +1,6 @@
+const DEFAULT_VALIDATION_TYPE = "inline";
+const VALIDATION_TYPE_INLINE = "inline";
+
 /**
  * Validator - manages form validation
  */
@@ -12,7 +15,7 @@ class Validator {
     });
 
     this.form.on("created-control", (e) => {
-      if (this.form.schema.validation  === "inline") {
+      if (this.form.schema.validation ?? DEFAULT_VALIDATION_TYPE === VALIDATION_TYPE_INLINE) {
         e.detail.control.on("invalid", (e2) => {
           e2.preventDefault();
         });

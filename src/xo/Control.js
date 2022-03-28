@@ -35,8 +35,8 @@ class Control extends LitElement {
       value: { type: Object },
       classes: { type: Array },
       autocomplete: { type: Object },
-      prefix: { type: Object },
-      suffix: { type: Object },
+      prepend: { type: Object },
+      append: { type: Object },
     };
   }
 
@@ -362,7 +362,7 @@ class Control extends LitElement {
           >${this.label}${this.renderRequiredState()}</label
         >
         <div class="xo-in" part="xo-in" exportparts="xo-in">
-          ${this.renderPrefix()} ${this.renderInput()} ${this.renderSuffix()}
+          ${this.renderPrepend()} ${this.renderInput()} ${this.renderAppend()}
         </div>
       </div>
       <div class="xo-io" part="xo-io">
@@ -371,15 +371,18 @@ class Control extends LitElement {
     </div>`;
   }
 
-  renderPrefix() {
-    if (this.prefix) {
-      if (this.prefix.icon) {
+  renderPrepend() {
+    if (this.prepend) {
+      if (this.prepend.icon) {
         return html`<i class="fas fa-envelope"></i>`;
+      }
+      else if(this.prepend.text){
+        return html`<span class="xo-pp">${this.prepend.text}</span>`;
       }
     }
   }
 
-  renderSuffix() {}
+  renderAppend() {}
 
   renderRequiredState() {
     return this.label ? (this.required ? html`<sup>*</sup>` : "") : "";

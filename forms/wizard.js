@@ -1,4 +1,5 @@
 export const wizard = {
+  
   model: {
     rules: {
       "#/mail/send": [

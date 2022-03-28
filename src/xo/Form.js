@@ -149,7 +149,7 @@ class Form extends Control {
     let index = 1;
     for (let page of this.schema.pages) {
       page.index = index++;
-      let pageElement = this.createControl(this.context, "xo-page", page);
+      let pageElement = this.createControl(this.context, page.type ?? "xo-page", page);
       pageElement.setAttribute("slot", "w");
       this.appendChild(pageElement);
     }
