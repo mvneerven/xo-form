@@ -25,7 +25,9 @@ class DataBinding {
     const me = this;
     this._context = context;
 
-    this.context.form.addEventListener("interaction", (e) => {
+    this.context.form.on("interaction", (e) => {
+      console.debug("interaction", e);
+      
       if (e.detail.control?.bind) {
         const path = this.processBindingIndex(
           e.detail.control,
@@ -251,31 +253,34 @@ class DataBinding {
         ar.forEach((expression) => {
           expression.set = expression.set ?? bindingPath;
 
-          if (expression.set) {
-            let context = {
-              value: value,
-              path: path,
-              binding: bindingPath,
-              get: (name) => {
-                let v = me.get(name);
-                return v;
-              },
-              set: (name, v) => {
-                me.set(name, v);
-                if (name === bindingPath) value = v;
-              },
-              model: this.schemaModel,
-            };
+          let context = {
+            value: value,
+            path: path,
+            binding: bindingPath,
+            get: (name) => {
+              let v = me.get(name);
+              return v;
+            },
+            set: (name, v) => {
+              me.set(name, v);
+              if (name === bindingPath) value = v;
+            },
+            model: this.schemaModel,
+          };
+          if (expression.run) {
+            if (typeof expression.run === "function") expression.run(context);
+            else Util.scopeEval(context, "return " + expression.run);
+          } else if (expression.set) {
             let result;
             if (typeof expression.value === "function") {
               result = expression.value(context);
             } else {
               result = Util.scopeEval(context, "return " + expression.value);
             }
-
-            me.set(expression.set, result);
-
-            if (expression.set === bindingPath) value = result;
+            if (typeof result !== "undefined") {
+              me.set(expression.set, result);
+              if (expression.set === bindingPath) value = result;
+            }
           }
         });
       }
@@ -336,7 +341,9 @@ class DataBinding {
     for (var i = 0; i < pathElements.length; i++) {
       let key = this.parseKey(pathElements[i]);
       if (i === pathElements.length - 1) {
-        this.originatingEventContext = this.createDataBindingOriginContext(originatingEventContext);
+        this.originatingEventContext = this.createDataBindingOriginContext(
+          originatingEventContext
+        );
         current[key] = value;
         break;
       }
@@ -344,15 +351,14 @@ class DataBinding {
     }
   }
 
-  createDataBindingOriginContext(originatingEventContext){
-    if(!originatingEventContext)
-      return;
+  createDataBindingOriginContext(originatingEventContext) {
+    if (!originatingEventContext) return;
     return {
       eventType: originatingEventContext.type,
       sourceControl: originatingEventContext.control,
       eventSourceElement: originatingEventContext.source,
-      controlValue: originatingEventContext.value
-    }
+      controlValue: originatingEventContext.value,
+    };
   }
 }
 

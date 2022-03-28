@@ -33,9 +33,10 @@ class Control extends LitElement {
       placeholder: { type: String },
       valid: { type: Boolean },
       value: { type: Object },
-      prefix: { type: Object },
       classes: { type: Array },
       autocomplete: { type: Object },
+      prefix: { type: Object },
+      suffix: { type: Object },
     };
   }
 
@@ -123,12 +124,26 @@ class Control extends LitElement {
     e.stopPropagation();
     e.stopImmediatePropagation();
     const source = e.composedPath()[0];
+
+    if (e.type === "change") {
+      if (
+        typeof this.__lastInputValue !== "undefined" &&
+        this.__lastInputValue === this.value
+      ) {
+        return; // not really changed
+      }
+    }
+
     this.form.emit("interaction", {
       type: "input",
       control: this,
       source: source,
       value: this.value,
     });
+
+    if (e.type === "input") {
+      this.__lastInputValue = this.value;
+    }
   }
 
   // special case: button hosted
@@ -207,6 +222,11 @@ class Control extends LitElement {
 
     type = this.transform(type, properties) || "text";
 
+    context.form.emit("create-control", {
+      type: type,
+      properties: properties,
+    });
+
     let elm;
 
     if (customElements.get("xo-" + type)) type = "xo-" + type;
@@ -238,7 +258,12 @@ class Control extends LitElement {
       elm.options = options;
       context.parent = this;
       elm._context = context;
+
       context.mapper.mapProperties(elm, properties);
+
+      context.form.emit("created-control", {
+        control: elm,
+      });
     }
 
     return elm;
@@ -337,7 +362,7 @@ class Control extends LitElement {
           >${this.label}${this.renderRequiredState()}</label
         >
         <div class="xo-in" part="xo-in" exportparts="xo-in">
-          ${this.renderInput()}
+          ${this.renderPrefix()} ${this.renderInput()} ${this.renderSuffix()}
         </div>
       </div>
       <div class="xo-io" part="xo-io">
@@ -345,6 +370,16 @@ class Control extends LitElement {
       </div>
     </div>`;
   }
+
+  renderPrefix() {
+    if (this.prefix) {
+      if (this.prefix.icon) {
+        return html`<i class="fas fa-envelope"></i>`;
+      }
+    }
+  }
+
+  renderSuffix() {}
 
   renderRequiredState() {
     return this.label ? (this.required ? html`<sup>*</sup>` : "") : "";
@@ -400,6 +435,20 @@ class Control extends LitElement {
         >${this.validationText || this.invalidMessage}</small
       >`;
     }
+  }
+
+  /**
+   * Attaches listeners to the given events.
+   * @param {String|Array} eventName Event name(s) (string) or array containing event names
+   * @param {Function} func
+   */
+  on(eventName, func) {
+    const events = Array.isArray(eventName)
+      ? eventName
+      : [...eventName.split(" ")];
+    events.forEach((e) => {
+      this.addEventListener(e, func);
+    });
   }
 
   /**

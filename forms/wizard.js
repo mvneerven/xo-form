@@ -34,6 +34,7 @@ export const wizard = {
           type: "textarea",
           label: "Message to send",
           placeholder: "Type a message",
+          required: true,
           bind: "#/mail/message",
           maxlength: 150,
         },
@@ -49,7 +50,7 @@ export const wizard = {
       label: "Page 2",
       fields: [
         {
-          type: "tags",
+          type: "xw-tags",
           label: "Tags",
           bind: "#/mail/tags",
           placeholder: "Add tag",

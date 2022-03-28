@@ -13,7 +13,7 @@ class Page extends Group {
   connectedCallback() {
     super.connectedCallback();
 
-    this.closest("xo-form").addEventListener("page", (e) => {
+    this.closest("xo-form").on("page", (e) => {
       this.hidden = e.target.page !== this.index;
     });
 

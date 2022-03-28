@@ -4,6 +4,7 @@
 
 .xo-cn:not(.xo-rep) {
   margin-top: 0.4rem;
+  margin-bottom: .4rem;
 
   .xo-in {
     padding: 0;
@@ -56,7 +57,7 @@
 }
 
 .xo-ct {
-  padding: 0.5rem;
+  padding: 0.5rem 0px 0px 0.5rem;
 }
 
 label {
@@ -106,6 +107,7 @@ label {
 }
 
 button {
+  margin-top: .5rem;
   text-transform: uppercase;
   background-color: var(--xo-btn-bg, rgba(127, 127, 127, 0.8));
 
@@ -159,8 +161,17 @@ legend {
   font-size: 1.3rem;
 }
 
+.xo-hl {
+  display: inline-block;
+   width: 80%;
+   margin-left: 1rem;
+   margin-top: -1rem;
+
+}
+
 .xo-vl {
-  color: rgb(250, 94, 94);
+  color: var(--color-validation-warning, rgb(250, 94, 94));
+  
 }
 
 .xo-grp.hor {

@@ -1,9 +1,9 @@
 import { LitElement, html, css } from "lit";
 import { repeat } from "lit/directives/repeat.js";
+import xo from "../src/xo";
 
-import AutoComplete from "../src/xo/AutoComplete";
-
-const DEF_MAX_WIDTH = "400px";
+const DEF_MAX_WIDTH = "100%";
+const AutoComplete = xo.AutoComplete;
 
 class Tags extends LitElement {
   _value = [];

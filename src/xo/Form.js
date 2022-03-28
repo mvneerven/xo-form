@@ -1,6 +1,6 @@
 import { html, css } from "lit";
 import Control from "./Control";
-import Validation from "./Validation";
+import Validator from "./Validator";
 import Context from "./Context";
 import { until } from "lit/directives/until.js";
 import { version } from "../../package.json";
@@ -43,6 +43,9 @@ class Form extends Control {
         type: String,
         attribute: true,
       },
+      validation: {
+        type: String,
+      },
     };
   }
 
@@ -63,7 +66,7 @@ class Form extends Control {
     else if (value > this.querySelectorAll("xo-page").length) return;
 
     if (value > this._page) {
-      this.validation.isPageValid(this._page);
+      this.validator.isPageValid(this._page);
     }
 
     this._page = value;
@@ -129,33 +132,35 @@ class Form extends Control {
     }
     if (!this.schema) return false;
 
-    this.interpretSchema(this.schema);
+    this.interpretSchema();
 
     return true;
   }
 
-  interpretSchema(schema) {
-    if (typeof schema !== "object") throw Error("Invalid schema");
+  interpretSchema() {
+    if (typeof this.schema !== "object") throw Error("Invalid schema");
 
-    schema.page = "#/_xo/nav/page";
+    this.schema.page = "#/_xo/nav/page";
 
-    this.context.data.initialize(schema.model, {
-      pageCount: schema.pages.length,
+    this.context.data.initialize(this.schema.model, {
+      pageCount: this.schema.pages.length,
     });
 
     let index = 1;
-    for (let page of schema.pages) {
+    for (let page of this.schema.pages) {
       page.index = index++;
       let pageElement = this.createControl(this.context, "xo-page", page);
       pageElement.setAttribute("slot", "w");
       this.appendChild(pageElement);
     }
-
-    this.nav = this.createControl(this.context, "xo-nav", schema);
+    
+    this.nav = this.createControl(this.context, "xo-nav", this.schema);
 
     this.nav.controls = this.nav.controls;
     this.nav.setAttribute("slot", "n");
     this.appendChild(this.nav);
+
+    this.emit("ready")
   }
 
   render() {
@@ -183,8 +188,10 @@ class Form extends Control {
   }
 
   firstUpdated() {
-    this.validation = new Validation(this);
     this.checkUrlState();
+    
+    this.validator = new Validator(this);
+    
     this.emit("first-updated");
   }
 

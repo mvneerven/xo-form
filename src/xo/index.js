@@ -8,7 +8,7 @@ import Context from "./Context";
 import Util from "./Util";
 import DataBinding from "./DataBinding";
 import PropertyMapper from "./PropertyMapper";
-import Validation from "./Validation";
+import Validator from "./Validator";
 import AutoComplete from "./AutoComplete";
 
 /**
@@ -97,10 +97,10 @@ class xo {
 
   /**
    * Validation - manages form validation
-   * @returns {Validation}
+   * @returns {Validator}
    */
   static get Validation() {
-    return Validation;
+    return Validator;
   }
 
    /**

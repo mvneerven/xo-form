@@ -20,8 +20,9 @@ export const getNewsLetter = {
       label: "Newsletter",
       fields: [
         {
-          type: "checkbox",
+          type: "xw-switch",
           label: "I want to receive the newsletter",
+          text: "Yes, send me the newsletter!",
           bind: "#/data/receive",
         },
         {
@@ -31,9 +32,16 @@ export const getNewsLetter = {
           type: "email",
           disabled: "#/data/noreceive",
           prefix: {
-            icon: "ti-email",
+            icon: "fas fa-envelope"
           },
         },
+        {
+          type: "button",
+          label: "Test",
+          prefix: {
+            icon: "fas fa-share",
+          }
+        }
       ],
     },
   ],

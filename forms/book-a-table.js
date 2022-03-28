@@ -43,13 +43,15 @@ export const bookATable = {
 
         {
           bind: "#/eat/special",
-          type: "switch",
+          type: "xw-switch",
+          text: "On",
           label: "Special wishes",
         },
         {
           name: "field2",
-          type: "checkgroup",
+          type: "xw-checkgroup",
           label: "Wishes",
+          layout: "list",
           bind: "#/eat/wish",
           items: "#/eat/wishes",
           hidden: "#/eat/nospecial",

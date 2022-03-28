@@ -88,3 +88,66 @@ export const form = {
   ],
 };
 ```
+
+## Understanding ```xo-form``` schemas
+
+### Main elements
+
+#### ```pages```
+
+The ```pages``` node is an array of ```page``` elements. Each page describes a set of controls that are grouped together, mostly in separately shown wizard steps, but pages could also be shown differently, in a tabstrip for instance.
+
+#### ```model```
+
+The ```model``` property contains all data model related elements, such as the ```instance``` node that contains one or multiple named instance nodes.
+
+In the example below, the ```myData``` node defines data that a form can bind to:
+
+```js
+export const form = {
+  model: {
+    instance: {
+      myData: {
+        userName: "johndoe"
+      }
+    }
+  },
+  pages: [
+    {
+      fields: [
+        {
+          type: "text",
+          label: "User name",
+          bind: "#/myData/userName"
+        }
+      ]
+    }
+  ]
+}
+```
+Result:
+![Monaco](./md/img/my-data-bind.png "Form with simple data binding")
+
+## Schema & Control Creation
+
+### Explicit and implicit element types
+
+The ```pages``` and ```controls``` nodes in an ```xo-form``` schema are interpreted at runtime and generate controls.
+
+In the case of a page, an ```xo-page``` element is implicitly created. The ```xo-page``` element inherits from the ```xo-group``` element. Groups can be created explicitly as well, using the following syntax:
+
+```js
+{
+  type: "group", // xo-group element
+  fields: []
+}
+```
+
+### Rules used to map schema types to elements 
+
+The schema interpreter has some very simple rules to generate element from the schema nodes:
+
+- If the ```type``` property starts with 'xo-', the corresponding XO element is instantiated.
+- If ```document.createElement(type)``` is successful, the returned object is used.
+- If type doesn't contain a dash (```-```), the interpreter tries to create an ```HtmlInputElement``` and set its ```type``` property to the given type.
+

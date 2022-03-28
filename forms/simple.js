@@ -1,4 +1,5 @@
 export const form = {
+  validation: "inline",
   model: {
     instance: {
       state: {},
@@ -11,7 +12,7 @@ export const form = {
     rules: {
       "#/state/submit": [
         {
-          value: (context) => {
+          run: (context) => {
             alert(JSON.stringify(context.model.instance.data, null, 2));
           },
         },
@@ -24,23 +25,24 @@ export const form = {
 
       fields: [
         {
-          type: "xw-tags",
-          maxWidth: "300px",
-          bind: "#/state/tags",
-          label: "Tags",
-          placeholder: "Type tag ↵",
-          autocomplete: {
-            items: ["Test", "Aap", "Noot"],
-          },
-        },
-        {
           type: "text",
           label: "Your name",
+          required: true,
           placeholder: "Enter your name...",
+          minLength: 3,
           bind: "#/state/msg",
-          autocomplete: {
-            items: ["Test", "Aap", "Noot"],
-          },
+        },
+        {
+          type: "email",
+          label: "Your email address",
+          required: true,
+          placeholder: "john@doe.com",
+          bind: "#/state/email",
+        },
+        {
+          type: "button",
+          label: "Send",
+          bind: "#/state/submit",
         },
       ],
     },

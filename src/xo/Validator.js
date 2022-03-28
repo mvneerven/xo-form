@@ -1,13 +1,29 @@
 /**
- * Validation - manages form validation
+ * Validator - manages form validation
  */
-class Validation {
+class Validator {
   constructor(xoForm) {
     this.form = xoForm;
-    this.form.addEventListener("interaction", (e) => {
+
+    this.form.on("interaction", (e) => {
       let elm = e.detail.control;
       this.processValidation(elm);
       this.checkValid();
+    });
+
+    this.form.on("created-control", (e) => {
+      if (this.form.schema.validation  === "inline") {
+        e.detail.control.on("invalid", (e2) => {
+          e2.preventDefault();
+        });
+        if (e.detail.control.nestedElement) {
+          e.detail.control.nestedElement.addEventListener("invalid", (e2) => {
+            e2.preventDefault();
+            e2.stopPropagation(); // stop it from bubbling up
+            e.detail.control.validationMessage = e2.target.validationMessage;
+          });
+        }
+      }
     });
 
     setTimeout(() => {
@@ -53,4 +69,4 @@ class Validation {
   }
 }
 
-export default Validation;
+export default Validator;

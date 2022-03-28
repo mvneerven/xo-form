@@ -10,7 +10,8 @@
     --xo-input-border-color-active: rgba(180, 180, 180);
     --xo-card-background: rgb(100, 100, 100);
     --xo-card-color: white;
-    
+    --color-validation-warning: rgb(150, 34, 34);
+
     &.theme-dark {
         --accent: var(--color-accent, #5287eb);
         --bg-color: rgb(41, 41, 41);
@@ -21,6 +22,7 @@
         --xo-input-border-color-hover: rgba(80, 80, 80);
         --xo-input-border-color-active: rgba(110, 110, 110);
         --xo-card-background: rgb(60, 60, 60);
+        --color-validation-warning: rgb(220, 124, 124);
     }
 }
 

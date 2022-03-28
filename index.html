@@ -26,7 +26,7 @@
   </header>
 
   <main>
-    <xo-form theme="material" src="/forms/simple.js"></xo-form>
+    <xo-form theme="material" src="/forms/wizard.js"></xo-form>
   </main>
 
   <details id="model-state" title="View XO Model State">
@@ -43,7 +43,7 @@
 
   <script type="module">
     let form = document.querySelector("xo-form");
-    form.addEventListener("modelchange", (e) => {
+    form.on("modelchange", (e) => {
       console.log("modelchange", e.detail);
 
       document.getElementById("model").value = JSON.stringify(
