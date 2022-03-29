@@ -23,7 +23,6 @@ export const form = {
   pages: [
     {
       label: "My Form",
-      //type: "group",
       fields: [
         
         {
@@ -32,7 +31,7 @@ export const form = {
           required: true,
           placeholder: "Enter your name...",
           minLength: 3,
-          bind: "#/state/msg",
+          bind: "#/state/name",
         },
         {
           type: "email",
@@ -40,6 +39,12 @@ export const form = {
           required: true,
           placeholder: "john@doe.com",
           bind: "#/state/email",
+        },
+        {
+          type: "textarea",
+          bind: "#/state/msg",
+          label: "Message",
+          placeholder: "Your message..."
         },
         {
           type: "button",

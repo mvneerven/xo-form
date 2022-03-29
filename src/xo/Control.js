@@ -1,6 +1,7 @@
 import { LitElement, html, css } from "lit";
 import AutoComplete from "../xo/AutoComplete";
 import Context from "./Context";
+import Util from "./Util";
 
 const ERR_INVALID_BINDING = "Invalid binding value";
 
@@ -8,9 +9,13 @@ const ERR_INVALID_BINDING = "Invalid binding value";
  * XO Control (```<xo-control/>```) - both Base Control for XO, and wrapping Control for other HTML elements
  */
 class Control extends LitElement {
+  //#region Private properties
+
   _disabled = false;
   _clicked = 0;
   _context = null;
+
+  //#endregion
 
   /**
    * @returns {Context} a reference to the Context instance
@@ -139,11 +144,10 @@ class Control extends LitElement {
       control: this,
       source: source,
       value: this.value,
+      guid: Util.guid(),
     });
 
-    if (e.type === "input") {
-      this.__lastInputValue = this.value;
-    }
+    if (e.type === "input") this.__lastInputValue = this.value;
   }
 
   // special case: button hosted
@@ -161,6 +165,7 @@ class Control extends LitElement {
         control: this,
         source: source,
         value: source.defaultValue || this._clicked,
+        guid: Util.guid(),
       });
     }
   }
@@ -374,9 +379,8 @@ class Control extends LitElement {
   renderPrepend() {
     if (this.prepend) {
       if (this.prepend.icon) {
-        return html`<i class="fas fa-envelope"></i>`;
-      }
-      else if(this.prepend.text){
+        return html`<span class="material-icons">${this.prepend.icon}</span>`;
+      } else if (this.prepend.text) {
         return html`<span class="xo-pp">${this.prepend.text}</span>`;
       }
     }

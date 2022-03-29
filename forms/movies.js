@@ -13,11 +13,9 @@ const genres = [
   "Sci-Fi",
   "Thriller",
 ];
-const getGenres = options => {
-  
+const getGenres = (options) => {
   return genres;
-
-}
+};
 export const movies = {
   model: {
     instance: {
@@ -39,17 +37,24 @@ export const movies = {
         {
           set: "#/state/movies",
           value: (context) => {
-            let ar = context.get("#/state/movies");
+            let ar = context.data.get("#/state/movies");
             const item = {
-              name: context.get("#/state/name"),
-              genre: context.get("#/state/genre"),
+              name: context.data.get("#/state/name"),
+              genre: context.data.get("#/state/genre"),
             };
             ar.push(item);
 
-            context.set("#/state/name", "");
-            context.set("#/state/genre", "");
+            context.data.set("#/state/name", "");
+            context.data.set("#/state/genre", "");
 
             return ar;
+          },
+        },
+      ],
+      "#/state/movies/*/remove": [
+        {
+          run: (context) => {
+            debugger;
           },
         },
       ],
@@ -79,15 +84,7 @@ export const movies = {
               required: true,
               label: "Name",
             },
-            {
-              type: "xw-tags",
-              maxWidth: "300px",
-              bind: "#/state/tags",
-              label: "Tags",
-              autocomplete: {
-                items: ["Test", "Aap", "Noot"]
-              }
-            },
+
             {
               type: "button",
               label: "Add",
@@ -136,15 +133,16 @@ export const movies = {
                 {
                   type: "button",
                   label: "⨉",
-                  click: (e) => {
-                    const repeat = e.detail.repeat;
-                    if (repeat) {
-                      const data = repeat.context.data,
-                        ar = data.get("#/state/movies");
-                      ar.splice(e.detail.index, 1);
-                      data.set("#/state/movies", ar);
-                    }
-                  },
+                  bind: "#/state/movies/@index/remove",
+                  // click: (e) => {
+                  //   const repeat = e.detail.repeat;
+                  //   if (repeat) {
+                  //     const data = repeat.context.data,
+                  //       ar = data.get("#/state/movies");
+                  //     ar.splice(e.detail.index, 1);
+                  //     data.set("#/state/movies", ar);
+                  //   }
+                  // },
                 },
               ],
             },

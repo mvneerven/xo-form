@@ -1,4 +1,4 @@
-import xo from '../xo';
+import xo from "../xo";
 
 class PWA {
   constructor() {
@@ -7,8 +7,14 @@ class PWA {
 
   checkDarkTheme() {
     const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
-    document.documentElement.classList.toggle("theme-dark", prefersDarkScheme.matches);
-    document.documentElement.classList.toggle("theme-light", !prefersDarkScheme.matches);
+    document.documentElement.classList.toggle(
+      "theme-dark",
+      prefersDarkScheme.matches
+    );
+    document.documentElement.classList.toggle(
+      "theme-light",
+      !prefersDarkScheme.matches
+    );
   }
 }
 

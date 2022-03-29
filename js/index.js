@@ -6,5 +6,6 @@ import RadioGroup from './RadioGroup';
 import CheckGroup from './CheckGroup'
 import CheckBox from './CheckBox'
 import FileDrop from './FileDrop'
+import Info from './Info'
 
 window.pwa = new PWA()

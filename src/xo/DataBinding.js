@@ -1,5 +1,6 @@
 import PropertyMapper from "./PropertyMapper";
 import Util from "./Util";
+import DataBindingContext from "./DataBindingContext";
 
 const isIrelevantChange = (oldValue, newValue) => {
   if (Util.equals(oldValue, newValue)) {
@@ -27,7 +28,7 @@ class DataBinding {
 
     this.context.form.on("interaction", (e) => {
       console.debug("interaction", e);
-      
+
       if (e.detail.control?.bind) {
         const path = this.processBindingIndex(
           e.detail.control,
@@ -253,20 +254,14 @@ class DataBinding {
         ar.forEach((expression) => {
           expression.set = expression.set ?? bindingPath;
 
-          let context = {
+          const context = new DataBindingContext({
+            data: me,
+            form: me.form,
             value: value,
             path: path,
             binding: bindingPath,
-            get: (name) => {
-              let v = me.get(name);
-              return v;
-            },
-            set: (name, v) => {
-              me.set(name, v);
-              if (name === bindingPath) value = v;
-            },
-            model: this.schemaModel,
-          };
+          });
+
           if (expression.run) {
             if (typeof expression.run === "function") expression.run(context);
             else Util.scopeEval(context, "return " + expression.run);
@@ -358,6 +353,7 @@ class DataBinding {
       sourceControl: originatingEventContext.control,
       eventSourceElement: originatingEventContext.source,
       controlValue: originatingEventContext.value,
+      guid: originatingEventContext.guid,
     };
   }
 }
