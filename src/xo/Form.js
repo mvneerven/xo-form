@@ -126,7 +126,9 @@ class Form extends Control {
           const key = Object.keys(r)[0];
           this._schema = r[key];
         } catch (x) {
-          throw Error("Could not load schema from " + this.src);
+          throw Error(
+            "Could not load schema from " + this.src + ". " + x.message
+          );
         }
       }
     }
@@ -149,18 +151,22 @@ class Form extends Control {
     let index = 1;
     for (let page of this.schema.pages) {
       page.index = index++;
-      let pageElement = this.createControl(this.context, page.type ?? "xo-page", page);
+      let pageElement = this.createControl(
+        this.context,
+        page.type ?? "xo-page",
+        page
+      );
       pageElement.setAttribute("slot", "w");
       this.appendChild(pageElement);
     }
-    
+
     this.nav = this.createControl(this.context, "xo-nav", this.schema);
 
     this.nav.controls = this.nav.controls;
     this.nav.setAttribute("slot", "n");
     this.appendChild(this.nav);
 
-    this.emit("ready")
+    this.emit("ready");
   }
 
   render() {
@@ -189,9 +195,9 @@ class Form extends Control {
 
   firstUpdated() {
     this.checkUrlState();
-    
+
     this.validator = new Validator(this);
-    
+
     this.emit("first-updated");
   }
 

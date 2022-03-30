@@ -15,7 +15,10 @@ class Validator {
     });
 
     this.form.on("created-control", (e) => {
-      if (this.form.schema.validation ?? DEFAULT_VALIDATION_TYPE === VALIDATION_TYPE_INLINE) {
+      if (
+        this.form.schema.validation ??
+        DEFAULT_VALIDATION_TYPE === VALIDATION_TYPE_INLINE
+      ) {
         e.detail.control.on("invalid", (e2) => {
           e2.preventDefault();
         });
@@ -46,14 +49,14 @@ class Validator {
 
   processValidation(elm) {
     let validState = elm.checkValidity();
-
-    let xoc = elm.closestElement("xo-control");
-
-    try {
-      xoc.invalidMessage = elm.validationMessage;
-    } catch {}
-    if (xoc && xoc.reportValidity) {
-      xoc.reportValidity();
+    if (!validState) {
+      let xoc = elm.closestElement("xo-control");
+      try {
+        xoc.invalidMessage = elm.validationMessage;
+      } catch {}
+      if (xoc && xoc.reportValidity) {
+        xoc.reportValidity();
+      }
     }
   }
 

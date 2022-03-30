@@ -94,6 +94,8 @@ class DataBinding {
             });
           }
 
+//TODO: JSON Patch - https://github.com/Palindrom/JSONPatcherProxy
+
           try {
             me.context.form.emit("modelchange", {
               model: schemaModel,

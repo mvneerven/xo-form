@@ -1,27 +1,36 @@
-import breeds from "../data/pet-breeds.json" assert { type: "json" };
+import breeds from "./pet-breeds.json" assert { type: "json" };
+const weightCategories = {
+  parrot: [],
+  rabbit: [],
+  cat: [],
+  dog: [
+    "Mix 0-9 kg",
+    "Mix 10-19 kg",
+    "Mix 20-29 kg",
+    "Mix 30-39 kg",
+    "Mix 40+ kg",
+  ],
+};
+const breedAutoComplete = (options) => {
+  let index =
+    parseInt(options.control.parent.parent.parent.getAttribute("data-index")) -
+    1;
+  let type = (
+    options.control?.context?.data.instance.state.pets[index].type ?? "dog"
+  ).toLowerCase();
 
-const breedAutocomplete = (options, e) => {
-  let host = e.target.getRootNode().host;
-  let rp = host.closestElement("xo-repeat");
-  let type = null;
-  if (rp) {
-    let index = host.closestElement("xo-group").parentNode.parentNode.index;
-    type = rp.items[index].type;
-  }
-  let bd = breedData;
+  let bd = breeds[type].map((i) => {
+    return {
+      text: i.name,
+    };
+  });
+  //let search = options.search.toLowerCase();
 
-  if (type) bd = breeds[type.toLowerCase()];
-
-  let search = options.search.toLowerCase();
-  return bd
-    .filter((i) => {
-      return i.name.toLowerCase().indexOf(search) >= 0;
+  return weightCategories[type]
+    .map((i) => {
+      return { text: i };
     })
-    .map((x) => {
-      return {
-        text: x.name,
-      };
-    });
+    .concat(bd);
 };
 
 export const managePets = {
@@ -32,6 +41,17 @@ export const managePets = {
       },
     },
     rules: {
+      "#/state/pets/*/remove": [
+        {
+          run: (context) => {
+            // context.binding ~ #/state/pets/1/remove'
+            const index = parseInt(context.binding.split("/")[3]);
+            const ar = context.data.get("#/state/pets");
+            ar.splice(index, 1);
+            context.data.set("#/state/pets", ar);
+          },
+        },
+      ],
       "#/state/pets/*/name": [
         {
           value: (context) => {
@@ -52,19 +72,11 @@ export const managePets = {
         {
           set: "#/state/pets",
           value: (context) => {
-            let ar = context.get("#/state/pets");
+            let ar = context.data.get("#/state/pets");
             ar.push({
-              name: context.get("#/state/name"),
+              name: context.data.get("#/state/name"),
             });
             return ar;
-          },
-        },
-      ],
-      "#/state/type": [
-        {
-          set: "#/state/breeds",
-          value: (context) => {
-            window.breedData = breeds[context.value.toLowerCase()];
           },
         },
       ],
@@ -89,6 +101,7 @@ export const managePets = {
             {
               type: "button",
               label: "Add",
+              style: "margin-top: -8px",
               bind: "#/state/add",
             },
           ],
@@ -113,11 +126,13 @@ export const managePets = {
                       type: "text",
                       style: "width: 8em",
                       label: "Name",
+                      required: true,
                       bind: "#/state/pets/@index/name",
                     },
                     {
                       type: "search",
                       label: "Type",
+                      required: true,
                       bind: "#/state/pets/@index/type",
                       autocomplete: {
                         items: ["Cat", "Dog", "Parrot", "Rabbit"],
@@ -126,20 +141,24 @@ export const managePets = {
                     {
                       type: "search",
                       label: "Breed",
+                      required: true,
                       bind: "#/state/pets/@index/breed",
                       autocomplete: {
-                        items: breedAutocomplete,
+                        items: breedAutoComplete,
                       },
                     },
                     {
-                      type: "date",
+                      type: "text",
                       label: "Birthdate",
                       bind: "#/state/pets/@index/birthDate",
+                      required: true,
+                      placeholder: "DD-MM-JJJJ",
+                      pattern: "[0-9]{2}-[0-9]{2}-[1-2][9,0][1-9]{2}",
                     },
                   ],
                 },
                 {
-                  type: "filedrop",
+                  type: "xw-filedrop",
                   label: "Photo",
                   bind: "#/state/pets/@index/image",
                   height: "200px",
@@ -151,15 +170,7 @@ export const managePets = {
                 {
                   type: "button",
                   label: "⨉",
-                  click: (e) => {
-                    const repeat = e.detail.repeat;
-                    if (repeat) {
-                      const data = repeat.context.data,
-                        ar = data.get("#/state/pets");
-                      ar.splice(e.detail.index, 1);
-                      data.set("#/state/pets", ar);
-                    }
-                  },
+                  bind: "#/state/pets/@index/remove",
                 },
               ],
             },

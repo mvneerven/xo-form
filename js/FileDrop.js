@@ -2,14 +2,14 @@ import { LitElement, html, css } from "lit";
 import { repeat } from "lit/directives/repeat.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-const DEF_HEIGHT = "100px";
+const DEF_THUMB_HEIGHT = "70px";
 
 class FileDrop extends LitElement {
   _value = [];
 
   _max = -1;
 
-  _height = DEF_HEIGHT;
+  _thumbSize = DEF_THUMB_HEIGHT;
 
   _types = ["image/"];
 
@@ -18,14 +18,18 @@ class FileDrop extends LitElement {
       css`
         .drop {
           position: relative;
-          height: var(--image-height, DEF_HEIGHT);
+          border-radius: 1rem;
+          height: 100%;
           min-width: 200px;
           cursor: pointer;
+          border: 2px transparent;
+          min-height: 60px;
+          transition: all .2s ease;
         }
 
         .drop:not(.has-files) [part="files"]:after {
-          top: 0;
-          left: 0;
+          top: 5px;
+          left: 5px;
           width: 100%;
           height: fit-content;
 
@@ -41,7 +45,7 @@ class FileDrop extends LitElement {
         input {
           position: absolute;
           width: 100%;
-          height: var(--image-height, DEF_HEIGHT);
+          height: 100%;
           opacity: 0;
           cursor: pointer;
         }
@@ -52,6 +56,9 @@ class FileDrop extends LitElement {
 
         .dropping {
           border: 2px dotted rgba(127, 127, 127, 0.5);
+          
+          min-height: 200px;
+          transition: all .2s ease;
         }
 
         .files {
@@ -64,11 +71,13 @@ class FileDrop extends LitElement {
         .thumb {
           position: relative;
           border: 6px solid white;
-          background-color: rgba(127, 127, 127, 0.1);
+          background-color: var(--filedrop-thumb-bgcolor, rgba(227, 227, 227, 0.1));
           display: inline-block;
-          width: 120px;
+          width: var(--filedrop-thumb-size, 70px);
+          height: var(--filedrop-thumb-size, 70px);
           background-size: contain;
           background-repeat: no-repeat;
+          background-position-x: center;
           background-position-y: center;
           margin-right: 0.5rem;
           border: 15px solid transparent;
@@ -78,18 +87,19 @@ class FileDrop extends LitElement {
         .thumb > a {
           position: absolute;
           display: inline-block;
-          top: -8px;
-          right: -8px;
-          padding: 0.2rem 0.5rem;
-          color: black;
+          top: -14px;
+          right: -14px;
+          padding: 0px 2px;
+          color: var(--accent);
+          filter: grayscale(100%);
           background-color: rgba(40, 40, 40, 0.3);
           border-radius: 1rem;
           cursor: pointer;
         }
 
         .thumb > a:hover {
-          color: white;
-          background-color: rgba(40, 40, 40, 0.8);
+          filter: grayscale(0%);
+          background-color: rgba(127, 127, 127, 0.4);
           transition: all 0.2s ease;
         }
       `,
@@ -102,7 +112,10 @@ class FileDrop extends LitElement {
         type: Object,
       },
       height: {
-        type: Number,
+        type: String,
+      },
+      thumbSize: {
+        type: String,
       },
       max: {
         type: Number,
@@ -115,13 +128,14 @@ class FileDrop extends LitElement {
       },
     };
   }
+ 
 
-  get height() {
-    return this._height;
+  get thumbSize() {
+    return this._thumbSize;
   }
 
-  set height(height) {
-    this._height = height;
+  set thumbSize(height) {
+    this._thumbSize = height;
   }
 
   set max(value) {
@@ -158,7 +172,9 @@ class FileDrop extends LitElement {
     const setinfo = this.infotext
       ? `--filedrop-info-text: ${this.infotext}`
       : "";
-    const style = `--image-height: ${this.height};` + setinfo;
+    const style =
+      `--filedrop-thumb-size: ${this.thumbSize};` +
+      setinfo;
 
     return html`<div
       style="${style}"
@@ -206,20 +222,38 @@ class FileDrop extends LitElement {
     return false;
   }
 
-  reportValidity() {}
+  reportValidity() {
+    this.invalidMessage = "";
+    try {
+      this.checkConstraints();
+    } catch (ex) {
+      this.validationMessage = ex.message;
+      
+      //this.invalidMessage = ex.message;
+      //this.setCustomValidity(ex.message);
+      return ex.message;
+    } finally {
+      this.requestUpdate();
+    }
+  }
 
   checkValidity() {
     try {
       this.checkConstraints();
+      return true;
     } catch (ex) {
       return false;
-    }
+    }4
   }
 
   dragEnd(e) {
     this.shadowRoot.querySelector(".drop").classList.remove("dropping");
     e.dataTransfer.dropEffect = "none";
     return false;
+  }
+
+  get valid(){
+    return this.checkValidity();
   }
 
   drop(e) {
@@ -243,7 +277,11 @@ class FileDrop extends LitElement {
   }
 
   readFile(file) {
-    this.checkConstraints(file);
+    try {
+      this.checkConstraints(file);
+    } catch {
+      return;
+    }
 
     const me = this;
     const reader = new FileReader();
@@ -289,8 +327,11 @@ class FileDrop extends LitElement {
 
   checkConstraints(file) {
     this.checkMax();
-    this.checkFileType(file.type);
-    this.checkSizeLimit(file);
+
+    if (file) {
+      this.checkFileType(file.type);
+      this.checkSizeLimit(file);
+    }
   }
 
   checkMax() {
