@@ -33,6 +33,23 @@ esbuild
     process.exit(1);
   });
 
+  esbuild
+  .build({
+    plugins: [sassPlugin(), litCssPlugin()],
+    entryPoints: ["src/autocomplete/index.js"],
+    bundle: true,
+    format: "esm",
+    minify: true,
+    sourcemap: true,
+    keepNames: true,
+    outfile: "dist/xo-autocomplete.js",
+  })
+  .catch((ex) => {
+    console.error(ex);
+    process.exit(1);
+  });
+
+
 esbuild
   .build({
     plugins: [sassPlugin(), litCssPlugin()],

@@ -9,7 +9,7 @@ import Util from "./Util";
 import DataBinding from "./DataBinding";
 import PropertyMapper from "./PropertyMapper";
 import Validator from "./Validator";
-import AutoComplete from "./AutoComplete";
+//import AutoComplete from "./AutoComplete";
 
 /**
  * XO - Namespace
@@ -103,13 +103,6 @@ class xo {
     return Validator;
   }
 
-   /**
-   * Validation - manages form validation
-   * @returns {AutoComplete}
-   */
-   static get AutoComplete() {
-     return AutoComplete;
-   }
 }
 
 //window.xo = xo;

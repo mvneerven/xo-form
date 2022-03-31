@@ -1,6 +1,6 @@
-import Util from "./Util";
+import Util from "../xo/Util";
 import autoCompleteStyles from "../../css/autocomplete.css";
-import Control from "./Control";
+import Control from "../xo/Control";
 
 /**
  * Autocomplete helper for all textbox derived controls.

@@ -1,4 +1,4 @@
-import AutoComplete from "./AutoComplete";
+import AutoComplete from "../autocomplete/AutoComplete";
 
 const RESERVED_PROPERTIES = ["type", "label", "bind", "classes"];
 

@@ -84,6 +84,7 @@ class Form extends Control {
    */
   set schema(schema) {
     this._schema = schema;
+    this.innerHTML = "";
     this.requestUpdate();
   }
 
@@ -143,6 +144,8 @@ class Form extends Control {
     if (typeof this.schema !== "object") throw Error("Invalid schema");
 
     this.schema.page = "#/_xo/nav/page";
+
+    this.schema.pages=this.schema.pages ?? [];
 
     this.context.data.initialize(this.schema.model, {
       pageCount: this.schema.pages.length,

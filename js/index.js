@@ -7,5 +7,7 @@ import CheckGroup from './CheckGroup'
 import CheckBox from './CheckBox'
 import FileDrop from './FileDrop'
 import Info from './Info'
+import Monaco from './Monaco';
+import OmnoBox from './OmniBox'
 
 window.pwa = new PWA()

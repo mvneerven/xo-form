@@ -6,7 +6,7 @@ export const form = {
       state: {},
       data: {
         name: "",
-        msg: "",
+        schema: "const schema = {};",
         range: 8,
       },
     },
@@ -14,7 +14,7 @@ export const form = {
       "#/state/submit": [
         {
           run: (context) => {
-            alert(JSON.stringify(context.model.instance.data, null, 2));
+            alert(JSON.stringify(context.data.instance.data, null, 2));
           },
         },
       ],
@@ -24,27 +24,35 @@ export const form = {
     {
       label: "My Form",
       fields: [
-        
         {
           type: "text",
           label: "Your name",
           required: true,
           placeholder: "Enter your name...",
           minLength: 3,
-          bind: "#/state/name",
+          bind: "#/data/name",
         },
         {
           type: "email",
           label: "Your email address",
           required: true,
           placeholder: "john@doe.com",
-          bind: "#/state/email",
+          bind: "#/data/email",
         },
         {
-          type: "textarea",
-          bind: "#/state/msg",
+          type: "xw-tags",
+          label: "Tags",
+        },
+        {
+          type: "xw-omnibox",
+          label: "Search",
+          bind: "#/data/srch",
+        },
+        {
+          type: "xw-monaco",
+          bind: "#/data/schema",
           label: "Message",
-          placeholder: "Your message..."
+          placeholder: "Your message...",
         },
         {
           type: "button",

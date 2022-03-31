@@ -1,5 +1,5 @@
 import { LitElement, html, css } from "lit";
-import AutoComplete from "../xo/AutoComplete";
+import AutoComplete from "../autocomplete/AutoComplete";
 import Context from "./Context";
 import Util from "./Util";
 
@@ -81,8 +81,12 @@ class Control extends LitElement {
 
     this.nestedElement?.addEventListener("focus", this.onfocus.bind(this));
     this.nestedElement?.addEventListener("blur", this.onblur.bind(this));
+
+    //if(this.nestedElement && this.nestedElement.nodeName.indexOf("-")==-1){
+
     this.shadowRoot.addEventListener("input", this.onInput.bind(this));
     this.shadowRoot.addEventListener("change", this.onInput.bind(this));
+    //}
   }
 
   disconnectedCallback() {
@@ -125,9 +129,15 @@ class Control extends LitElement {
   }
 
   onInput(e) {
+    if (e.type === "input" && this.nestedElement) {
+      //console.log(e.target)
+      if (this.nestedElement.nodeName.indexOf("-") !== -1) return;
+    }
+
     e.preventDefault();
     e.stopPropagation();
     e.stopImmediatePropagation();
+
     const source = e.composedPath()[0];
 
     if (e.type === "change") {

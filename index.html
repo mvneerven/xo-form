@@ -26,8 +26,13 @@
   </header>
 
   <main>
-    <xo-form theme="material" src="/forms/incident.js"></xo-form>
+    <xo-form id="frm" theme="material" src="/forms/simple.js"></xo-form>
+
+
+    
   </main>
+
+  <xo-form id="run"></xo-form>
 
   <details id="model-state" title="View XO Model State">
     <summary>
@@ -42,7 +47,12 @@
   <footer>&copy; 2022 - built with 💗 by Neerventure</footer>
 
   <script type="module">
-    let form = document.querySelector("xo-form");
+
+     const scopeEval = (scope, script) => {
+        return Function('"use strict";' + script).bind(scope)();
+     }
+
+    let form = document.getElementById("frm");
     form.on("modelchange", (e) => {
       console.log("modelchange", e.detail);
 
@@ -53,6 +63,11 @@
 
           return value;
         }, 2);
+
+        let render = document.getElementById("run");
+        if(e.detail.model.instance.data?.schema){
+          render.schema = scopeEval(this, e.detail.model.instance.data.schema + "; return schema");
+        }
     });
   </script>
 </body>

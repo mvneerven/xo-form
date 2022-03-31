@@ -28,7 +28,6 @@ class Util {
       return obj;
 
     if (obj instanceof Date) var temp = new obj.constructor();
-    //or new Date(obj);
     else var temp = obj.constructor();
 
     for (var key in obj) {
