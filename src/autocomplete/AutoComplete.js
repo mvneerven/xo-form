@@ -37,7 +37,7 @@ class AutoComplete {
   }
 
   attach() {
-    const isXoControl = this.isXoControl(this.control)
+    const isXoControl = this.isXoControl(this.control);
 
     const on = (a, b) => {
       this.htmlElement.addEventListener(a, b);
@@ -65,7 +65,7 @@ class AutoComplete {
     cn.setAttribute("data-autocomplete", "on");
   }
 
-  isXoControl(control){
+  isXoControl(control) {
     return control.shadowRoot?.querySelector(".xo-cn");
   }
 
@@ -111,9 +111,9 @@ class AutoComplete {
       this.resultClicked = true;
       let result = this.results[index];
 
-      let handlingCategory = this.categories[result.category] || {
-        action: this.setText.bind(this),
-      };
+      let handlingCategory = this.categories[result.category] ?? {};
+      handlingCategory.action =
+        handlingCategory.action ?? this.setText.bind(this);
 
       if (handlingCategory.newTab) {
         this.tabWindow = window.open("about:blank", "_blank"); // prevent popup blocking
@@ -267,14 +267,13 @@ class AutoComplete {
       categories: this.categories,
     };
     this.getItems(options, e).then((r) => {
-
-
-      this.htmlElement.dispatchEvent(new CustomEvent("show-results", {
-        detail: {
-          results: r
-        }
-      }))
-
+      this.htmlElement.dispatchEvent(
+        new CustomEvent("show-results", {
+          detail: {
+            results: r,
+          },
+        })
+      );
 
       this.resultsHandler(r, options);
     });
@@ -357,7 +356,9 @@ class AutoComplete {
     const prop = this.settings.map;
 
     const normalizeItem = (i) => {
-      return { text: i.text ?? i };
+      if (typeof i === "string") i = { text: i };
+
+      return i;
     };
 
     const map = (list) => {
@@ -429,17 +430,19 @@ class AutoComplete {
         );
       } else if (typeof this.items === "function") {
         options.control = this.control;
-        let ar = this.items(options, e).map((i) => {
-          return normalizeItem(i);
+        let ar = this.items(options, e).then((ar) => {
+          ar = ar.map((i) => {
+            return normalizeItem(i);
+          });
+
+          ar = map(
+            ar.filter((i) => {
+              return this.isMatch(options, i);
+            })
+          );
+
+          resolve(ar);
         });
-
-        ar = map(
-          ar.filter((i) => {
-            return this.isMatch(options, i);
-          })
-        );
-
-        resolve(ar);
       } else {
         return resolve(Promise.resolve(this.items.apply(this, options)));
       }

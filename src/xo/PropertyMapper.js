@@ -50,7 +50,6 @@ class PropertyMapper {
       let value = this.getCurrentValue(element, properties, prop);
 
       if (!["id"].includes(prop)) element[prop] = value;
-      //    if(element.nodeName.startsWith("XO-") && prop === "id") debugger;
 
       let hyphenAttrName = PropertyMapper.camelCaseToHyphen(prop);
 
