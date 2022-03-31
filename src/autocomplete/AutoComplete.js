@@ -1,6 +1,5 @@
 import Util from "../xo/Util";
 import autoCompleteStyles from "../../css/autocomplete.css";
-import Control from "../xo/Control";
 
 /**
  * Autocomplete helper for all textbox derived controls.
@@ -38,7 +37,7 @@ class AutoComplete {
   }
 
   attach() {
-    const isXoControl = this.control instanceof Control;
+    const isXoControl = this.isXoControl(this.control)
 
     const on = (a, b) => {
       this.htmlElement.addEventListener(a, b);
@@ -64,6 +63,10 @@ class AutoComplete {
     this.clear();
 
     cn.setAttribute("data-autocomplete", "on");
+  }
+
+  isXoControl(control){
+    return control.shadowRoot?.querySelector(".xo-cn");
   }
 
   moveResult(add) {

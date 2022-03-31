@@ -42,11 +42,15 @@ export const form = {
         {
           type: "xw-tags",
           label: "Tags",
+          autocomplete: {
+            items: ["Beer", "Wine", "Coffee"]
+          }
         },
         {
           type: "xw-omnibox",
           label: "Search",
           bind: "#/data/srch",
+          
         },
         {
           type: "xw-monaco",

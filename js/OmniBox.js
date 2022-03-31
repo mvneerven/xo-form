@@ -1,5 +1,6 @@
 import { LitElement, html, css } from "lit";
 import { repeat } from "lit/directives/repeat.js";
+import AutoComplete from '../src/autocomplete/AutoComplete'
 
 class OmniBox extends LitElement {
   _value = [];
@@ -11,28 +12,29 @@ class OmniBox extends LitElement {
     };
   }
 
-  static get styles(){
-      return css`
+  static get styles() {
+    return [
+      AutoComplete.sharedStyles,
+      css`
         input {
-            border: 0px;
-            outline: none;
-            background-color: transparent;
-            line-height: 1.1rem;
+          border: 0px;
+          outline: none;
+          background-color: transparent;
+          line-height: 1.1rem;
         }
-      `
+    `];
   }
 
   constructor() {
     super();
     this.categories = [];
-
   }
 
   render() {
     return html`<input type="search" @input=${this.onInput.bind(this)} />`;
   }
 
-  onInput(e){
+  onInput(e) {
     debugger;
   }
 
