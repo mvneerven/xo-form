@@ -160,6 +160,14 @@ class Control extends LitElement {
     if (e.type === "input") this.__lastInputValue = this.value;
   }
 
+  emit(name, detail = {}) {
+    this.dispatchEvent(
+      new CustomEvent(name, {
+        detail: detail,
+      })
+    );
+  }
+
   // special case: button hosted
   click(e) {
     e.preventDefault();
@@ -317,6 +325,9 @@ class Control extends LitElement {
     if (this.classes) {
       cls.push(...this.classes);
     }
+    if (this.prepend) {
+      cls.push("xo-prp");
+    }
     if (this.nestedElement) {
       if (this.nestedElement.value) {
         cls.push("xo-ne");
@@ -389,11 +400,21 @@ class Control extends LitElement {
   renderPrepend() {
     if (this.prepend) {
       if (this.prepend.icon) {
-        return html`<span class="material-icons">${this.prepend.icon}</span>`;
+        return this.renderIcon(this.prepend.icon);
       } else if (this.prepend.text) {
         return html`<span class="xo-pp">${this.prepend.text}</span>`;
       }
     }
+  }
+
+  renderIcon(name) {
+    const icon = `${this.form.schema.icons ?? ""}#${name}`;
+    return html`<svg
+      style="width: 24px; height: 24px"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <use id="use" href="${icon}" />
+    </svg>`;
   }
 
   renderAppend() {}

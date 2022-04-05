@@ -234,9 +234,42 @@ html.theme-dark {
   }
 }
 
+.xo-cn {
+  &.xo-prp {
+    .xo-ct {
+      .xo-in {
+        display: flex;
+        align-items: center;
+        
+        svg {
+          display: inline-block;
+          fill: currentColor;
+          margin-left: -5px;
+          margin-top: -5px;
+        }
+      }
+    }
+  }
+}
+
 .material {
   &.xo-cn {
     margin-top: 0;
+
+    &.xo-prp {
+      .xo-ct {
+        .xo-in {
+          display: flex;
+
+          > svg {
+            margin-right: 5px;
+          }
+        }
+        label {
+          left: 50px;
+        }
+      }
+    }
   }
 
   &.xo-tx {

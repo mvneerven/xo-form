@@ -1,6 +1,7 @@
 export const form = {
   validation: "inline",
   layout: "static",
+  icons: "/data/icons.svg",
   model: {
     instance: {
       state: {},
@@ -31,6 +32,9 @@ export const form = {
           placeholder: "Enter your name...",
           minLength: 3,
           bind: "#/data/name",
+          prepend: {
+            icon: "test"
+          }
         },
         {
           type: "email",
@@ -38,6 +42,9 @@ export const form = {
           required: true,
           placeholder: "john@doe.com",
           bind: "#/data/email",
+          prepend: {
+            icon: "email"
+          }
         },
         {
           type: "xw-tags",
@@ -46,6 +53,7 @@ export const form = {
           autocomplete: {
             items: ["Beer", "Wine", "Coffee"],
           },
+          
         },
         {
           type: "xw-omnibox",
@@ -90,6 +98,11 @@ export const form = {
           bind: "#/data/schema",
           label: "Message",
           placeholder: "Your message...",
+        },
+        {
+          type: "xw-leaflet",
+          
+
         },
         {
           type: "button",

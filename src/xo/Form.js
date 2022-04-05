@@ -46,6 +46,10 @@ class Form extends Control {
       validation: {
         type: String,
       },
+
+      icons: {
+        type: String
+      }
     };
   }
 
@@ -145,7 +149,7 @@ class Form extends Control {
 
     this.schema.page = "#/_xo/nav/page";
 
-    this.schema.pages=this.schema.pages ?? [];
+    this.schema.pages = this.schema.pages ?? [];
 
     this.context.data.initialize(this.schema.model, {
       pageCount: this.schema.pages.length,
@@ -197,32 +201,13 @@ class Form extends Control {
   }
 
   firstUpdated() {
-    this.checkUrlState();
-
     this.validator = new Validator(this);
 
     this.emit("first-updated");
   }
 
-  emit(name, detail = {}) {
-    this.dispatchEvent(
-      new CustomEvent(name, {
-        detail: detail,
-      })
-    );
-  }
-
   get url() {
     return this._url;
-  }
-
-  checkUrlState() {
-    // if (this.url.pathname.startsWith("/page/")) {
-    //   let pg = parseInt(this.url.pathname.substring(6));
-    //   if (pg) {
-    //     this.context.data.set("#/_xo/nav/page", pg);
-    //   }
-    // }
   }
 
   getSlotted(node) {

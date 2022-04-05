@@ -9,5 +9,6 @@ import FileDrop from './FileDrop'
 import Info from './Info'
 import Monaco from './Monaco';
 import OmnoBox from './OmniBox'
+import Leaflet from './Leaflet';
 
 window.pwa = new PWA()

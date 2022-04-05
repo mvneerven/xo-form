@@ -1,5 +1,5 @@
 import { LitElement, html, css } from "lit";
-
+import { until } from "lit/directives/until.js";
 //import ac from "xo-form/dist/xo-autocomplete.js";
 import ac from "../src/autocomplete";
 
@@ -8,14 +8,25 @@ const AutoComplete = ac.AutoComplete;
 class OmniBox extends LitElement {
   _value = [];
 
-  _categories = {};
+  _categories = null;
 
   static get properties() {
     return {
       categories: { type: Object },
       value: { type: Object },
-      placeholder: { type: String },
+      placeholder: { type: String, attribute: true },
+      src: {
+        type: String,
+      },
     };
+  }
+
+  constructor() {
+    super();
+
+    this.input = document.createElement("input");
+    this.input.type = "search";
+    this.input.addEventListener("input", this.onInput.bind(this));
   }
 
   static get styles() {
@@ -28,9 +39,62 @@ class OmniBox extends LitElement {
           outline: none;
           background-color: transparent;
           line-height: 1.1rem;
+          color: var(--text-color);
         }
       `,
     ];
+  }
+
+  /**
+   * Sets the URL to read an XO Form Schema from
+   */
+  set src(url) {
+    this._src = url;
+  }
+
+  /**
+   * Returns the URL to read an XO Form Schema from
+   */
+  get src() {
+    return this._src;
+  }
+
+  set placeholder(placeholder) {
+    this._placeholder = placeholder;
+    if (this.input) {
+      this.input.setAttribute("placeholder", this._placeholder);
+    }
+  }
+
+  get placeholder() {
+    return this._placeholder;
+  }
+
+  async readSchema() {
+    if (!this._categories) {
+      if (this.src) {
+        try {
+          let r = await import(this.src);
+          const key = Object.keys(r)[0];
+          this._categories = r[key];
+        } catch (x) {
+          throw Error(
+            "Could not load omnibox settings from " +
+              this.src +
+              ". " +
+              x.message
+          );
+        }
+      }
+    }
+    if (!this.categories) return false;
+
+    if (!this._autoCompleter && this.input != null) {
+      this._ready = true;
+      this.requestUpdate();
+    }
+
+    return true;
   }
 
   get categories() {
@@ -42,26 +106,72 @@ class OmniBox extends LitElement {
   }
 
   render() {
-    return html`<div>
-      <input placeholder=${this.placeholder} type="search" />
-    </div>`;
+    return html`
+      ${until(
+        this.readSchema().then((ready) => {
+          if (!ready) {
+            return html``;
+          }
+
+          return html`<div>${this.input}</div>`;
+        }),
+        html`Loading...`
+      )}
+    `;
   }
 
-  firstUpdated() {
-    super.firstUpdated();
+  update() {
+    super.update();
 
-    let input = this.shadowRoot.querySelector("input");
-
-    input.addEventListener("result-selected", (e) => {
-      input.value = e.detail.text;
-    });
-
-    this._autoCompleter = new AutoComplete(this, input, {
-      categories: this.categories,
-      items: this.items,
-    });
-    this._autoCompleter.attach();
+    if (this._ready) {
+      setTimeout(() => {
+        this.input.addEventListener("result-selected", (e) => {
+          this.input.value = e.detail.text;
+        });
+        this._autoCompleter = new AutoComplete(this, this.input, {
+          categories: this.categories,
+          items: this.items,
+        });
+        this._autoCompleter.attach();
+      }, 10);
+    }
   }
+
+  onInput(e) {
+    this.value = this.input.value;
+    this.fireChange();
+  }
+
+  fireChange() {
+    this.dispatchEvent(
+      new Event("change", { bubbles: true, cancelable: false })
+    );
+  }
+
+  get value() {
+    let input = this.input;
+    if (input) {
+      this._value = input.value;
+    }
+    return this._value;
+  }
+
+  set value(value) {
+    this._value = value;
+    let input = this.input;
+    if (input) {
+      input.value = value;
+    }
+  }
+
+  // get input() {
+  //   return this.shadowRoot?.querySelector("input");
+  // }
+
+  // firstUpdated() {
+  //   super.firstUpdated();
+
+  // }
 
   async items(options) {
     let arr = [];

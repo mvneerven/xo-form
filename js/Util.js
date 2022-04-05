@@ -1,39 +1,17 @@
 class Util {
-  static require(src, c) {
-    var d = document;
-    let elm = d.head.querySelector(`script[src="${src}"]`);
-    if (elm) {
-      let loadState = elm.getAttribute("data-exf-rl");
-      if (loadState) {
-        if (loadState === "1") {
-          elm.addEventListener("load", (ev) => {
-            ev.target.setAttribute("data-exf-rl", "2");
-            if (typeof c === "function") {
-              c();
-            }
-          });
-        } else if (loadState === "2" && typeof c === "function") {
-          c();
-        }
-        return;
-      }
-    }
-
-    return new Promise((resolve, reject) => {
-      const check = () => {
-        if (typeof c === "function") {
-          c();
-        }
+  static async requireJS(src) {
+    return new Promise((resolve) => {
+      let headElement = document.querySelector(`[src="${src}"]`);
+      if (!headElement) {
+        let script = document.createElement("script");
+        script.src = src;
+        script.onload = (e) => {
+          resolve();
+        };
+        document.querySelector("head").appendChild(script);
+      } else {
         resolve();
-      };
-      let e = d.createElement("script");
-      e.setAttribute("data-exf-rl", "1");
-      e.src = src;
-      d.head.appendChild(e);
-      e.onload = (ev) => {
-        ev.target.setAttribute("data-exf-rl", "2");
-        check();
-      };
+      }
     });
   }
 
@@ -54,6 +32,22 @@ class Util {
    */
   static scopeEval(scope, script) {
     return Function('"use strict";' + script).bind(scope)();
+  }
+
+  static addStyleSheet(src, attr) {
+    var d = document;
+    if (d.querySelector("head > link[rel=stylesheet][href='" + src + "']"))
+      return;
+
+    let e = d.createElement("link");
+    e.rel = "stylesheet";
+    e.href = src;
+    if (attr) {
+      for (var a in attr) {
+        e.setAttribute(a, attr[a]);
+      }
+    }
+    d.head.appendChild(e);
   }
 }
 

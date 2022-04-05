@@ -37,6 +37,7 @@ class AutoComplete {
   }
 
   attach() {
+    
     const isXoControl = this.isXoControl(this.control);
 
     const on = (a, b) => {

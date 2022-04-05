@@ -130,34 +130,33 @@ class Monaco extends LitElement {
   async requireMonaco() {
     const me = this;
 
-    return new Promise((resolve) => {
-      Util.require(
-        `https://unpkg.com/monaco-editor@${me.version}/min/vs/loader.js`,
-        () => {
-          require.config({
-            paths: {
-              vs: `https://unpkg.com/monaco-editor@${me.version}/min/vs`,
-            },
-          });
-          window.MonacoEnvironment = { getWorkerUrl: () => proxy };
+    return new Promise(async (resolve) => {
+      await Util.requireJS(
+        `https://unpkg.com/monaco-editor@${me.version}/min/vs/loader.js`
+      );
 
-          let proxy = URL.createObjectURL(
-            new Blob(
-              [
-                `self.MonacoEnvironment = {
+      require.config({
+        paths: {
+          vs: `https://unpkg.com/monaco-editor@${me.version}/min/vs`,
+        },
+      });
+      window.MonacoEnvironment = { getWorkerUrl: () => proxy };
+
+      let proxy = URL.createObjectURL(
+        new Blob(
+          [
+            `self.MonacoEnvironment = {
                     baseUrl: 'https://unpkg.com/monaco-editor@${me.version}/min/'
                 };
                 importScripts('https://unpkg.com/monaco-editor@${me.version}/min/vs/base/worker/workerMain.js');`,
-              ],
-              { type: "text/javascript" }
-            )
-          );
-
-          require(["vs/editor/editor.main"], () => {
-            resolve(monaco);
-          });
-        }
+          ],
+          { type: "text/javascript" }
+        )
       );
+
+      require(["vs/editor/editor.main"], () => {
+        resolve(monaco);
+      });
     });
   }
 
