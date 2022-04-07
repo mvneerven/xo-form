@@ -20,13 +20,11 @@ class Leaflet extends LitElement {
         `https://unpkg.com/leaflet@${this.version}/dist/leaflet.js`
       );
 
-      let tmr;
-      tmr = setInterval((e) => {
-        if (window.L) {
-          clearInterval(tmr);
-          resolve(window.L);
-        }
-      }, 50);
+      await Util.waitFor(() => {
+        return typeof window.L === "object";
+      });
+
+      resolve(window.L);
     });
   }
 

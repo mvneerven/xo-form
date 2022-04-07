@@ -1,19 +1,20 @@
 export const wizard = {
-  
+  icons: "/data/icons.svg",
   model: {
     rules: {
       "#/mail/send": [
         {
           set: "#/mail/sent",
           value: (context) => {
-            alert(1);
+            alert(JSON.stringify(context.data.instance.mail, null, 2));
           },
         },
       ],
     },
     instance: {
+      state: {},
       mail: {
-        emailAddress: "marc@van-neerven.net",
+        emailAddress: "",
         message: "",
         copy: "No",
         tags: [],
@@ -30,6 +31,9 @@ export const wizard = {
           placeholder: "john@doe.com",
           required: true,
           bind: "#/mail/emailAddress",
+          prepend: {
+            icon: "email"
+          }
         },
         {
           type: "textarea",
@@ -40,7 +44,7 @@ export const wizard = {
           maxlength: 150,
         },
         {
-          type: "select",
+          type: "xw-radiogroup",
           label: "Copy to self",
           bind: "#/mail/copy",
           items: ["Yes", "No"],
@@ -56,7 +60,7 @@ export const wizard = {
           bind: "#/mail/tags",
           placeholder: "Add tag",
           autocomplete: {
-            items: ["Test", "Bla"],
+            items: ["Milk", "Honey"],
           },
         },
       ],
@@ -72,7 +76,7 @@ export const wizard = {
         {
           type: "button",
           label: "Send",
-          bind: "#/mail/send",
+          bind: "#/state/send",
         },
       ],
     },

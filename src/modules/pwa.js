@@ -1,4 +1,5 @@
 import xo from "../xo";
+import MdHtml from "./md-html";
 
 class PWA {
   constructor() {

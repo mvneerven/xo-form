@@ -48,8 +48,8 @@ class Form extends Control {
       },
 
       icons: {
-        type: String
-      }
+        type: String,
+      },
     };
   }
 
@@ -184,16 +184,16 @@ class Form extends Control {
             return html``;
           }
 
-          return html`<div class="xo-c" data-page="${this.page}" >
+          return html`<div class="xo-c" data-page="${this.page}">
             <form>
-                <div class="xo-w">
-                    <slot name="w"></slot>
-                </div>
-                <div class="xo-n">
-                    <slot name="n"></slot>
-                <div>
+              <div class="xo-w">
+                <slot name="w"></slot>
+              </div>
+              <div class="xo-n">
+                <slot name="n"></slot>
+              </div>
             </form>
-            <div>`;
+          </div>`;
         }),
         html`Loading...`
       )}

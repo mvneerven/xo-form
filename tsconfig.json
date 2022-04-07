@@ -1,6 +1,6 @@
 {
   // Change this to match your project
-  "include": ["src/**/*.js"],
+  "include": ["src/**/*.js", "js/SchemaEditor.js"],
   "compilerOptions": {
     "target": "es6",
     // Tells TypeScript to read JS files, as

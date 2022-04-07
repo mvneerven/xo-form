@@ -1,14 +1,16 @@
 export const form = {
   progress: "risesteps",
+  icons: "/data/rise-icons.svg",
+
   submit: false,
   model: {
     rules: {
       "#/state/save": [
         {
-          run: context=>{
-            debugger
-          }
-        }
+          run: (context) => {
+            debugger;
+          },
+        },
       ],
       "#/incident/shortcut": [
         {
@@ -94,6 +96,7 @@ export const form = {
     {
       label: "Nieuw Incident",
       intro: "Waar en wanneer gebeurde het?",
+
       fields: [
         {
           type: "xw-radiogroup",
@@ -109,12 +112,13 @@ export const form = {
         },
         {
           type: "search",
+          dataTest: "a",
           bind: "#/incident/where",
           placeholder: "Facebook",
           required: true,
-          // prepend: {
-          //   icon: "fas fa-map-marker-alt",
-          // },
+          prepend: {
+            icon: "location-pin",
+          },
           info: "Geef aan op welk medium het online incident plaatsvond",
           autocomplete: {
             items: [
@@ -150,9 +154,9 @@ export const form = {
           placeholder: "Kalverstraat, Amsterdam",
           required: true,
           info: "Beschrijf zo nauwkeurig mogelijk waar het incident plaatsvond",
-          // prepend: {
-          //   icon: "fas fa-map-marker-alt",
-          // },
+          prepend: {
+            icon: "location-pin",
+          },
           autocomplete: {
             items: [],
           },

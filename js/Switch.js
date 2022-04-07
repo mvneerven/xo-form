@@ -10,6 +10,10 @@ class Switch extends LitElement {
           position: relative;
         }
 
+        label.switch.rtl {
+          direction: rtl;
+        }
+
         .switch input {
           display: none;
         }
@@ -55,9 +59,14 @@ class Switch extends LitElement {
         }
 
         .knob-lbl {
+          display: inline-block;
           margin-left: 50px;
           width: auto;
           cursor: pointer;
+        }
+
+        label.switch.rtl .knob-lbl {
+          padding-right: 48px;
         }
       `,
     ];
@@ -67,6 +76,11 @@ class Switch extends LitElement {
     return {
       text: {
         type: String,
+        attribute: true,
+      },
+      rtl: {
+        type: Boolean,
+        attribute: true,
       },
     };
   }
@@ -74,7 +88,7 @@ class Switch extends LitElement {
   _value = false;
 
   render() {
-    return html`<label class="switch">
+    return html`<label class="switch ${this.rtl ? " rtl" : ""}">
       <input @change=${this.toggle} .checked=${this.value} type="checkbox" />
       <div class="knob round"></div>
       <div class="knob-lbl">${this.text}</div>

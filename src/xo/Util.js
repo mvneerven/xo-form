@@ -139,6 +139,22 @@ class Util {
     return Function('"use strict";' + script).bind(scope)();
   }
 
+  static addStyleSheet(src, attr) {
+    var d = document;
+    if (d.querySelector("head > link[rel=stylesheet][href='" + src + "']"))
+      return;
+
+    let e = d.createElement("link");
+    e.rel = "stylesheet";
+    e.href = src;
+    if (attr) {
+      for (var a in attr) {
+        e.setAttribute(a, attr[a]);
+      }
+    }
+    d.head.appendChild(e);
+  }
+
   /**
    * Returns a random GUID
    * @returns string (36 characters)
@@ -154,6 +170,41 @@ class Util {
       }
     );
     return `${options.prefix || ""}${options.compact ? g.split("-").pop() : g}`;
+  }
+
+  static async requireJS(src) {
+    return new Promise((resolve) => {
+      let headElement = document.querySelector(`[src="${src}"]`);
+      if (!headElement) {
+        let script = document.createElement("script");
+        script.src = src;
+        script.onload = (e) => {
+          resolve();
+        };
+        document.querySelector("head").appendChild(script);
+      } else {
+        resolve();
+      }
+    });
+  }
+
+  static async waitFor(
+    evaluator = () => {
+      return true;
+    }
+  ) {
+    return new Promise((resolve) => {
+      let tmr,
+        evualationResult = null;
+      tmr = setInterval((e) => {
+        try {
+          if ((evualationResult = evaluator())) {
+            clearInterval(tmr);
+            resolve(evualationResult);
+          }
+        } catch {}
+      }, 50);
+    });
   }
 }
 

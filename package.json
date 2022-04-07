@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "esbuild-plugin-lit-css": "^1.2.4",
+    "esbuild-plugin-markdown": "^0.0.3",
     "jsdoc": "^3.6.10",
     "lit": "^2.2.0",
     "typescript": "^4.2.4"

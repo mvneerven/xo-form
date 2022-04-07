@@ -18,6 +18,8 @@ class Monaco extends LitElement {
 
   _theme = getTheme();
 
+  _minimap = false;
+
   get version() {
     return this._version;
   }
@@ -26,8 +28,26 @@ class Monaco extends LitElement {
     this._version = version;
   }
 
+  /**
+   * Sets the URL to read an XO Form Schema from
+   */
+  set src(url) {
+    this._src = url;
+  }
+
+  /**
+   * Returns the URL to read an XO Form Schema from
+   */
+  get src() {
+    return this._src;
+  }
+
   static get properties() {
     return {
+      readonly: {
+        type: Boolean,
+        attribute: true,
+      },
       version: {
         type: String,
       },
@@ -37,10 +57,37 @@ class Monaco extends LitElement {
       theme: {
         type: String,
       },
+      minimap: {
+        type: Boolean,
+      },
       value: {
         type: String,
       },
+      src: {
+        type: String,
+        attribute: true,
+      },
+      options: {
+        type: Object,
+        attribute: true,
+        converter: (value, type) => {
+          return JSON.parse(value);
+        },
+      },
     };
+  }
+
+  async readSource() {
+    if (this.src) {
+      try {
+        let s = await fetch(this.src).then((x) => x.text());
+        return s;
+      } catch (x) {
+        throw Error(
+          "Could not load schema from " + this.src + ". " + x.message
+        );
+      }
+    }
   }
 
   render() {
@@ -54,6 +101,14 @@ class Monaco extends LitElement {
     </div>`;
   }
 
+  get minimap() {
+    return this._minimap;
+  }
+
+  set minimap(on) {
+    this._minimap = on;
+  }
+
   get theme() {
     return this._theme;
   }
@@ -63,19 +118,32 @@ class Monaco extends LitElement {
     if (monaco && monaco.editor) monaco.editor.setTheme(name);
   }
 
+  get options() {
+    return this._options || {};
+  }
+
+  set options(value) {
+    this._options = value;
+  }
+
   async firstUpdated() {
     const me = this;
     await super.firstUpdated();
 
     let monaco = await this.requireMonaco();
 
+    if (this.src) this.value = await this.readSource(this.src);
+
     const detail = {
       editorOptions: {
         readOnly: this.readonly,
         value: this.value || "",
+        minimap: {
+          enabled: me.minimap,
+        },
         language: this.language,
         theme: this.theme,
-        ...(this.options || {}),
+        ...me.options,
       },
     };
 
@@ -130,9 +198,25 @@ class Monaco extends LitElement {
   async requireMonaco() {
     const me = this;
 
-    return new Promise(async (resolve) => {
+    return new Promise(async (resolve, reject) => {
       await Util.requireJS(
         `https://unpkg.com/monaco-editor@${me.version}/min/vs/loader.js`
+      );
+
+      await Util.waitFor(() => {
+        return typeof require?.config === "function";
+      });
+
+      const proxy = URL.createObjectURL(
+        new Blob(
+          [
+            `self.MonacoEnvironment = {
+             baseUrl: 'https://unpkg.com/monaco-editor@${me.version}/min/'
+          };
+          importScripts('https://unpkg.com/monaco-editor@${me.version}/min/vs/base/worker/workerMain.js');`,
+          ],
+          { type: "text/javascript" }
+        )
       );
 
       require.config({
@@ -141,18 +225,6 @@ class Monaco extends LitElement {
         },
       });
       window.MonacoEnvironment = { getWorkerUrl: () => proxy };
-
-      let proxy = URL.createObjectURL(
-        new Blob(
-          [
-            `self.MonacoEnvironment = {
-                    baseUrl: 'https://unpkg.com/monaco-editor@${me.version}/min/'
-                };
-                importScripts('https://unpkg.com/monaco-editor@${me.version}/min/vs/base/worker/workerMain.js');`,
-          ],
-          { type: "text/javascript" }
-        )
-      );
 
       require(["vs/editor/editor.main"], () => {
         resolve(monaco);

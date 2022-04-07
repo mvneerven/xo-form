@@ -94,11 +94,11 @@ class DataBinding {
             });
           }
 
-//TODO: JSON Patch - https://github.com/Palindrom/JSONPatcherProxy
+          //TODO: JSON Patch - https://github.com/Palindrom/JSONPatcherProxy
 
           try {
             me.context.form.emit("modelchange", {
-              model: schemaModel,
+              model: me.schemaModel.instance,
               change: bindingPath,
               oldValue: oldValue,
               newValue: value,
@@ -142,7 +142,7 @@ class DataBinding {
 
     setTimeout(() => {
       this.context.form.emit("modelchange", {
-        model: me.schemaModel,
+        model: me.schemaModel.instance,
         initial: true,
         change: undefined,
       });

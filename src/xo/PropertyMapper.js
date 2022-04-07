@@ -1,4 +1,5 @@
 import AutoComplete from "../autocomplete/AutoComplete";
+import Control from "./Control";
 
 const RESERVED_PROPERTIES = ["type", "label", "bind", "classes"];
 
@@ -39,8 +40,7 @@ class PropertyMapper {
     if (!properties.id) properties.id = getUniqueName();
     if (!properties.name) properties.name = properties.id;
 
-    if (isInitialState) {
-      // first distill all bindings to manage
+    if (isInitialState) { // first distill all bindings to manage
       this.context.data.processBindings(element, properties);
     }
 
@@ -49,9 +49,9 @@ class PropertyMapper {
 
       let value = this.getCurrentValue(element, properties, prop);
 
-      if (!["id"].includes(prop)) element[prop] = value;
-
-      let hyphenAttrName = PropertyMapper.camelCaseToHyphen(prop);
+      if (!["id"].includes(prop)) {
+        element[prop] = value;
+      }
 
       if (nested) {
         if (PropertyMapper.elementSupportsProperty(nested, prop)) {
@@ -59,10 +59,16 @@ class PropertyMapper {
         } else {
           if (PropertyMapper.isReservedProperty(prop)) continue;
 
+          let hyphenAttrName = PropertyMapper.camelCaseToHyphen(prop);
+
           if (PropertyMapper.elementSupportsAttribute(nested, hyphenAttrName)) {
             nested.setAttribute(hyphenAttrName, value);
           } else {
-            nested.setAttribute("data-" + hyphenAttrName, value);
+            hyphenAttrName = hyphenAttrName.startsWith("data-")
+              ? hyphenAttrName
+              : "data-" + hyphenAttrName;
+
+            nested.setAttribute(hyphenAttrName, value);
           }
         }
       }
@@ -207,7 +213,7 @@ class PropertyMapper {
   static elementSupportsAttribute(element, attribute) {
     var test = document.createElement(element.nodeName.toLowerCase());
     return (
-      attribute in test ||
+      (attribute in test && typeof test[attribute] !== "function") ||
       ["role", "readonly", "maxlength"].includes(attribute) ||
       attribute.startsWith("aria-")
     );

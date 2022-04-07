@@ -52,8 +52,13 @@ body {
 a:link,
 a:visited {
     color: var(--text-color);
+    border: 0px;
     text-decoration: none;
+    border-bottom: 2px dotted rgba(238, 150, 87, 0.5);
+    
     &:hover {
-        text-decoration: underline;
+        border-style: solid;
+        border-bottom-color: rgba(243, 132, 52, 1);
+        transition: all .2s ease;
     }
 }

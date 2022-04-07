@@ -133,16 +133,8 @@ export const movies = {
                 {
                   type: "button",
                   label: "⨉",
-                  bind: "#/state/movies/@index/remove",
-                  // click: (e) => {
-                  //   const repeat = e.detail.repeat;
-                  //   if (repeat) {
-                  //     const data = repeat.context.data,
-                  //       ar = data.get("#/state/movies");
-                  //     ar.splice(e.detail.index, 1);
-                  //     data.set("#/state/movies", ar);
-                  //   }
-                  // },
+                  bind: "#/state/movies/@index/remove"
+                  
                 },
               ],
             },

@@ -1,11 +1,12 @@
 // https://esbuild.github.io/api/
 const esbuild = require("esbuild");
 const { litCssPlugin } = require("esbuild-plugin-lit-css");
+const { markdownPlugin } = require("esbuild-plugin-markdown");
 
 console.log("Building dist/xo-form.js");
 esbuild
   .build({
-    plugins: [litCssPlugin()],
+    plugins: [litCssPlugin(),  markdownPlugin()],
     entryPoints: ["src/xo/index.js"],
     bundle: true,
     keepNames: true,
@@ -25,7 +26,7 @@ esbuild
 console.log("Building dist/xo-autocomplete.js");
 esbuild
   .build({
-    plugins: [litCssPlugin()],
+    plugins: [litCssPlugin(),  markdownPlugin() ],
     entryPoints: ["src/autocomplete/index.js"],
     bundle: true,
     keepNames: true,
@@ -45,7 +46,7 @@ esbuild
 console.log("Building dist/index.js");
 esbuild
   .build({
-    plugins: [litCssPlugin()],
+    plugins: [litCssPlugin(),  markdownPlugin()],
     entryPoints: ["js/index.js"],
     bundle: true,
     keepNames: true,

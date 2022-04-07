@@ -15,6 +15,25 @@ class Util {
     });
   }
 
+  static async waitFor(
+    evaluator = () => {
+      return true;
+    }
+  ) {
+    return new Promise((resolve) => {
+      let tmr,
+        evualationResult = null;
+      tmr = setInterval((e) => {
+        try {
+          if ((evualationResult = evaluator())) {
+            clearInterval(tmr);
+            resolve(evualationResult);
+          }
+        } catch {}
+      }, 50);
+    });
+  }
+
   static throttleEvent(elm, eventName, callback, delay = 100) {
     let timeout;
     callback();

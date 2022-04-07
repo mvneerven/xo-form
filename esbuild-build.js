@@ -2,6 +2,7 @@
 const esbuild = require("esbuild");
 const { sassPlugin } = require("@es-pack/esbuild-sass-plugin");
 const { litCssPlugin } = require("esbuild-plugin-lit-css");
+const { markdownPlugin } = require("esbuild-plugin-markdown");
 
 esbuild.build({
   plugins: [sassPlugin(), litCssPlugin()],
@@ -19,7 +20,7 @@ esbuild.build({
 
 esbuild
   .build({
-    plugins: [sassPlugin(), litCssPlugin()],
+    plugins: [sassPlugin(), litCssPlugin(),  markdownPlugin()],
     entryPoints: ["src/xo/index.js"],
     bundle: true,
     format: "esm",
@@ -35,7 +36,7 @@ esbuild
 
   esbuild
   .build({
-    plugins: [sassPlugin(), litCssPlugin()],
+    plugins: [sassPlugin(), litCssPlugin(),  markdownPlugin()],
     entryPoints: ["src/autocomplete/index.js"],
     bundle: true,
     format: "esm",

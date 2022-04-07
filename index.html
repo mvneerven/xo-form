@@ -9,15 +9,11 @@
     />
     <meta name="color-scheme" content="dark light" />
     <meta name="theme-color" content="#ffffff" />
-    <link rel="manifest" href="/manifest.json" />
-    <meta name="description" content="XO 3.0" />
+    <meta name="description" content="XO-FORM" />
     <meta name="keywords" content="forms, webforms, webcomponents" />
-
     <link href="/css/main.css" rel="stylesheet" />
-
     <link rel="shortcut icon" href="/img/icon-512p.png" />
     <link rel="apple-touch-icon" href="/img/icon-512p.png" />
-
     <script defer type="module" src="/dist/index.js"></script>
   </head>
 
@@ -25,60 +21,52 @@
     <header>
       <h1><a href="/">XO 3.0</a></h1>
       <xw-theme></xw-theme>
+      <span id="forkongithub"
+        ><a href="https://github.com/mvneerven/xo-form"
+          >Fork me on GitHub</a
+        ></span
+      >
     </header>
 
     <main>
-      <xo-form id="frm" theme="material" src="/forms/simple.js"></xo-form>
+      <section class="c1">
+        <div>
+          <h2>XO-FORM</h2>
+          <p>
+            Imagine writing fully self-contained, data-bound, multi-page complex
+            Web Forms as pure
+            <a
+              href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_Objects#object_initializers"
+              >JavaScript Object Literals</a
+            >.
+          </p>
+          <p>
+            Imagine automatically translating an
+            <a href="https://swagger.io/specification/">OpenAPI/Swagger</a> or
+            <a href="https://json-schema.org/">JSON Schema</a> to a matching Web
+            Form.
+          </p>
+          <p>With `xo-form`, you can!</p>
+        </div>
+      </section>
+      <section class="c1" id="schema">
+        <div>
+        <h2>Schema</h2>
+        <xw-schemaeditor form="frm" src="/forms/wizard.js"></xw-schemaeditor>
+      </div>
+      </section>
+      <section class="c1" id="form">
+        <div>
+          <h2>Rendered Form</h2>
+          <xo-form id="frm" theme="material" ></xo-form>
+        </div>
+      </section>
+      <section class="c1" id="state">
+
+        <xw-modelview></xw-modelview>
+      </section>
     </main>
 
-    <xo-form id="run"></xo-form>
-
-    <details id="model-state" title="View XO Model State">
-      <summary>⊟</summary>
-      <div>
-        <textarea
-          readonly
-          id="model"
-          rows="20"
-          cols="80"
-          style="border: 1px solid rgba(125, 125, 125.5)"
-        ></textarea>
-      </div>
-    </details>
-
     <footer>&copy; 2022 - built with 💗 by Neerventure</footer>
-
-    <script type="module">
-      const scopeEval = (scope, script) => {
-        return Function('"use strict";' + script).bind(scope)();
-      };
-
-      let form = document.getElementById("frm");
-      if (form) {
-        form.on("modelchange", (e) => {
-          console.log("modelchange", e.detail);
-
-          document.getElementById("model").value = JSON.stringify(
-            e.detail.model,
-            (key, value) => {
-              if (key === "dataUrl") return value.split(",")[0];
-
-              return value;
-            },
-            2
-          );
-
-          let render = document.getElementById("run");
-          if (e.detail.model.instance.data?.schema) {
-            render.schema = scopeEval(
-              this,
-              e.detail.model.instance.data.schema + "; return schema"
-            );
-          }
-        });
-      }
-    </script>
-
-    
   </body>
 </html>

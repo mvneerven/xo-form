@@ -6,9 +6,8 @@
   // container - not repeat
   margin-top: 0.4rem;
   margin-bottom: 0.4rem;
-
-  .xo-in {
-    // input
+    
+  .xo-in { // input
     padding: 0;
   }
 
@@ -29,16 +28,15 @@
     }
   }
 
-  &.xo-fc {
-    // focus
+  &.xo-fc { // focus
     .xo-in {
       border-color: var(--xo-input-border-color-active);
       transition: all 0.3s ease;
     }
   }
 }
-.xo-cn:not(.xo-rep):not(.xo-ri) {
-  // xo-ri = repeat-item
+
+.xo-cn:not(.xo-rep):not(.xo-ri) { // xo-ri = repeat-item
   .xo-in {
     .xo-grp {
       padding: 0;
@@ -46,7 +44,7 @@
   }
 }
 
-.xo-ri {
+.xo-ri { // repeat-item
   margin: 0;
   padding: 0 !important;
 
@@ -64,7 +62,7 @@
   padding: 0.5rem 0px 0px 0.5rem;
 }
 
-.xo-pp {
+.xo-pp { // prepend
   display: inline;
 }
 
@@ -146,7 +144,6 @@ button {
 /* disabled */
 .xo-ds {
   opacity: 0.5;
-  //pointer-events: none;
   user-select: none;
   cursor: not-allowed;
 
@@ -163,6 +160,7 @@ button {
 
 fieldset {
   border: 0;
+  padding: 0;
 }
 
 legend {
@@ -240,7 +238,7 @@ html.theme-dark {
       .xo-in {
         display: flex;
         align-items: center;
-        
+
         svg {
           display: inline-block;
           fill: currentColor;

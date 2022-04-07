@@ -33,9 +33,9 @@ class Control extends LitElement {
       disabled: { type: Boolean },
       required: { type: Boolean },
       focus: { type: Boolean },
-      label: { type: String },
-      tooltip: { type: String },
-      placeholder: { type: String },
+      label: { type: String, attribute: true },
+      tooltip: { type: String , attribute: true},
+      placeholder: { type: String, attribute: true },
       valid: { type: Boolean },
       value: { type: Object },
       classes: { type: Array },
@@ -78,15 +78,10 @@ class Control extends LitElement {
     this.form = this.closest("xo-form");
     this.form?.registerElement(this);
     this.acceptMappedState();
-
     this.nestedElement?.addEventListener("focus", this.onfocus.bind(this));
     this.nestedElement?.addEventListener("blur", this.onblur.bind(this));
-
-    //if(this.nestedElement && this.nestedElement.nodeName.indexOf("-")==-1){
-
     this.shadowRoot.addEventListener("input", this.onInput.bind(this));
     this.shadowRoot.addEventListener("change", this.onInput.bind(this));
-    //}
   }
 
   disconnectedCallback() {
@@ -486,6 +481,15 @@ class Control extends LitElement {
       : [...eventName.split(" ")];
     events.forEach((e) => {
       this.addEventListener(e, func);
+    });
+  }
+
+  off(eventName, func){
+    const events = Array.isArray(eventName)
+      ? eventName
+      : [...eventName.split(" ")];
+    events.forEach((e) => {
+      this.removeEventListener(e, func);
     });
   }
 
