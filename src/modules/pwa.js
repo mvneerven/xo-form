@@ -4,6 +4,13 @@ import MdHtml from "./md-html";
 class PWA {
   constructor() {
     this.checkDarkTheme();
+
+    const fog = document.getElementById("forkongithub")
+
+    window.addEventListener("scroll", e=>{
+      let o = 1 - (Math.min(100, window.scrollY) * 0.01);
+      fog.style.opacity = o
+    })
   }
 
   checkDarkTheme() {

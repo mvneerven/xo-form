@@ -1,6 +1,7 @@
 :root {
     --accent: var(--color-accent, #3477f3);
     --text-color: rgb(41, 41, 41);
+    --code-color: #a31515;
     --bg-color: rgb(231, 231, 231);
     --shadow-color: black;
     --frame-color: rgb(250, 250, 250);
@@ -16,6 +17,7 @@
         --accent: var(--color-accent, #5287eb);
         --bg-color: rgb(41, 41, 41);
         --text-color: rgb(241, 241, 241);
+        --code-color: #fffb00;
         --frame-color: rgb(230, 230, 230);
         --xo-input-bg: rgb(30, 30, 30);
         --xo-input-border-color: rgba(50, 50, 50);
@@ -61,4 +63,10 @@ a:visited {
         border-bottom-color: rgba(243, 132, 52, 1);
         transition: all .2s ease;
     }
+}
+
+code {
+    font-family: Consolas, 'Courier New', Courier, monospace;
+    font-size: 1.05rem;
+    color: var(--code-color, --text-color);
 }

@@ -1,14 +1,15 @@
 @import "shared";
 @import "controls";
 @import "scrollbar";
-@import url("https://fonts.googleapis.com/css?family=Material+Icons&display=block");
 
 html {
 	scroll-behavior: smooth;
+	overflow-x: hidden
 }
 
 body {
 	padding-bottom: 3.5rem;
+	overflow-x: hidden
 }
 
 body > * {
@@ -76,7 +77,7 @@ main {
 
 			> * {
 				width: 100%;
-				min-width: max-content;
+				min-width: auto;
 				margin: auto;
 			}
 		}
@@ -108,7 +109,10 @@ xo-control::part(label) {
 	font-family: "Courier New", Courier, monospace;
 }
 
-#forkongithub a {
+a#forkongithub  {
+	position: fixed;
+	top: 40px;
+	right: -60px;
 	background: #000;
 	color: #fff;
 	text-decoration: none;
@@ -119,12 +123,7 @@ xo-control::part(label) {
 	font-size: .9rem;
 	line-height: 1.3rem;
 	display: block;
-	transition: 0.3s;
-
 	width: 230px;
-	position: absolute;
-	top: 40px;
-	right: -60px;
 	transform: rotate(45deg);
 	-webkit-transform: rotate(45deg);
 	-ms-transform: rotate(45deg);

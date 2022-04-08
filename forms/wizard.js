@@ -2,9 +2,9 @@ export const wizard = {
   icons: "/data/icons.svg",
   model: {
     rules: {
-      "#/mail/send": [
+      "#/state/send": [
         {
-          set: "#/mail/sent",
+          set: "#/state/sent",
           value: (context) => {
             alert(JSON.stringify(context.data.instance.mail, null, 2));
           },
