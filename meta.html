@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" id="belovedpet">
+  <head>
+    <meta charset="UTF-8" />
+    <title>XO-FORM - Literal Web Forms</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta
+      name="description"
+      content="XO-FORM - Fully self-contained, data-bound, multi-page complex Web Forms as pure JavaScript Object Literals."
+    />
+    <meta name="keywords" content="forms, webforms, webcomponents" />
+    <link href="/css/main.css" rel="stylesheet" />
+    <link rel="shortcut icon" href="/img/icon-512p.png" />
+    <link rel="apple-touch-icon" href="/img/icon-512p.png" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.xo-js.dev/" />
+    <meta property="og:title" content="XO-FORM - Literal Web Forms" />
+    <meta
+      property="og:description"
+      content="XO-FORM - Fully self-contained, data-bound, multi-page complex Web Forms as pure JavaScript Object Literals."
+    />
+    <meta
+      property="og:image"
+      content="https://xoform.z6.web.core.windows.net/img/banner.png"
+    />
+
+    <script defer type="module" src="/dist/index.js"></script>
+  </head>
+
+  <body>
+    <header>
+      <h1><a href="/">XO 3.0</a></h1>
+      <xw-theme></xw-theme>
+
+      <a
+        id="forkongithub"
+        target="_blank"
+        href="https://github.com/mvneerven/xo-form"
+        >Fork me on GitHub</a
+      >
+    </header>
+
+    <main>
+      <section class="c1" id="form">
+        <div>
+          <h2>Rendered Form:</h2>
+          <xo-form id="frm" theme="material"></xo-form>
+        </div>
+      </section>
+      <section class="c1" id="state">
+        <xw-modelview></xw-modelview>
+      </section>
+    </main>
+
+    <footer>
+      <div>
+        <p>Web Forms are commodities, so why not treat them as such?</p>
+        <p>&copy; 2022 - built with 💗 by Neerventure</p>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -10,7 +10,6 @@ class ExampleList extends LitElement {
       css`
         :host {
           position: relative;
-          
         }
         a:link,
         a:visited {
@@ -32,17 +31,18 @@ class ExampleList extends LitElement {
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
-          background-color: var(--color-bg, rgba(127, 127, 127, 0.2));
+          background-color: var(--bg-color, rgba(127, 127, 127));
           padding: 0.3rem;
           right: 0;
           position: absolute;
           display: none;
           z-index: 99;
-          box-shadow: 2px 2px 2px var(--shadow-color, rgba(127,127,127, .5))
+          box-shadow: 2px 2px 2px var(--shadow-color, rgba(127, 127, 127, 0.5));
         }
 
         .files a {
           display: block;
+          padding: 0.3rem;
           text-transform: capitalize;
         }
       `
@@ -81,7 +81,6 @@ class ExampleList extends LitElement {
     e.preventDefault();
     let sf = document.querySelector("xw-schemaeditor");
     sf.src = e.target.href;
-    this.openList()
   }
 
   renderFile(file) {
@@ -89,9 +88,32 @@ class ExampleList extends LitElement {
   }
 
   openList(e) {
-    if(e) e.preventDefault();
-    this.showDrop = !this.showDrop;
+    const me = this;
+    if (e && e.preventDefault) e.preventDefault();
+    this.showDrop = typeof e === "boolean" ? e : !this.showDrop;
     this.drop.style.display = this.showDrop ? "block" : "none";
+    if (this.showDrop) {
+      setTimeout(() => {
+        document.addEventListener(
+          "keydown",
+          (e) => {
+            if (e.key === "Escape") {
+              this.openList(false);
+            }
+          },
+          {
+            once: true
+          }
+        );
+        document.addEventListener(
+          "click",
+          (e) => {
+            this.openList(false);
+          },
+          { once: true }
+        );
+      }, 10);
+    }
   }
 }
 customElements.define("xw-example-list", ExampleList);

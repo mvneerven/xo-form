@@ -109,6 +109,7 @@ class InputGroup extends LitElement {
           padding-left: 24px;
           cursor: pointer;
           margin-right: 1rem;
+          margin-bottom: .3rem;
           display: inline-block;
         }
 

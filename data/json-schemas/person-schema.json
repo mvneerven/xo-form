@@ -1,0 +1,38 @@
+{
+  "$id": "https://example.com/person.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Person",
+  "type": "object",
+  "properties": {
+    "firstName": {
+      "type": "string",
+      "description": "The person's first name."
+    },
+    "lastName": {
+      "type": "string",
+      "description": "The person's last name."
+    },
+    "birthDate": {
+      "description": "Birth date",
+      "type": "string",
+      "format": "date"
+    },
+    "hobbies": {
+      "description": "List of hobbies",
+      "type": "array",
+      "enum": [
+        "Tennis",
+        "Movies"
+      ]
+    },
+    "profileImage": {
+      "description": "Profile image",
+      "type": "string",
+      "contentEncoding": "base64",
+      "contentMediaType": "image/png"
+    }
+  },
+  "required": [
+    "firstName"
+  ]
+}

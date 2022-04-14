@@ -59,7 +59,7 @@ esbuild
     watch: {
       onRebuild(error, result) {
         if (error) console.error("watch build failed:", error);
-        else console.log("src/autocomplete/index.js rebuilt");
+        else console.log("dist/xo-autocomplete.js rebuilt");
       }
     },
     outfile: "dist/xo-autocomplete.js"
@@ -68,6 +68,28 @@ esbuild
     console.error(ex);
     process.exit(1);
   });
+
+  console.log("Building dist/xo-schema-generator.js");
+  esbuild
+    .build({
+      plugins: [litCssPlugin(), markdownPlugin()],
+      entryPoints: ["src/generator/index.js"],
+      bundle: true,
+      keepNames: true,
+      watch: {
+        onRebuild(error, result) {
+          if (error) console.error("watch build failed:", error);
+          else console.log("dist/xo-schema-generator.js rebuilt");
+        }
+      },
+      outfile: "dist/xo-schema-generator.js"
+    })
+    .catch((ex) => {
+      console.error(ex);
+      process.exit(1);
+    });
+  
+
 
 console.log("Building dist/index.js");
 esbuild

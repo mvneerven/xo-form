@@ -102,20 +102,20 @@ class DataBinding {
               change: bindingPath,
               oldValue: oldValue,
               newValue: value,
-              context: me.originatingEventContext,
+              context: me.originatingEventContext
             });
           } finally {
             me.originatingEventContext = null;
           }
 
           return true;
-        },
+        }
       });
     };
 
     me.schemaModel = {
       instance: {},
-      ...schemaModel,
+      ...schemaModel
     };
 
     this.addBuiltinModelState();
@@ -144,7 +144,7 @@ class DataBinding {
       this.context.form.emit("modelchange", {
         model: me.schemaModel.instance,
         initial: true,
-        change: undefined,
+        change: undefined
       });
     }, 1);
   }
@@ -154,15 +154,15 @@ class DataBinding {
       disabled: {
         back: true,
         next: false,
-        send: true,
+        send: true
       },
       nav: {
         page: 1,
         total: this.options.pageCount,
         back: 0,
         next: 0,
-        send: 0,
-      },
+        send: 0
+      }
     };
   }
 
@@ -209,7 +209,7 @@ class DataBinding {
           control: element,
           rawValue: orig,
           property: prop,
-          binding: orig,
+          binding: orig
         });
       } else {
         PropertyMapper.match(value, (variable) => {
@@ -217,7 +217,7 @@ class DataBinding {
             control: element,
             rawValue: value,
             property: prop,
-            binding: variable,
+            binding: variable
           });
 
           variable = this.processBindingIndex(element, variable);
@@ -261,7 +261,7 @@ class DataBinding {
             form: me.form,
             value: value,
             path: path,
-            binding: bindingPath,
+            binding: bindingPath
           });
 
           if (expression.run) {
@@ -304,19 +304,23 @@ class DataBinding {
     return s;
   }
 
-  parseKey(key) {
+  static parseKey(key) {
     let number = parseInt(key); // numeric - array index
     if (!isNaN(number)) return number;
     return key;
   }
 
   get(path) {
+    return DataBinding.getValue(this.instance, path);
+  }
+
+  static getValue(obj, path) {
     if (path.indexOf("*") !== -1 || path.indexOf("@index") !== -1)
       throw Error("Invalid binding path: " + path);
 
     let pathElements = path.substring(2).split("/");
     let instanceName = pathElements.shift();
-    var current = this.instance[instanceName];
+    var current = obj[instanceName]; //this.instance[instanceName];
     if (!current) return undefined;
 
     for (var i = 0; i < pathElements.length; i++) {
@@ -329,23 +333,28 @@ class DataBinding {
     }
   }
 
-  set(path, value, originatingEventContext) {
+  static setValue(obj, path, value) {
     let pathElements = path.substring(2).split("/");
     let instanceName = pathElements.shift();
-    var current = this.instance[instanceName];
+    var current = obj[instanceName];
     if (!current) return undefined;
 
     for (var i = 0; i < pathElements.length; i++) {
       let key = this.parseKey(pathElements[i]);
       if (i === pathElements.length - 1) {
-        this.originatingEventContext = this.createDataBindingOriginContext(
-          originatingEventContext
-        );
         current[key] = value;
         break;
       }
       current = current[key];
     }
+  }
+
+  set(path, value, originatingEventContext) {
+    this.originatingEventContext = this.createDataBindingOriginContext(
+      originatingEventContext
+    );
+
+    DataBinding.setValue(this.instance, path, value);
   }
 
   createDataBindingOriginContext(originatingEventContext) {
@@ -355,7 +364,7 @@ class DataBinding {
       sourceControl: originatingEventContext.control,
       eventSourceElement: originatingEventContext.source,
       controlValue: originatingEventContext.value,
-      guid: originatingEventContext.guid,
+      guid: originatingEventContext.guid
     };
   }
 }
