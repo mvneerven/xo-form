@@ -1,12 +1,22 @@
 import InputGroup from "./InputGroup";
+import { css } from "lit";
 
 class CheckGroup extends InputGroup {
   _value = [];
 
   static get styles() {
     return [
-      InputGroup.styles
-    ]; 
+      InputGroup.styles,
+      css`
+        .default label:before {
+          border-radius: 10%;
+        }
+
+        .default label:after {
+          border-radius: 10%;
+        }
+      `
+    ];
   }
 
   static get properties() {
@@ -35,7 +45,7 @@ class CheckGroup extends InputGroup {
   }
 
   checkValidity() {
-    return this.required? this.value.length > 0 : true
+    return this.required ? this.value.length > 0 : true;
   }
 
   reportValidity() {}

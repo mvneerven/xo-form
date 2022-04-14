@@ -22,24 +22,24 @@ class Leaflet extends LitElement {
 
       await Util.waitFor(() => {
         return typeof window.L === "object";
-      });
+      }, 2000);
 
       resolve(window.L);
     });
   }
 
-  async firstUpdated() {
+  
+
+  async update() {
     console.debug("Leaflet first update");
     const me = this;
-    super.firstUpdated();
-
+    super.update();  
+    
     let leaflet = await this.requireLeaflet();
 
     let elm = this.shadowRoot.getElementById("leaflet");
 
-    const pos = [52.85582619118, 5.717743972222222];
-
-    const zoom = 14;
+    const pos = [52.85582619118, 5.717743972222222], zoom = 14;
 
     var map = leaflet.map(elm).setView(pos, zoom);
     console.debug("Leaflet Map", map);

@@ -21,10 +21,13 @@ class SchemaEditor extends Monaco {
             let form = document.getElementById(me.form);
             let schemaString = me.value;
             
-            let p = schemaString.indexOf("=");
-            if(p!==-1) 
-                schemaString = schemaString.substring(p+1);
-            form.schema = Util.scopeEval(me, 'return ' + schemaString)
+            let q = schemaString.indexOf("export const ")
+            let p = schemaString.indexOf("=", q+1);
+
+            if(p!==-1) {
+                schemaString = schemaString.substring(0,q-1) + ";return " + schemaString.substring(p+1);
+            }
+            form.schema = Util.scopeEval(me, schemaString)
         })
     }
 }

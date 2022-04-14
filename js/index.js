@@ -1,4 +1,5 @@
 import PWA from "../src/modules/pwa";
+
 import Tags from "./Tags";
 import Theme from "./Theme";
 import Switch from "./Switch";
@@ -12,7 +13,7 @@ import OmnoBox from "./OmniBox";
 import Leaflet from "./Leaflet";
 import ModelView from "./ModelView";
 import SchemaEditor from './SchemaEditor';
-
+import ExampleList from './ExampleList'
 
 
 window.pwa = new PWA();

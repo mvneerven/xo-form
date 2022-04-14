@@ -123,7 +123,7 @@ button {
   &:hover {
     border: 1px solid var(--xo-input-border-color-hover);
   }
-  &:active {
+  &:active:not([disabled]) {
     transform: translateY(2px);
     transition: all 0.1s ease-out;
   }

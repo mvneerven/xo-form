@@ -2,11 +2,37 @@
 const esbuild = require("esbuild");
 const { litCssPlugin } = require("esbuild-plugin-lit-css");
 const { markdownPlugin } = require("esbuild-plugin-markdown");
+const fs = require("fs");
+const htc = (s) => {
+  return s.replace(/-([a-z])/g, function (g) {
+    return " " + g[1].toUpperCase();
+  });
+};
+
+fs.readdir("./data/forms/examples/", (err, files) => {
+  let arr = files
+    .filter((f) => {
+      return f.endsWith(".js");
+    })
+    .map((i) => {
+      return "/data/forms/examples/" + i.toString();
+    });
+
+  arr = arr.map((f) => {
+    return {
+      name: htc(f.split("/").pop()).replace(".js", ""),
+      value: f
+    };
+  });
+  let s = JSON.stringify(arr);
+
+  fs.writeFile("./data/forms/examples.json", s, (err) => {});
+});
 
 console.log("Building dist/xo-form.js");
 esbuild
   .build({
-    plugins: [litCssPlugin(),  markdownPlugin()],
+    plugins: [litCssPlugin(), markdownPlugin()],
     entryPoints: ["src/xo/index.js"],
     bundle: true,
     keepNames: true,
@@ -14,9 +40,9 @@ esbuild
       onRebuild(error, result) {
         if (error) console.error("watch build failed:", error);
         else console.log("src/xo/index.js rebuilt");
-      },
+      }
     },
-    outfile: "dist/xo-form.js",
+    outfile: "dist/xo-form.js"
   })
   .catch((ex) => {
     console.error(ex);
@@ -26,7 +52,7 @@ esbuild
 console.log("Building dist/xo-autocomplete.js");
 esbuild
   .build({
-    plugins: [litCssPlugin(),  markdownPlugin() ],
+    plugins: [litCssPlugin(), markdownPlugin()],
     entryPoints: ["src/autocomplete/index.js"],
     bundle: true,
     keepNames: true,
@@ -34,9 +60,9 @@ esbuild
       onRebuild(error, result) {
         if (error) console.error("watch build failed:", error);
         else console.log("src/autocomplete/index.js rebuilt");
-      },
+      }
     },
-    outfile: "dist/xo-autocomplete.js",
+    outfile: "dist/xo-autocomplete.js"
   })
   .catch((ex) => {
     console.error(ex);
@@ -46,7 +72,7 @@ esbuild
 console.log("Building dist/index.js");
 esbuild
   .build({
-    plugins: [litCssPlugin(),  markdownPlugin()],
+    plugins: [litCssPlugin(), markdownPlugin()],
     entryPoints: ["js/index.js"],
     bundle: true,
     keepNames: true,
@@ -54,9 +80,9 @@ esbuild
       onRebuild(error, result) {
         if (error) console.error("watch build failed:", error);
         else console.log("dist/index.js rebuilt");
-      },
+      }
     },
-    outfile: "dist/index.js",
+    outfile: "dist/index.js"
   })
   .catch((ex) => {
     console.error(ex);

@@ -1,33 +1,32 @@
 # Introduction
 
-Imagine writing fully self-contained complex Web Forms as pure JavaScript Object Literals.
+Fully self-contained complex Web Forms as pure [JavaScript Object Literals](https://www.javascripttutorial.net/es6/object-literal-extensions/).
 
-Imagine automatically translating an OpenAPI/Swagger or JSON Schema to a matching Web Form.
-
-With `xo-form`, you can!
+Automatic mapping of [OpenAPI/Swagger](https://swagger.io/specification/) or [JSON Schema](https://json-schema.org/) data to generate matching Web Forms.
 
 ## Use it:
 
 Install
+
 ```
 > npm i xo-form
 ```
 
 Import
+
 ```js
-import xo from 'xo-form';
+import xo from "xo-form";
 ```
 
 Markup
+
 ```html
 <xo-form src="/my-xo-form.js"></xo-form>
 ```
 
 ## Schemas
 
-Schemas for `xo-form` are [JavaScript Object Literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_Objects#object_initializers) are easy to write, extremely developer friendly, and can be generated from (meta)data.
-
-Example:
+Schemas for `xo-form` are easy to write and extremely developer friendly. Just create a JavaScript structure like this:
 
 ```js
 export const form = {
@@ -38,22 +37,28 @@ export const form = {
           type: "text",
           required: true,
           label: "Your email address",
-          placeholder: "Enter your email address",
-        },
-      ],
-    },
-  ],
+          placeholder: "Enter your email address"
+        }
+      ]
+    }
+  ]
 };
 ```
 
-The library is written as pure native [ES6+](https://en.wikipedia.org/wiki/ECMAScript) Modules, and has just one dependency: [Lit](https://www.npmjs.com/package/lit).
+## Technology
+
+The library is written as Web Components, using pure native [ES6+](https://en.wikipedia.org/wiki/ECMAScript) Modules, and has just one dependency: [Lit](https://www.npmjs.com/package/lit).
+
+TypeScript is used for generating API documentation.
 
 ## Features
 
-- Supports all HTML elements and [Web Components](https://developer.mozilla.org/en-US/docs/Web/Web_Components)
-- Full two-way databinding to map a form to a data model and interface with APIs directly as the model changes.
-- Multi-page Forms/Wizards
+- Describe multi-page, complex web forms
+- Use any HTML/custom element
+- Supports HTML5 validation rules and custom validation logic
+- Two-way databinding: map controls in a form to a data model and interface with APIs directly as the model changes.
 - Powerful Rules engine for Conditional Logic
+- Themes
 
 # Setup
 
@@ -74,18 +79,18 @@ export const form = {
       state: {},
       data: {
         name: "",
-        msg: "",
-      },
+        msg: ""
+      }
     },
     rules: {
       "#/state/submit": [
         {
           value: (context) => {
             alert(JSON.stringify(context.model.instance.data, null, 2));
-          },
-        },
-      ],
-    },
+          }
+        }
+      ]
+    }
   },
   pages: [
     {
@@ -97,7 +102,7 @@ export const form = {
           bind: "#/data/name",
           required: true,
           label: "Your name",
-          placeholder: "Enter your name",
+          placeholder: "Enter your name"
         },
         {
           type: "textarea",
@@ -106,16 +111,16 @@ export const form = {
           required: true,
           placeholder: "Enter a message",
           maxlength: 100,
-          rows: 6,
+          rows: 6
         },
         {
           type: "button",
           bind: "#/state/submit",
-          label: "Submit",
-        },
-      ],
-    },
-  ],
+          label: "Submit"
+        }
+      ]
+    }
+  ]
 };
 ```
 
@@ -138,9 +143,9 @@ export const form = {
   model: {
     instance: {
       myData: {
-        userName: "johndoe",
-      },
-    },
+        userName: "johndoe"
+      }
+    }
   },
   pages: [
     {
@@ -148,11 +153,11 @@ export const form = {
         {
           type: "text",
           label: "User name",
-          bind: "#/myData/userName",
-        },
-      ],
-    },
-  ],
+          bind: "#/myData/userName"
+        }
+      ]
+    }
+  ]
 };
 ```
 

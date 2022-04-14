@@ -2,18 +2,27 @@
 <html lang="en" id="belovedpet">
   <head>
     <meta charset="UTF-8" />
-    <title>XO-FORM</title>
+    <title>XO-FORM - Literal Web Forms</title>
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
     <meta name="color-scheme" content="dark light" />
     <meta name="theme-color" content="#ffffff" />
-    <meta name="description" content="XO-FORM" />
+    <meta name="description" content="XO-FORM - Fully self-contained, data-bound, multi-page complex Web Forms as pure JavaScript Object Literals." />
     <meta name="keywords" content="forms, webforms, webcomponents" />
     <link href="/css/main.css" rel="stylesheet" />
     <link rel="shortcut icon" href="/img/icon-512p.png" />
     <link rel="apple-touch-icon" href="/img/icon-512p.png" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.xo-js.dev/">
+    <meta property="og:title" content="XO-FORM - Literal Web Forms">
+    <meta property="og:description"
+        content="XO-FORM - Fully self-contained, data-bound, multi-page complex Web Forms as pure JavaScript Object Literals.">
+    <meta property="og:image" content="https://xoform.z6.web.core.windows.net/img/banner.png">
+
     <script defer type="module" src="/dist/index.js"></script>
   </head>
 
@@ -21,50 +30,71 @@
     <header>
       <h1><a href="/">XO 3.0</a></h1>
       <xw-theme></xw-theme>
-      
-      <a id="forkongithub" href="https://github.com/mvneerven/xo-form">Fork me on GitHub</a>
-    
+
+      <a id="forkongithub" target="_blank" href="https://github.com/mvneerven/xo-form"
+        >Fork me on GitHub</a
+      >
     </header>
 
     <main>
       <section class="c1">
         <div>
-          <h2>XO-FORM</h2>
+          <h2>
+            XO-FORM
+
+            <a title="GitHub" target="_blank" href="https://github.com/mvneerven/xo-form">
+              <svg class="icon" xmlns="http://www.w3.org/2000/svg">
+                <use id="use" href="/data/svg/icons.svg#git" />
+              </svg>
+            </a>
+
+            <a title="NPM" target="_blank" href="https://www.npmjs.com/package/xo-form">
+              <svg class="icon" xmlns="http://www.w3.org/2000/svg">
+                <use id="use" href="/data/svg/icons.svg#npm" />
+              </svg>
+            </a>
+          </h2>
           <p>
-            Imagine writing fully self-contained, data-bound, multi-page complex
-            Web Forms as pure
-            <a
+            Fully self-contained, data-bound, multi-page complex Web Forms as
+            pure
+            <a target="_blank"
               href="https://www.javascripttutorial.net/es6/object-literal-extensions/"
               >JavaScript Object Literals</a
             >.
           </p>
           <p>
-            Imagine automatically translating an
-            <a href="https://swagger.io/specification/">OpenAPI/Swagger</a> or
-            <a href="https://json-schema.org/">JSON Schema</a> to a matching Web
-            Form.
+            Automatic mapping of
+            <a target="_blank" href="https://swagger.io/specification/">OpenAPI/Swagger</a> or
+            <a target="_blank" href="https://json-schema.org/">JSON Schema</a> data to matching
+            Web Forms.
           </p>
-          <p>With <code>xo-form</code>, you can!</p>
         </div>
       </section>
       <section class="c1" id="schema">
         <div>
-        <h2>Schema</h2>
-        <xw-schemaeditor form="frm" src="/forms/wizard.js"></xw-schemaeditor>
-      </div>
+          <h2>Schema: </h2> <xw-example-list></xw-example-list>
+          <xw-schemaeditor
+            form="frm"
+            src="/data/forms/examples/basic-form.js"
+          ></xw-schemaeditor>
+        </div>
       </section>
       <section class="c1" id="form">
         <div>
-          <h2>Rendered Form</h2>
-          <xo-form id="frm" theme="material" ></xo-form>
+          <h2>Rendered Form:</h2>
+          <xo-form id="frm" theme="material"></xo-form>
         </div>
       </section>
       <section class="c1" id="state">
-
         <xw-modelview></xw-modelview>
       </section>
     </main>
 
-    <footer>&copy; 2022 - built with 💗 by Neerventure</footer>
+    <footer>
+      <div>
+      <p>Web Forms are commodities, so why not treat them as such?</p>
+      <p>&copy; 2022 - built with 💗 by Neerventure</p>
+    </div>
+    </footer>
   </body>
 </html>

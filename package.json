@@ -1,7 +1,7 @@
 {
   "name": "xo-form",
-  "version": "1.0.18",
-  "description": "XO - Declarative Forms using Web Components",
+  "version": "1.0.20",
+  "description": "Declarative Forms using Web Components",
   "main": "dist/xo-form.js",
   "scripts": {
     "dev": "node esbuild-dev.js",

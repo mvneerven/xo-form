@@ -46,9 +46,7 @@ class Util {
    * @returns {HTMLElement} DOM element
    */
   static parseHTML(html) {
-    let parser = new DOMParser(),
-      doc = parser.parseFromString(html, "text/html");
-    return doc.body.firstChild;
+    return new DOMParser().parseFromString(html, "text/html").body.firstChild;
   }
 
   /**

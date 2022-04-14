@@ -1,36 +1,39 @@
+/**
+ * Multi-step form example
+ * Shows how to build wizard forms
+ **/ 
 export const wizard = {
-  icons: "/data/icons.svg",
-  model: {
+  icons: "/data/svg/icons.svg", // pointer to svg sheet
+  model: { 
     rules: {
       "#/state/send": [
         {
-          set: "#/state/sent",
-          value: (context) => {
+          run: (context) => {
             alert(JSON.stringify(context.data.instance.mail, null, 2));
-          },
-        },
-      ],
+          }
+        }
+      ]
     },
     instance: {
       state: {},
-      mail: {
-        emailAddress: "",
+      mail: { // main email instance
+        to: "",
         message: "",
-        copy: "No",
-        tags: [],
-      },
-    },
+        copy: true,
+        tags: []
+      }
+    }
   },
   pages: [
     {
-      label: "Page 1",
+      label: "Compose mail",
       fields: [
         {
           type: "email",
           label: "Email address",
           placeholder: "john@doe.com",
           required: true,
-          bind: "#/mail/emailAddress",
+          bind: "#/mail/to",
           prepend: {
             icon: "email"
           }
@@ -41,18 +44,17 @@ export const wizard = {
           placeholder: "Type a message",
           required: true,
           bind: "#/mail/message",
-          maxlength: 150,
+          maxlength: 150
         },
         {
-          type: "xw-radiogroup",
+          type: "xw-switch",
           label: "Copy to self",
-          bind: "#/mail/copy",
-          items: ["Yes", "No"],
-        },
-      ],
+          bind: "#/mail/copy"
+        }
+      ]
     },
     {
-      label: "Page 2",
+      label: "Add data",
       fields: [
         {
           type: "xw-tags",
@@ -60,10 +62,15 @@ export const wizard = {
           bind: "#/mail/tags",
           placeholder: "Add tag",
           autocomplete: {
-            items: ["Milk", "Honey"],
-          },
+            items: ["Important", "Business", "Personal"]
+          }
         },
-      ],
+        {
+          label: "Select or drop attachments",
+          type: "xw-filedrop",
+          bind: "#/mail/attachments"
+        }
+      ]
     },
     {
       label: "Page 3",
@@ -71,14 +78,14 @@ export const wizard = {
         {
           type: "div",
           label: "Message",
-          innerText: `Send "#/mail/message" to '#/mail/emailAddress'`,
+          innerText: `Send "#/mail/message" to '#/mail/to'`
         },
         {
           type: "button",
           label: "Send",
-          bind: "#/state/send",
-        },
-      ],
-    },
-  ],
+          bind: "#/state/send"
+        }
+      ]
+    }
+  ]
 };

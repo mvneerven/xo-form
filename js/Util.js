@@ -18,15 +18,21 @@ class Util {
   static async waitFor(
     evaluator = () => {
       return true;
-    }
+    },
+    timeoutMilliseconds = 5000
   ) {
-    return new Promise((resolve) => {
-      let tmr,
+    return new Promise((resolve, reject) => {
+      let timeout = setTimeout((e) => {
+          if(tmr) clearInterval(tmr)
+          reject("Timeout expired");
+        }, timeoutMilliseconds),
+        tmr,
         evualationResult = null;
       tmr = setInterval((e) => {
         try {
           if ((evualationResult = evaluator())) {
             clearInterval(tmr);
+            clearTimeout(timeout);
             resolve(evualationResult);
           }
         } catch {}

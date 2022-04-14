@@ -1,6 +1,7 @@
 :root {
     --accent: var(--color-accent, #3477f3);
     --text-color: rgb(41, 41, 41);
+    --footer-color: rgba(180, 180, 180, 1);
     --code-color: #a31515;
     --bg-color: rgb(231, 231, 231);
     --shadow-color: black;
@@ -16,6 +17,7 @@
     &.theme-dark {
         --accent: var(--color-accent, #5287eb);
         --bg-color: rgb(41, 41, 41);
+        --footer-color: rgba(21, 21, 21, 1);
         --text-color: rgb(241, 241, 241);
         --code-color: #fffb00;
         --frame-color: rgb(230, 230, 230);

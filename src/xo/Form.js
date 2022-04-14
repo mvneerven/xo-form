@@ -151,6 +151,8 @@ class Form extends Control {
 
     this.schema.pages = this.schema.pages ?? [];
 
+    this.emit("initialized");
+
     this.context.data.initialize(this.schema.model, {
       pageCount: this.schema.pages.length,
     });

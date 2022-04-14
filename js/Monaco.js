@@ -33,6 +33,7 @@ class Monaco extends LitElement {
    */
   set src(url) {
     this._src = url;
+    this.requestUpdate();
   }
 
   /**
@@ -46,34 +47,34 @@ class Monaco extends LitElement {
     return {
       readonly: {
         type: Boolean,
-        attribute: true,
+        attribute: true
       },
       version: {
-        type: String,
+        type: String
       },
       language: {
-        type: String,
+        type: String
       },
       theme: {
-        type: String,
+        type: String
       },
       minimap: {
-        type: Boolean,
+        type: Boolean
       },
       value: {
-        type: String,
+        type: String
       },
       src: {
         type: String,
-        attribute: true,
+        attribute: true
       },
       options: {
         type: Object,
         attribute: true,
         converter: (value, type) => {
           return JSON.parse(value);
-        },
-      },
+        }
+      }
     };
   }
 
@@ -126,9 +127,20 @@ class Monaco extends LitElement {
     this._options = value;
   }
 
-  async firstUpdated() {
+  dispose(){
+    if(this.editor){
+      let div = this.shadowRoot.getElementById("monaco");
+      div.innerHTML="";
+      div.removeAttribute("data-keybinding-context");
+      div.removeAttribute("data-mode-id");
+    }
+  }
+
+  async update() {
     const me = this;
-    await super.firstUpdated();
+    await super.update();
+    
+    this.dispose();
 
     let monaco = await this.requireMonaco();
 
@@ -139,22 +151,22 @@ class Monaco extends LitElement {
         readOnly: this.readonly,
         value: this.value || "",
         minimap: {
-          enabled: me.minimap,
+          enabled: me.minimap
         },
         language: this.language,
         theme: this.theme,
-        ...me.options,
-      },
+        ...me.options
+      }
     };
 
     this.dispatchEvent(
       new CustomEvent("create", {
-        detail: detail,
+        detail: detail
       })
     );
 
     let div = this.shadowRoot.getElementById("monaco");
-
+    
     this.editor = monaco.editor.create(div, detail.editorOptions);
 
     this.dispatchEvent(new CustomEvent("ready"));
@@ -191,7 +203,7 @@ class Monaco extends LitElement {
     });
 
     observer.observe(document.documentElement, {
-      attributes: true, //configure it to listen to attribute changes
+      attributes: true //configure it to listen to attribute changes
     });
   }
 
@@ -213,7 +225,7 @@ class Monaco extends LitElement {
             `self.MonacoEnvironment = {
              baseUrl: 'https://unpkg.com/monaco-editor@${me.version}/min/'
           };
-          importScripts('https://unpkg.com/monaco-editor@${me.version}/min/vs/base/worker/workerMain.js');`,
+          importScripts('https://unpkg.com/monaco-editor@${me.version}/min/vs/base/worker/workerMain.js');`
           ],
           { type: "text/javascript" }
         )
@@ -221,8 +233,8 @@ class Monaco extends LitElement {
 
       require.config({
         paths: {
-          vs: `https://unpkg.com/monaco-editor@${me.version}/min/vs`,
-        },
+          vs: `https://unpkg.com/monaco-editor@${me.version}/min/vs`
+        }
       });
       window.MonacoEnvironment = { getWorkerUrl: () => proxy };
 

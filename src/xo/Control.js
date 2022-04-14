@@ -190,7 +190,7 @@ class Control extends LitElement {
   }
 
   reportValidity() {
-    return this.nestedElement ? this.nestedElement.reportValidity() : true;
+    return this.nestedElement && this.nestedElement.reportValidity ? this.nestedElement.reportValidity() : true;
   }
 
   onblur(e) {
@@ -482,6 +482,7 @@ class Control extends LitElement {
     events.forEach((e) => {
       this.addEventListener(e, func);
     });
+    return this;
   }
 
   off(eventName, func){
@@ -491,6 +492,7 @@ class Control extends LitElement {
     events.forEach((e) => {
       this.removeEventListener(e, func);
     });
+    return this;
   }
 
   /**

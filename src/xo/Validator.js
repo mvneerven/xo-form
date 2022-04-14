@@ -8,11 +8,17 @@ class Validator {
   constructor(xoForm) {
     this.form = xoForm;
 
-    this.form.on("interaction", (e) => {
-      let elm = e.detail.control;
-      this.processValidation(elm);
-      this.checkValid();
-    });
+    this.form
+      .on("interaction", (e) => {
+        let elm = e.detail.control;
+        this.processValidation(elm);
+        this.checkValid();
+      })
+      .on("ready", (e) => {
+        setTimeout(() => {
+          this.checkValid();
+        }, 1);
+      });
 
     this.form.on("created-control", (e) => {
       if (
@@ -31,10 +37,6 @@ class Validator {
         }
       }
     });
-
-    setTimeout(() => {
-      this.checkValid();
-    }, 60);
   }
 
   checkValid() {
@@ -63,13 +65,14 @@ class Validator {
   isPageValid(page) {
     let pg = this.form.childNodes[page - 1];
     if (pg) {
-      let elms = pg?.childNodes;
-      let count = elms.length;
-      let i = 0;
+      let elms = pg?.childNodes,
+        count = elms.length,
+        i = 0;
       elms.forEach((elm) => {
-        elm.checkValidity();
-        if (elm.valid) i++;
+        let valid = elm.checkValidity();
+        if (valid) i++;
       });
+
       return i === count;
     }
   }

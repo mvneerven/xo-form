@@ -1,19 +1,24 @@
+/**
+ * Simple form that shows conditional UI.
+ */
 export const getNewsLetter = {
+  // conditional logic form
+  icons: "/data/svg/icons.svg",
   model: {
     rules: {
       "#/data/receive": [
         {
           set: "#/data/noreceive",
-          value: "!this.value",
-        },
-      ],
+          value: "!this.value"
+        }
+      ]
     },
     instance: {
       data: {
         receive: false,
-        email: "yama@moto.jp",
-      },
-    },
+        email: "yama@moto.jp"
+      }
+    }
   },
   pages: [
     {
@@ -23,7 +28,7 @@ export const getNewsLetter = {
           type: "xw-switch",
           label: "I want to receive the newsletter",
           text: "Yes, send me the newsletter!",
-          bind: "#/data/receive",
+          bind: "#/data/receive"
         },
         {
           label: "Email address",
@@ -32,17 +37,17 @@ export const getNewsLetter = {
           type: "email",
           disabled: "#/data/noreceive",
           prepend: {
-            icon: "fas fa-envelope"
-          },
+            icon: "email"
+          }
         },
         {
           type: "button",
           label: "Test",
           prepend: {
-            icon: "fas fa-share",
+            icon: "fas fa-share"
           }
         }
-      ],
-    },
-  ],
+      ]
+    }
+  ]
 };
