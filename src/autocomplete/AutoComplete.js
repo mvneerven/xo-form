@@ -15,8 +15,8 @@ class AutoComplete {
    */
   static get sharedStyles() {
     if (!this._sheet) {
-      this._sheet = new CSSStyleSheet();
-      this._sheet.replaceSync(autoCompleteStyles);
+      this._sheet = Util.createStyleSheet(new Document(), autoCompleteStyles)
+      
     }
     return this._sheet;
   }

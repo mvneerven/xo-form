@@ -41,13 +41,6 @@ class Control extends LitElement {
     };
   }
 
-  /**
-   * @returns {Boolean} true if the control is currently valid
-   */
-  get valid() {
-    return this.checkValidity();
-  }
-
   static get styles() {
     return [Context.sharedStyles, AutoComplete.sharedStyles];
   }
@@ -177,6 +170,13 @@ class Control extends LitElement {
         guid: Util.guid()
       });
     }
+  }
+
+  /**
+   * @returns {Boolean} true if the control is currently valid
+   */
+  get valid() {
+    return this.checkValidity();
   }
 
   checkValidity() {

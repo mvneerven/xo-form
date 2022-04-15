@@ -183,7 +183,6 @@ class Monaco extends LitElement {
 
       if (me._value !== oldValue) {
         tmr = setTimeout(() => {
-          console.log("Fire change");
           me.fireChange();
         }, 150);
       }

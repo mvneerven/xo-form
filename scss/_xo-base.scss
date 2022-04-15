@@ -117,9 +117,15 @@ label {
   }
 }
 
+input::placeholder, input:-moz-placeholder, input::-moz-placeholder {
+  /* Mozilla Firefox 4 to 18 */
+  color: white !important;
+}
+
 button {
   cursor: pointer;
   margin-top: 0.5rem;
+  color: var(--color-text, currentColor);
   text-transform: uppercase;
   background-color: var(--xo-btn-bg, rgba(127, 127, 127, 0.8));
 

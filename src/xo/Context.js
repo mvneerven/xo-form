@@ -1,7 +1,7 @@
 import PropertyMapper from "./PropertyMapper";
 import DataBinding from "./DataBinding";
 import xoStyles from "../../css/controls.css";
-
+import Util from "./Util";
 /**
  * XO Context - Gives access to contextual properties
  */
@@ -42,8 +42,7 @@ class Context {
    */
   static get sharedStyles() {
     if (!this._sheet) {
-      this._sheet = new CSSStyleSheet();
-      this._sheet.replaceSync(xoStyles);
+      this._sheet = Util.createStyleSheet(new Document(), xoStyles);
     }
     return this._sheet;
   }
