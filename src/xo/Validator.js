@@ -40,13 +40,21 @@ class Validator {
   }
 
   checkValid() {
-    let pageValid = this.isPageValid(this.form.page);
-    let totalPages = this.form.context.data.get("#/_xo/nav/total");
-    this.form.context.data.set(
-      "#/_xo/disabled/next",
-      !pageValid || this.form.page >= totalPages
-    );
-    this.form.context.data.set("#/_xo/disabled/back", this.form.page <= 1);
+    const db = this.form.context.data;
+    let pageValid = undefined; //;this.isPageValid(this.form.page);
+    let totalPages = db.get("#/_xo/nav/total");
+
+    let allValid = true;
+    for (let p = 1; p <= totalPages; p++) {
+      let pv = this.isPageValid(p);
+      if (p == this.form.page) pageValid = pv;
+      if (!pv) allValid = false;
+    }
+
+    db.set("#/_xo/disabled/next", !pageValid || this.form.page >= totalPages);
+    db.set("#/_xo/disabled/back", this.form.page <= 1);
+
+    db.set("#/_xo/disabled/send", !allValid);
   }
 
   processValidation(elm) {

@@ -26,8 +26,8 @@ export const getNewsLetter = {
       fields: [
         {
           type: "xw-switch",
-          label: "I want to receive the newsletter",
-          text: "Yes, send me the newsletter!",
+          label: "Subscribe to the newsletter",
+          text: "Yes, I would like to receive it",
           bind: "#/data/receive"
         },
         {

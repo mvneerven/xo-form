@@ -61,9 +61,6 @@ class Monaco extends LitElement {
       minimap: {
         type: Boolean
       },
-      value: {
-        type: String
-      },
       src: {
         type: String,
         attribute: true
@@ -127,10 +124,10 @@ class Monaco extends LitElement {
     this._options = value;
   }
 
-  dispose(){
-    if(this.editor){
+  dispose() {
+    if (this.editor) {
       let div = this.shadowRoot.getElementById("monaco");
-      div.innerHTML="";
+      div.innerHTML = "";
       div.removeAttribute("data-keybinding-context");
       div.removeAttribute("data-mode-id");
     }
@@ -139,12 +136,15 @@ class Monaco extends LitElement {
   async update() {
     const me = this;
     await super.update();
-    
+
     this.dispose();
 
     let monaco = await this.requireMonaco();
 
-    if (this.src) this.value = await this.readSource(this.src);
+    if (this.src) {
+      this.value = await this.readSource(this.src);
+      this._src = null;
+    }
 
     const detail = {
       editorOptions: {
@@ -166,7 +166,7 @@ class Monaco extends LitElement {
     );
 
     let div = this.shadowRoot.getElementById("monaco");
-    
+
     this.editor = monaco.editor.create(div, detail.editorOptions);
 
     this.dispatchEvent(new CustomEvent("ready"));
@@ -175,21 +175,30 @@ class Monaco extends LitElement {
       this.dispatchEvent(new CustomEvent("editor-change"));
     });
 
-    Util.throttleEvent(
-      this,
-      "editor-change",
-      () => {
-        me.value = this.editor.getModel().getValue();
-        me.fireChange();
-      },
-      100
-    );
+    let tmr;
+    this.addEventListener("editor-change", (e) => {
+      if (tmr) clearTimeout(tmr);
+      let oldValue = me._value;
+      me._value = me.editor.getModel().getValue();
+
+      if (me._value !== oldValue) {
+        tmr = setTimeout(() => {
+          console.log("Fire change");
+          me.fireChange();
+        }, 150);
+      }
+    });
+    me.fireChange();
 
     Util.throttleEvent(window, "resize", () => {
       me.editor.layout();
     });
 
     this.listenThemeChange();
+  }
+
+  get value() {
+    return this._value;
   }
 
   listenThemeChange() {

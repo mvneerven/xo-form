@@ -17,17 +17,13 @@ class ExampleList extends LitElement {
           color: inherit;
         }
 
-        a:hover {
-          color: var(--accent);
-        }
-
         .icon {
           width: 24px;
           height: 24px;
         }
 
         .files {
-          width: 150px;
+          width: 200px;
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
@@ -40,21 +36,29 @@ class ExampleList extends LitElement {
           box-shadow: 2px 2px 2px var(--shadow-color, rgba(127, 127, 127, 0.5));
         }
 
-        .files a {
-          display: block;
+        .files > div {
           padding: 0.3rem;
+        }
+
+        .files > div:hover {
+          filter: brightness(150%);
+          color: var(--accent);
+        }
+
+        .files a {
           text-transform: capitalize;
+        }
+
+        .files .icon {
+          float: right;
+          opacity: 0.6;
         }
       `
     ];
   }
 
   render() {
-    return html`<a
-        title="Select Example"
-        href="#"
-        @click=${this.openList.bind(this)}
-      >
+    return html`<a href="#" @click=${this.openList.bind(this)}>
         <svg class="icon" xmlns="http://www.w3.org/2000/svg">
           <use id="use" href="/data/svg/icons.svg#open" /></svg></a
       >${this.renderDropdown()}`;
@@ -79,12 +83,23 @@ class ExampleList extends LitElement {
 
   async selectFile(e) {
     e.preventDefault();
+    let item = e.target.closest("div").querySelector("a");
     let sf = document.querySelector("xw-schemaeditor");
-    sf.src = e.target.href;
+    sf.language = item.href.endsWith("json") ? "json" : "javascript";
+    if (sf.language === "javascript") sf.src = item.href;
+    else sf.schemaSrc = item.href;
   }
 
   renderFile(file) {
-    return html`<a href=${file.value}>${file.name}</a>`;
+    let isSchema = file.value.endsWith("json"),
+      iconRef = isSchema ? "/data/svg/icons.svg#db" : "/data/svg/icons.svg#js",
+      tooltip = isSchema ? "JSON Schema" : "JS Object Literal";
+    return html`<div title="${tooltip}">
+      <a href=${file.value}>${file.name}</a>
+      <svg class="icon" xmlns="http://www.w3.org/2000/svg">
+        <use id="use" href="${iconRef}" />
+      </svg>
+    </div> `;
   }
 
   openList(e) {

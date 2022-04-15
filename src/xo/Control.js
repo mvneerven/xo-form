@@ -9,13 +9,9 @@ const ERR_INVALID_BINDING = "Invalid binding value";
  * XO Control (```<xo-control/>```) - both Base Control for XO, and wrapping Control for other HTML elements
  */
 class Control extends LitElement {
-  //#region Private properties
-
   _disabled = false;
   _clicked = 0;
   _context = null;
-
-  //#endregion
 
   /**
    * @returns {Context} a reference to the Context instance
@@ -34,14 +30,14 @@ class Control extends LitElement {
       required: { type: Boolean },
       focus: { type: Boolean },
       label: { type: String, attribute: true },
-      tooltip: { type: String , attribute: true},
+      tooltip: { type: String, attribute: true },
       placeholder: { type: String, attribute: true },
       valid: { type: Boolean },
       value: { type: Object },
       classes: { type: Array },
       autocomplete: { type: Object },
       prepend: { type: Object },
-      append: { type: Object },
+      append: { type: Object }
     };
   }
 
@@ -149,7 +145,7 @@ class Control extends LitElement {
       control: this,
       source: source,
       value: this.value,
-      guid: Util.guid(),
+      guid: Util.guid()
     });
 
     if (e.type === "input") this.__lastInputValue = this.value;
@@ -158,7 +154,7 @@ class Control extends LitElement {
   emit(name, detail = {}) {
     this.dispatchEvent(
       new CustomEvent(name, {
-        detail: detail,
+        detail: detail
       })
     );
   }
@@ -178,7 +174,7 @@ class Control extends LitElement {
         control: this,
         source: source,
         value: source.defaultValue || this._clicked,
-        guid: Util.guid(),
+        guid: Util.guid()
       });
     }
   }
@@ -190,7 +186,9 @@ class Control extends LitElement {
   }
 
   reportValidity() {
-    return this.nestedElement && this.nestedElement.reportValidity ? this.nestedElement.reportValidity() : true;
+    return this.nestedElement && this.nestedElement.reportValidity
+      ? this.nestedElement.reportValidity()
+      : true;
   }
 
   onblur(e) {
@@ -242,7 +240,7 @@ class Control extends LitElement {
 
     context.form.emit("create-control", {
       type: type,
-      properties: properties,
+      properties: properties
     });
 
     let elm;
@@ -280,7 +278,7 @@ class Control extends LitElement {
       context.mapper.mapProperties(elm, properties);
 
       context.form.emit("created-control", {
-        control: elm,
+        control: elm
       });
     }
 
@@ -301,6 +299,8 @@ class Control extends LitElement {
    * - focus: xo-fc
    * - textual control: xo-tx
    * - nested element: xo-ne
+   * - nested element textual: xo-tx
+   * - has prepend: xo-prp
    * @returns {String}
    */
   getContainerClasses() {
@@ -332,10 +332,9 @@ class Control extends LitElement {
       }
     }
 
-    const theme = this.form?.theme ?? "standard";
-    cls.push(theme);
+    cls.push(this.form?.theme ?? "standard");
 
-    return cls.join(" ");
+    return [...new Set(cls)].join(" ");
   }
 
   /**
@@ -424,12 +423,7 @@ class Control extends LitElement {
 
   renderNestedElement(noContainer) {
     if (noContainer) {
-      this.nestedElement.setAttribute(
-        "class",
-        this.nestedElement.getAttribute("class") +
-          " " +
-          this.getContainerClasses()
-      );
+      this.nestedElement.setAttribute("class", this.getContainerClasses());
     }
     return this.nestedElement;
   }
@@ -485,7 +479,7 @@ class Control extends LitElement {
     return this;
   }
 
-  off(eventName, func){
+  off(eventName, func) {
     const events = Array.isArray(eventName)
       ? eventName
       : [...eventName.split(" ")];

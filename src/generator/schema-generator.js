@@ -2,6 +2,7 @@ import MetaReader from "./meta-reader";
 
 class SchemaGenerator {
   _schema = {
+    note: "Generated schema",
     model: { rules: {}, instance: {} },
     pages: [{ fields: [] }]
   };
@@ -20,7 +21,8 @@ class SchemaGenerator {
       let key = entry[0];
       instance[key] = undefined;
 
-      page1.fields.push(this.reader.getFieldSchema(key))
+      let field= this.reader.getFieldSchema(key);
+      page1.fields.push(field)
     });
 
     this.schema.model.instance["data"] = instance;

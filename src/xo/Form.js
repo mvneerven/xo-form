@@ -30,26 +30,26 @@ class Form extends Control {
       ...Control.properties,
       page: {
         type: Number,
-        attribute: true,
+        attribute: true
       },
       schema: {
-        type: Object,
+        type: Object
       },
       src: {
         type: String,
-        attribute: true,
+        attribute: true
       },
       theme: {
         type: String,
-        attribute: true,
+        attribute: true
       },
       validation: {
-        type: String,
+        type: String
       },
 
       icons: {
-        type: String,
-      },
+        type: String
+      }
     };
   }
 
@@ -154,7 +154,7 @@ class Form extends Control {
     this.emit("initialized");
 
     this.context.data.initialize(this.schema.model, {
-      pageCount: this.schema.pages.length,
+      pageCount: this.schema.pages.length
     });
 
     let index = 1;

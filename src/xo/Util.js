@@ -19,49 +19,12 @@ class Util {
   }
 
   /**
-   * Clone an object.
-   * @param {Object} obj
-   * @returns cloned object.
-   */
-  static clone(obj) {
-    if (obj === null || typeof obj !== "object" || "isActiveClone" in obj)
-      return obj;
-
-    if (obj instanceof Date) var temp = new obj.constructor();
-    else var temp = obj.constructor();
-
-    for (var key in obj) {
-      if (Object.prototype.hasOwnProperty.call(obj, key)) {
-        obj["isActiveClone"] = null;
-        temp[key] = Util.clone(obj[key]);
-        delete obj["isActiveClone"];
-      }
-    }
-    return temp;
-  }
-
-  /**
    * Generates an Html Element from the given HTML string
    * @param {String} html
    * @returns {HTMLElement} DOM element
    */
   static parseHTML(html) {
     return new DOMParser().parseFromString(html, "text/html").body.firstChild;
-  }
-
-  /**
-   * Throttles fast-repeating events
-   * @param {Function} listener
-   * @param {Number} delay
-   * @returns
-   */
-  static throttle(listener, delay = 500) {
-    var timeout;
-    var throttledListener = function (e) {
-      if (timeout) clearTimeout(timeout);
-      timeout = setTimeout(listener, delay, e);
-    };
-    return throttledListener;
   }
 
   static objectEquals(x, y) {
@@ -208,8 +171,99 @@ class Util {
   static toWords(text) {
     var result = text.replace(/([A-Z])/g, " $1");
     return result.charAt(0).toUpperCase() + result.slice(1);
-}
+  }
 
+  /**
+   * Does JS code stringification comparable to JSON.stringify()
+   * @param {Object} jsLiteral - the JavaScript literal to stringify
+   * @param {Function} replacer
+   * @param {Number} indent
+   * @returns String
+   */
+  static stringifyJs(jsLiteral, replacer, indent) {
+    const sfy = (o, replacer, indent, level) => {
+      let type = typeof o,
+        tpl,
+        tab = (lvl) => " ".repeat(indent * lvl);
+
+      if (o === null) {
+        return "null";
+      } else if (o === undefined) {
+        return "undefined";
+      } else if (type === "function") {
+        return o.toString();
+      }
+
+      if (type !== "object") {
+        return JSON.stringify(o, replacer);
+      } else if (Array.isArray(o)) {
+        let s = "[\n";
+
+        let ar = [];
+        level++;
+        s += tab(level);
+
+        o.forEach((i) => {
+          ar.push(sfy(i, replacer, indent, level));
+        });
+
+        s += ar.join(",\n" + tab(level));
+        level--;
+        s += "\n" + tab(level) + "]";
+        return s;
+      }
+
+      let result = "";
+      level++;
+      result += "{\n" + tab(level);
+      let props = Object.keys(o)
+        .filter((key) => {
+          return !key.startsWith("_");
+        })
+        .map((key) => {
+          return `${Util.quoteKeyIfNeeded(key)}: ${sfy(
+            o[key],
+            replacer,
+            indent,
+            level
+          )}`;
+        })
+
+        .join(",\n" + tab(level));
+
+      result += props + "\n";
+      level--;
+      result += tab(level) + "}";
+
+      return result;
+    };
+
+    let level = 0;
+    return sfy(jsLiteral, replacer, indent, level);
+  }
+
+  /**
+   * Returns appropriate use of the given key for identifiers
+   * @param {*} key
+   * @returns The adequately quoted or non-quoted identifier name
+   */
+  static quoteKeyIfNeeded(key) {
+    return Util.isValidVarName(key) ? key : `"${key}"`;
+  }
+
+  /**
+   * Returns true if the given name is valid as variable name
+   * @param {*} name
+   * @returns Boolean value indicating whether the given name is a valid variable name
+   */
+  static isValidVarName(name) {
+    try {
+      Function("var " + name);
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
 }
 
 export default Util;

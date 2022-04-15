@@ -24,9 +24,21 @@ fs.readdir("./data/forms/examples/", (err, files) => {
       value: f
     };
   });
-  let s = JSON.stringify(arr);
 
-  fs.writeFile("./data/forms/examples.json", s, (err) => {});
+  fs.readdir("./data/json-schemas/", (err, files) => {
+    let arr2 = files.map((i) => {
+      return "/data/json-schemas/" + i.toString();
+    });
+    arr2 = arr2.map((f) => {
+      return {
+        name: htc(f.split("/").pop()).replace(".json", ""),
+        value: f
+      };
+    });
+    arr = arr.concat(arr2);
+    let s = JSON.stringify(arr);
+    fs.writeFile("./data/forms/examples.json", s, (err) => {});
+  });
 });
 
 console.log("Building dist/xo-form.js");
@@ -69,27 +81,25 @@ esbuild
     process.exit(1);
   });
 
-  console.log("Building dist/xo-schema-generator.js");
-  esbuild
-    .build({
-      plugins: [litCssPlugin(), markdownPlugin()],
-      entryPoints: ["src/generator/index.js"],
-      bundle: true,
-      keepNames: true,
-      watch: {
-        onRebuild(error, result) {
-          if (error) console.error("watch build failed:", error);
-          else console.log("dist/xo-schema-generator.js rebuilt");
-        }
-      },
-      outfile: "dist/xo-schema-generator.js"
-    })
-    .catch((ex) => {
-      console.error(ex);
-      process.exit(1);
-    });
-  
-
+console.log("Building dist/xo-schema-generator.js");
+esbuild
+  .build({
+    plugins: [litCssPlugin(), markdownPlugin()],
+    entryPoints: ["src/generator/index.js"],
+    bundle: true,
+    keepNames: true,
+    watch: {
+      onRebuild(error, result) {
+        if (error) console.error("watch build failed:", error);
+        else console.log("dist/xo-schema-generator.js rebuilt");
+      }
+    },
+    outfile: "dist/xo-schema-generator.js"
+  })
+  .catch((ex) => {
+    console.error(ex);
+    process.exit(1);
+  });
 
 console.log("Building dist/index.js");
 esbuild

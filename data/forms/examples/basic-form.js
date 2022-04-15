@@ -5,7 +5,7 @@ export const form = {
   icons: "/data/svg/icons.svg",
   model: { // model node contains all data-related stuff
     rules: {
-      "#/state/send": [ // when model.instance.state.send changes....
+      "#/state/commit": [ // when commit property changes....
         {
           run: (context) => {
             alert(JSON.stringify(context.data.instance.myData, null, 2));
@@ -15,28 +15,28 @@ export const form = {
     },
     instance: { // container for all instances
       state: {},
-      myData: { // 'myData' instance
-        userName: "johndoe"
-      }
+      myData: {} // 'myData' instance
     }
   },
   pages: [ // root node for form (form can have multiple pages)
     {
       fields: [ // each page has array of field schemas
+        
         {
-          type: "text",
-          label: "User name",
+          type: "email",
+          label: "Email address",
           required: true,
-          placeholder: "Enter username...",
-          bind: "#/myData/userName",
+          placeholder: "john@doe.io",
+          bind: "#/myData/emailAddress",
           prepend: {
-            icon: "user"
+            icon: "email"
           }
         },
         {
           type: "button",
-          label: "Send",
-          bind: "#/state/send"
+          label: "Store",
+          disabled: "#/_xo/disabled/send",
+          bind: "#/state/commit"
         }
       ]
     }

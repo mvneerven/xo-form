@@ -1,6 +1,3 @@
-//import ExoFormSchema from './ExoFormSchema';
-//import Core from '../../pwa/Core';
-//import ExoFormFactory from '../../exo/core/ExoFormFactory';
 import DataBinding from "../xo/DataBinding";
 import MetaReader from "./meta-reader";
 import Util from "../xo/Util";
@@ -39,8 +36,7 @@ class JSONSchemaReader extends MetaReader {
         props[name] = obj;
 
         if (obj.$ref) {
-          let ref = obj.$ref.substr(2).replace("/", ".");
-          props[name] = DataBinding.getValue(schema, ref);
+          props[name] = DataBinding.getValue(schema, obj.$ref);
 
           if (props[name].$ref) {
             this.expandSchema(props[name]);
@@ -54,7 +50,7 @@ class JSONSchemaReader extends MetaReader {
 
   apply(field) {
     //try {
-    //let path = ExoFormSchema.getPathFromBind(field.bind);
+
     let path = field.name;
     let props = this.schema.properties[path]; // todo deep path
 
@@ -71,7 +67,7 @@ class JSONSchemaReader extends MetaReader {
     }
 
     if (!field.type) {
-      let els = JSONSchemaReader.mapType(field, props);
+      let els = JSONSchemaReader.mapType(this.schema, field, props);
       for (var p in els) {
         field[p] = els[p];
       }
@@ -97,9 +93,23 @@ class JSONSchemaReader extends MetaReader {
     // }
   }
 
-  static mapType(field, prop) {
+  static mapType(schema, field, prop) {
     // string, number, integer, object, array, boolean, null
-    switch (prop?.type) {
+    let type = prop?.type,
+      nullable = false;
+    if (Array.isArray(type)) {
+      if (type.length === 2 && type.includes("null")) {
+        nullable = true;
+        type = type
+          .filter((s) => {
+            return s !== "null";
+          })
+          .join();
+        prop.type = type;
+      }
+    }
+
+    switch (type) {
       case "string":
         return this.applyStringType(field, prop);
       case "number":
@@ -112,29 +122,41 @@ class JSONSchemaReader extends MetaReader {
       case "boolean":
         return { type: "checkbox" };
       case "array":
-        return { type: "checkboxlist" };
+        return this.applyArrayType(schema, field, prop);
       case "object":
-        return this.applyObjectType(field, prop);
+        return this.applyObjectType(schema, field, prop);
 
       default:
-        console.error("Mapping ", field, prop);
+        console.error("Mapping error", prop?.type, field, prop);
     }
 
     return { type: "text" };
   }
 
-  static applyObjectType(field, props) {
-    let obj = { type: "multiinput" };
+  static applyArrayType(schema, field, props) {
+    field = { type: "xw-checkgroup" };
+
+    if (props?.items?.$ref) {
+      let enumStruct = DataBinding.getValue(schema, props.items.$ref);
+      if (Array.isArray(enumStruct.enum)) field.items = enumStruct.enum;
+    }
+
+    return field;
+  }
+
+  static applyObjectType(schema, field, props) {
+    let obj = { type: "group" };
 
     if (!field.fields) {
-      obj.fields = {};
+      obj.fields = [];
 
       for (var name in props.properties) {
         var p = props.properties[name];
-        obj.fields[name] = JSONSchema.mapType(obj, p);
-        obj.fields[name].caption = Core.toWords(
-          obj.fields[name].caption || name
-        );
+        obj.fields.push({
+          ...JSONSchemaReader.mapType(schema, obj, p),
+          name: name,
+          label: Util.toWords(name)
+        });
       }
     }
     return obj;

@@ -2,18 +2,24 @@
 @import "controls";
 @import "scrollbar";
 
+html,
+body {
+	height: 100%;
+}
+
 html {
 	scroll-behavior: smooth;
 	overflow-x: hidden;
 }
 
 body {
-	//padding-bottom: 3.5rem;
 	overflow-x: hidden;
-}
+	display: flex;
+	flex-direction: column;
 
-body > * {
-	padding: 1rem;
+	> * {
+		padding: 1rem;
+	}
 }
 
 #model-state {
@@ -37,9 +43,6 @@ header {
 		top: 5px;
 		left: 5px;
 		display: inline-block;
-		background-image: url("/img/icon512px.png");
-		background-repeat: no-repeat;
-		background-size: contain;
 		height: 40px;
 		width: 40px;
 
@@ -50,6 +53,7 @@ header {
 }
 
 main {
+	flex: 1 0 auto;
 	.c1 {
 		display: flex;
 		min-width: 100vw;
@@ -85,7 +89,8 @@ main {
 }
 
 footer {
-	position: sticky;
+	flex-shrink: 0;
+
 	margin-top: 3rem;
 
 	height: 6rem;
@@ -171,14 +176,19 @@ h2 > a {
 	}
 }
 
+#schema,
+#form {
+	> div > h2 {
+		margin: 0.3rem;
+	}
+}
+
 #schema {
-	> div > h2{
+	> div > h2 {
 		display: inline-block;
-		margin: .3rem
 	}
 	> div > xw-example-list {
-		display: inline-block;
-		margin: .3rem;
+		margin: 0.3rem;
 		float: right;
 	}
 }

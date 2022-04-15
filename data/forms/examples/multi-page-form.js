@@ -6,7 +6,7 @@ export const wizard = {
   icons: "/data/svg/icons.svg", // pointer to svg sheet
   model: { 
     rules: {
-      "#/state/send": [
+      "#/state/commit": [
         {
           run: (context) => {
             alert(JSON.stringify(context.data.instance.mail, null, 2));
@@ -40,7 +40,7 @@ export const wizard = {
         },
         {
           type: "textarea",
-          label: "Message to send",
+          label: "Message",
           placeholder: "Type a message",
           required: true,
           bind: "#/mail/message",
@@ -49,6 +49,7 @@ export const wizard = {
         {
           type: "xw-switch",
           label: "Copy to self",
+          text: "Yes, CC me",
           bind: "#/mail/copy"
         }
       ]
@@ -82,8 +83,8 @@ export const wizard = {
         },
         {
           type: "button",
-          label: "Send",
-          bind: "#/state/send"
+          label: "Ready",
+          bind: "#/state/commit"
         }
       ]
     }

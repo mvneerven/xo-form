@@ -1,7 +1,6 @@
 import xo from "../xo";
-import MdHtml from "./md-html";
 import gen from "../generator";
-import jsonSchema from "../../data/json-schemas/person-schema.json";
+import jsonSchema from "../../data/json-schemas/product-schema.json";
 import JSONSchemaReader from "../generator/json-schema-reader";
 
 class PWA {

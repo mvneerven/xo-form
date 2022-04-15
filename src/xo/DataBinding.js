@@ -158,10 +158,10 @@ class DataBinding {
       },
       nav: {
         page: 1,
-        total: this.options.pageCount,
-        back: 0,
-        next: 0,
-        send: 0
+        total: this.options.pageCount
+        // back: 0,
+        // next: 0,
+        // send: 0
       }
     };
   }

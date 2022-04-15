@@ -12,6 +12,7 @@ class Theme extends LitElement {
     return [
       css`
         button {
+          cursor: pointer;
           outline: none;
           padding: 0.5rem;
           border-radius: 100%;
@@ -19,6 +20,9 @@ class Theme extends LitElement {
           position: fixed;
           top: 5px;
           right: 5px;
+        }
+        button:hover{
+          filter: brightness(150%);
         }
       `,
     ];

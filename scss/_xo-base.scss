@@ -6,8 +6,9 @@
   // container - not repeat
   margin-top: 0.4rem;
   margin-bottom: 0.4rem;
-    
-  .xo-in { // input
+
+  .xo-in {
+    // input
     padding: 0;
   }
 
@@ -28,7 +29,8 @@
     }
   }
 
-  &.xo-fc { // focus
+  &.xo-fc {
+    // focus
     .xo-in {
       border-color: var(--xo-input-border-color-active);
       transition: all 0.3s ease;
@@ -36,7 +38,8 @@
   }
 }
 
-.xo-cn:not(.xo-rep):not(.xo-ri) { // xo-ri = repeat-item
+.xo-cn:not(.xo-rep):not(.xo-ri) {
+  // xo-ri = repeat-item
   .xo-in {
     .xo-grp {
       padding: 0;
@@ -44,7 +47,8 @@
   }
 }
 
-.xo-ri { // repeat-item
+.xo-ri {
+  // repeat-item
   margin: 0;
   padding: 0 !important;
 
@@ -62,7 +66,8 @@
   padding: 0.5rem 0px 0px 0.5rem;
 }
 
-.xo-pp { // prepend
+.xo-pp {
+  // prepend
   display: inline;
 }
 
@@ -113,6 +118,7 @@ label {
 }
 
 button {
+  cursor: pointer;
   margin-top: 0.5rem;
   text-transform: uppercase;
   background-color: var(--xo-btn-bg, rgba(127, 127, 127, 0.8));
@@ -120,8 +126,9 @@ button {
   padding: 0.4rem 0.8rem;
   border-radius: 1rem;
   border: 1px solid var(--xo-input-border-color);
-  &:hover {
+  &:hover:not([disabled]) {
     border: 1px solid var(--xo-input-border-color-hover);
+    filter: brightness(150%);
   }
   &:active:not([disabled]) {
     transform: translateY(2px);
