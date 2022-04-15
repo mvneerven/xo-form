@@ -1,6 +1,6 @@
 {
   "name": "xo-form",
-  "version": "1.0.21",
+  "version": "1.0.22",
   "description": "Declarative Forms using Web Components",
   "main": "dist/xo-form.js",
   "scripts": {
