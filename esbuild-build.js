@@ -20,7 +20,7 @@ esbuild.build({
 
 esbuild
   .build({
-    plugins: [sassPlugin(), litCssPlugin(),  markdownPlugin()],
+    plugins: [sassPlugin(), litCssPlugin()],
     entryPoints: ["src/xo/index.js"],
     bundle: true,
     format: "esm",
@@ -36,7 +36,7 @@ esbuild
 
   esbuild
   .build({
-    plugins: [sassPlugin(), litCssPlugin(),  markdownPlugin()],
+    plugins: [sassPlugin(), litCssPlugin()],
     entryPoints: ["src/autocomplete/index.js"],
     bundle: true,
     format: "esm",
@@ -53,7 +53,19 @@ esbuild
 
 esbuild
   .build({
-    plugins: [sassPlugin(), litCssPlugin()],
+    plugins: [sassPlugin(), litCssPlugin(),
+      markdownPlugin({
+        markedOptions: {
+          
+          highlight: function(code, lang) {
+            const hljs = require('highlight.js');
+            const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+            return hljs.highlight(code, { language }).value;
+          }
+          
+        }
+      })
+    ],
     entryPoints: ["js/index.js"],
     bundle: true,
     format: "esm",

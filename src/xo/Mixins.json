@@ -1,0 +1,12 @@
+{
+  "xo": {
+    "button": {
+      "submit": {
+        "label": "Submit",
+        "disabled": "#/_xo/disabled/send",
+        "bind": "#/state/commit"
+      }
+    }
+  }
+  
+}

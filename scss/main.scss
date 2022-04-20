@@ -1,6 +1,7 @@
 @import "shared";
 @import "controls";
 @import "scrollbar";
+@import "docs";
 
 html,
 body {
@@ -64,9 +65,6 @@ main {
 			max-width: 700px;
 			margin: auto;
 		}
-	}
-	#form {
-		margin-top: 3rem;
 	}
 
 	#state {

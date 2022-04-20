@@ -13,7 +13,7 @@ import OmnoBox from "./OmniBox";
 import Leaflet from "./Leaflet";
 import ModelView from "./ModelView";
 import SchemaEditor from './SchemaEditor';
-import ExampleList from './ExampleList'
-
+import ExampleList from './ExampleList';
+import Docs from './Docs';
 
 window.pwa = new PWA();

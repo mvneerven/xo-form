@@ -304,49 +304,8 @@ class DataBinding {
     return s;
   }
 
-  static parseKey(key) {
-    let number = parseInt(key); // numeric - array index
-    if (!isNaN(number)) return number;
-    return key;
-  }
-
   get(path) {
-    return DataBinding.getValue(this.instance, path);
-  }
-
-  static getValue(obj, path) {
-    if (path.indexOf("*") !== -1 || path.indexOf("@index") !== -1)
-      throw Error("Invalid binding path: " + path);
-
-    let pathElements = path.substring(2).split("/");
-    let instanceName = pathElements.shift();
-    var current = obj[instanceName]; //this.instance[instanceName];
-    if (!current) return undefined;
-
-    for (var i = 0; i < pathElements.length; i++) {
-      let key = this.parseKey(pathElements[i]);
-      if (i === pathElements.length - 1) {
-        if (typeof key === "number") console.log("GET: ", path, current[key]);
-        return current[key];
-      }
-      current = current[key];
-    }
-  }
-
-  static setValue(obj, path, value) {
-    let pathElements = path.substring(2).split("/");
-    let instanceName = pathElements.shift();
-    var current = obj[instanceName];
-    if (!current) return undefined;
-
-    for (var i = 0; i < pathElements.length; i++) {
-      let key = this.parseKey(pathElements[i]);
-      if (i === pathElements.length - 1) {
-        current[key] = value;
-        break;
-      }
-      current = current[key];
-    }
+    return Util.getValue(this.instance, path);
   }
 
   set(path, value, originatingEventContext) {
@@ -354,7 +313,7 @@ class DataBinding {
       originatingEventContext
     );
 
-    DataBinding.setValue(this.instance, path, value);
+    Util.setValue(this.instance, path, value);
   }
 
   createDataBindingOriginContext(originatingEventContext) {

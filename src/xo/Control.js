@@ -21,24 +21,7 @@ class Control extends LitElement {
   }
 
   static get properties() {
-    return {
-      name: { type: String, attribute: true },
-      bind: { type: String },
-      type: { type: String, attribute: true },
-      hidden: { type: Boolean },
-      disabled: { type: Boolean },
-      required: { type: Boolean },
-      focus: { type: Boolean },
-      label: { type: String, attribute: true },
-      tooltip: { type: String, attribute: true },
-      placeholder: { type: String, attribute: true },
-      valid: { type: Boolean },
-      value: { type: Object },
-      classes: { type: Array },
-      autocomplete: { type: Object },
-      prepend: { type: Object },
-      append: { type: Object }
-    };
+    return Context.controlProperties
   }
 
   static get styles() {

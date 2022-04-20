@@ -3,9 +3,12 @@
  */
 export const form = {
   icons: "/data/svg/icons.svg",
-  model: { // model node contains all data-related stuff
+  model: {
+    // model node contains all data-related stuff
+
     rules: {
-      "#/state/commit": [ // when commit property changes....
+      "#/state/commit": [
+        // when commit property changes....
         {
           run: (context) => {
             alert(JSON.stringify(context.data.instance.myData, null, 2));
@@ -13,15 +16,17 @@ export const form = {
         }
       ]
     },
-    instance: { // container for all instances
+    instance: {
+      // container for all instances
       state: {},
       myData: {} // 'myData' instance
     }
   },
-  pages: [ // root node for form (form can have multiple pages)
+  pages: [
+    // root node for form (form can have multiple pages)
     {
-      fields: [ // each page has array of field schemas
-        
+      fields: [
+        // each page has array of field schemas
         {
           type: "email",
           label: "Email address",
@@ -33,10 +38,18 @@ export const form = {
           }
         },
         {
+          type: "textarea",
+          required: true,
+          bind: "#/myData/msg",
+          placeholder: "Type a message...",
+          label: "Message",
+          prepend: {
+            icon: "msg"
+          }
+        },
+        {
           type: "button",
-          label: "Store",
-          disabled: "#/_xo/disabled/send",
-          bind: "#/state/commit"
+          mixin: "xo/button/submit"
         }
       ]
     }

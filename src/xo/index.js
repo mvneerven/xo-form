@@ -9,11 +9,29 @@ import Util from "./Util";
 import DataBinding from "./DataBinding";
 import PropertyMapper from "./PropertyMapper";
 import Validator from "./Validator";
+import {version} from '../../package.json';
 
 /**
  * XO - Namespace
  */
 class xo {
+  static _options = {};
+
+  static get version(){
+    return version;
+  }
+
+  static initialize(options = {}) {
+    this.options = options;
+
+    if (this.options && this.options.mixins) {
+      PropertyMapper._mixins = {
+        ...PropertyMapper._mixins,
+        ...this.options.mixins
+      };
+    }
+  }
+
   /**
    * XO Context
    * @returns {Context}
@@ -101,7 +119,6 @@ class xo {
   static get Validation() {
     return Validator;
   }
-
 }
 
 //window.xo = xo;

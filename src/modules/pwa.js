@@ -1,7 +1,14 @@
 import xo from "../xo";
-import gen from "../generator";
-import jsonSchema from "../../data/json-schemas/product-schema.json";
-import JSONSchemaReader from "../generator/json-schema-reader";
+
+xo.initialize({
+  mixins: {
+    styles: {
+      right: {
+        style: "float: right"
+      }
+    }
+  }
+});
 
 class PWA {
   constructor() {
@@ -13,16 +20,6 @@ class PWA {
       let o = 1 - Math.min(100, window.scrollY) * 0.01;
       fog.style.opacity = o;
     });
-
-    if (window.location.pathname === "/meta.html") {
-      let g = new gen.SchemaGenerator(new JSONSchemaReader(jsonSchema));
-
-      let schema = g.createSchema();
-      console.log(schema);
-
-      let x = document.querySelector("xo-form");
-      x.schema = schema;
-    }
   }
 
   checkDarkTheme() {

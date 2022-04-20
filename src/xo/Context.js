@@ -8,10 +8,35 @@ import Util from "./Util";
 class Context {
   static _sheet;
 
+  // static constructor
+  static _staticConstructor = (() => { })();
+
   constructor(form) {
     this._form = form;
     this._db = new DataBinding(this);
     this._mapper = new PropertyMapper(this);
+  }
+
+  static get controlProperties(){
+    return {
+      name: { type: String, attribute: true },
+      bind: { type: String },
+      type: { type: String, attribute: true },
+      hidden: { type: Boolean },
+      disabled: { type: Boolean },
+      required: { type: Boolean },
+      focus: { type: Boolean },
+      label: { type: String, attribute: true },
+      tooltip: { type: String, attribute: true },
+      placeholder: { type: String, attribute: true },
+      valid: { type: Boolean },
+      value: { type: Object },
+      classes: { type: Array },
+      autocomplete: { type: Object },
+      prepend: { type: Object },
+      append: { type: Object },
+      mixin: { type: Object}
+    };
   }
 
   /**

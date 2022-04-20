@@ -51,6 +51,7 @@
     </header>
 
     <main>
+      <xo-docs></xo-docs>
       <section class="c1">
         <div>
           <h2>
@@ -76,30 +77,32 @@
               </svg>
             </a>
           </h2>
-          <p>Web Forms are commodities, so why not treat them as such?</p>
 
           <p>
-            Self-contained,
+            A 
             <a
               title="Set of features that provide a standard component model for the Web allowing for encapsulation and interoperability of individual HTML elements - Wikipedia."
               target="_blank"
               href="https://developer.mozilla.org/en-US/docs/Web/Web_Components"
-              >web-component</a
+              >Web Component</a
             >
-            based,
+            that renders
             <a
               title="Changes in the model are automatically propagated to the form, and form elements can be bound to model state, with a powerful rules engine in between."
-              >data-bound</a
-            >,
+              >Data-Bound</a
+            > &amp;
+            <a title="Changes in a model bound to a form are immediately reflected in the form UI and vice versa.">
+              Reactive
+            </a>,
             <a
               title="XO-FORM supports writing wizards with navigational controls out of the box"
-              >multi-page</a
-            >
+              >Multi-Page</a
+            >,
             <a
               title="XO-FORM supports grouping, array-based repeats of form blocks, inline validation, complex nested layouts, state-based conditional logic, and much more..."
-              >complex</a
+              >Complex</a
             >
-            Web Forms as pure
+            Web Forms from pure
             <a
               title="Object notation with comma-separated name-value pairs wrapped in curly braces, encapsulating data in a tidy package."
               target="_blank"
@@ -107,27 +110,14 @@
               >JavaScript Object Literals</a
             >.
           </p>
-          <p>
-            Automatic Web Form generation from
-            <a
-              title="Standard, language-agnostic interface to RESTful APIs which allows both humans and computers to discover and understand the capabilities of the service without access to source code."
-              target="_blank"
-              href="https://swagger.io/specification/"
-              >OpenAPI/Swagger</a
-            >
-            or
-            <a
-              title="JSON Schema is a vocabulary that allows you to annotate and validate JSON documents."
-              target="_blank"
-              href="https://json-schema.org/"
-              >JSON Schema</a
-            >.
-          </p>
+
+          
         </div>
       </section>
+
       <section class="c1" id="schema">
         <div>
-          <h2>Schema:</h2>
+          <h2>Schema</h2>
           <xw-example-list title="Select example"></xw-example-list>
           <xw-schemaeditor
             form="frm"
@@ -135,9 +125,37 @@
           ></xw-schemaeditor>
         </div>
       </section>
+
+      <section class="c1">
+        <div>
+          <h2>Markup</h2>
+
+          <p>
+            <code
+              title="Custom tag"
+              style="
+                display: block;
+                padding: 0.6rem 1rem;
+                background-color: var(--code-bg-color);
+                border-radius: 1rem;
+                margin: 0;
+              "
+              ><span style="color: var(--code-tag-color)">&lt;xo-form</span>
+              <span style="color: var(--code-attr-color)">src</span>=<span
+                style="color: var(--code-attr-val-color)"
+                title="JS Object Literal Schema Source"
+                >"/forms/my-form.js"</span
+              ><span style="color: var(--code-tag-color)"
+                >&gt;&lt;/xo-form&gt;</span
+              ></code
+            >
+          </p>
+        </div>
+      </section>
+
       <section class="c1" id="form">
         <div>
-          <h2>Rendered Form:</h2>
+          <h2>Result</h2>
           <xo-form id="frm" theme="material"></xo-form>
         </div>
       </section>
@@ -148,6 +166,7 @@
 
     <footer>
       <div>
+        <p>Web Forms are commodities, so why not treat them as such?</p>
         <p>&copy; 2022 - built with 💗 by Neerventure</p>
       </div>
     </footer>

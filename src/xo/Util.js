@@ -152,15 +152,21 @@ class Util {
   static async waitFor(
     evaluator = () => {
       return true;
-    }
+    },
+    timeoutMilliseconds = 5000
   ) {
-    return new Promise((resolve) => {
-      let tmr,
+    return new Promise((resolve, reject) => {
+      let timeout = setTimeout((e) => {
+          if(tmr) clearInterval(tmr)
+          reject("Timeout expired");
+        }, timeoutMilliseconds),
+        tmr,
         evualationResult = null;
       tmr = setInterval((e) => {
         try {
           if ((evualationResult = evaluator())) {
             clearInterval(tmr);
+            clearTimeout(timeout);
             resolve(evualationResult);
           }
         } catch {}
@@ -304,6 +310,46 @@ class Util {
       Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^
       Math.imul(h1 ^ (h1 >>> 13), 3266489909);
     return 4294967296 * (2097151 & h2) + (h1 >>> 0);
+  }
+
+  static getValue(obj, path) {
+    if (path.indexOf("*") !== -1 || path.indexOf("@index") !== -1)
+      throw Error("Invalid binding path: " + path);
+
+    let pathElements = path.substring(2).split("/");
+    let instanceName = pathElements.shift();
+    var current = obj[instanceName]; //this.instance[instanceName];
+    if (!current) return undefined;
+
+    for (var i = 0; i < pathElements.length; i++) {
+      let key = this.parseKey(pathElements[i]);
+      if (i === pathElements.length - 1) {
+        return current[key];
+      }
+      current = current[key];
+    }
+  }
+
+  static setValue(obj, path, value) {
+    let pathElements = path.substring(2).split("/");
+    let instanceName = pathElements.shift();
+    var current = obj[instanceName];
+    if (!current) return undefined;
+
+    for (var i = 0; i < pathElements.length; i++) {
+      let key = this.parseKey(pathElements[i]);
+      if (i === pathElements.length - 1) {
+        current[key] = value;
+        break;
+      }
+      current = current[key];
+    }
+  }
+
+  static parseKey(key) {
+    let number = parseInt(key); // numeric - array index
+    if (!isNaN(number)) return number;
+    return key;
   }
 }
 

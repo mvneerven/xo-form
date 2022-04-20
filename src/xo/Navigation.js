@@ -18,7 +18,7 @@ class Navigation extends Group {
           display: inline-block;
           margin: auto;
         }
-      `,
+      `
     ];
   }
 
@@ -38,7 +38,7 @@ class Navigation extends Group {
             label: "Back",
             bind: "#/_xo/nav/back",
             disabled: "#/_xo/disabled/back",
-            click: this.prev.bind(this),
+            click: this.prev.bind(this)
           },
           {
             type: "button",
@@ -46,8 +46,8 @@ class Navigation extends Group {
             label: "Next",
             bind: "#/_xo/nav/next",
             disabled: "#/_xo/disabled/next",
-            click: this.next.bind(this),
-          },
+            click: this.next.bind(this)
+          }
         ]
       );
     }
@@ -56,11 +56,11 @@ class Navigation extends Group {
   static get properties() {
     return {
       page: {
-        type: Number,
+        type: Number
       },
       controls: {
-        type: Array,
-      },
+        type: Array
+      }
     };
   }
 
@@ -70,7 +70,7 @@ class Navigation extends Group {
     this.context.form.page = value;
     this.context.form.emit("page", {
       from: old,
-      to: value,
+      to: value
     });
     this.updateUrl();
   }

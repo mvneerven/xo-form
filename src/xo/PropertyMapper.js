@@ -1,5 +1,7 @@
 import AutoComplete from "../autocomplete/AutoComplete";
-import Control from "./Control";
+import builtinMixins from "./Mixins.json";
+import Util from "./Util";
+import Context from "./Context";
 
 const RESERVED_PROPERTIES = ["type", "label", "bind", "classes"];
 
@@ -13,8 +15,16 @@ const propMappings = {};
  * XO Property Mapper
  */
 class PropertyMapper {
+  static _mixins = {
+    ...builtinMixins
+  };
+
   constructor(context) {
     this._context = context;
+  }
+
+  static get mixins() {
+    return this._mixins;
   }
 
   get context() {
@@ -37,10 +47,13 @@ class PropertyMapper {
       }
     }
 
+    if (properties.mixin) this.applyMixins(properties);
+
     if (!properties.id) properties.id = getUniqueName();
     if (!properties.name) properties.name = properties.id;
 
-    if (isInitialState) { // first distill all bindings to manage
+    if (isInitialState) {
+      // first distill all bindings to manage
       this.context.data.processBindings(element, properties);
     }
 
@@ -51,9 +64,12 @@ class PropertyMapper {
 
       if (!["id"].includes(prop)) {
         element[prop] = value;
+        if (Context.controlProperties[prop]) continue; // property set on host element
       }
 
-      if (nested) {
+      if (["style", "title", "id"].includes(prop)) {
+        element[prop] = value ?? "";
+      } else if (nested) {
         if (PropertyMapper.elementSupportsProperty(nested, prop)) {
           nested[prop] = value ?? "";
         } else {
@@ -124,13 +140,37 @@ class PropertyMapper {
             path: e.path,
             detail: {
               repeat: repeat,
-              index: index,
-            },
+              index: index
+            }
           };
 
           properties.click(event);
         });
       }
+    }
+  }
+
+  applyMixins(properties) {
+    if (!Array.isArray(properties.mixin)) properties.mixin = [properties.mixin];
+
+    for (const mixin of properties.mixin) {
+      if (typeof mixin !== "string" || mixin.indexOf("/") <= 0)
+        console.warn("Invalid mixin syntax: ", mixin);
+
+      this.applyMixin(properties, mixin);
+      console.debug("Mixin applied: ", mixin, properties);
+    }
+    delete properties.mixin;
+  }
+
+  applyMixin(properties, mixin) {
+    const props = Util.getValue(PropertyMapper.mixins, "#/" + mixin);
+    if (typeof props === "object") {
+      Object.entries(props).forEach((entry) => {
+        properties[entry[0]] = entry[1];
+      });
+    } else {
+      console.warn("Mixin not found: ", mixin);
     }
   }
 
@@ -229,7 +269,7 @@ class PropertyMapper {
       );
       propMappings[type] = [
         ...propMappings[type],
-        ...Object.getOwnPropertyNames(HTMLElement.prototype),
+        ...Object.getOwnPropertyNames(HTMLElement.prototype)
       ];
       propMappings[type] = [...new Set(propMappings[type])];
     }

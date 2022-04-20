@@ -35,7 +35,7 @@ class Page extends Group {
 
   static get properties() {
     return {
-      index: { type: Number, attribute: true },
+      index: { type: Number, attribute: true }
     };
   }
 }

@@ -2,6 +2,7 @@
 const esbuild = require("esbuild");
 const { litCssPlugin } = require("esbuild-plugin-lit-css");
 const { markdownPlugin } = require("esbuild-plugin-markdown");
+
 const fs = require("fs");
 const htc = (s) => {
   return s.replace(/-([a-z])/g, function (g) {
@@ -44,7 +45,7 @@ fs.readdir("./data/forms/examples/", (err, files) => {
 console.log("Building dist/xo-form.js");
 esbuild
   .build({
-    plugins: [litCssPlugin(), markdownPlugin()],
+    plugins: [litCssPlugin()],
     entryPoints: ["src/xo/index.js"],
     bundle: true,
     keepNames: true,
@@ -64,7 +65,7 @@ esbuild
 console.log("Building dist/xo-autocomplete.js");
 esbuild
   .build({
-    plugins: [litCssPlugin(), markdownPlugin()],
+    plugins: [litCssPlugin()],
     entryPoints: ["src/autocomplete/index.js"],
     bundle: true,
     keepNames: true,
@@ -84,7 +85,7 @@ esbuild
 console.log("Building dist/xo-schema-generator.js");
 esbuild
   .build({
-    plugins: [litCssPlugin(), markdownPlugin()],
+    plugins: [litCssPlugin()],
     entryPoints: ["src/generator/index.js"],
     bundle: true,
     keepNames: true,
@@ -104,7 +105,20 @@ esbuild
 console.log("Building dist/index.js");
 esbuild
   .build({
-    plugins: [litCssPlugin(), markdownPlugin()],
+    plugins: [
+      litCssPlugin(),
+      markdownPlugin({
+        markedOptions: {
+          
+          highlight: function(code, lang) {
+            const hljs = require('highlight.js');
+            const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+            return hljs.highlight(code, { language }).value;
+          }
+          
+        }
+      })
+    ],
     entryPoints: ["js/index.js"],
     bundle: true,
     keepNames: true,

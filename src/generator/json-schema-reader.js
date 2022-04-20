@@ -36,7 +36,7 @@ class JSONSchemaReader extends MetaReader {
         props[name] = obj;
 
         if (obj.$ref) {
-          props[name] = DataBinding.getValue(schema, obj.$ref);
+          props[name] = Util.getValue(schema, obj.$ref);
 
           if (props[name].$ref) {
             this.expandSchema(props[name]);
@@ -49,15 +49,10 @@ class JSONSchemaReader extends MetaReader {
   }
 
   apply(field) {
-    //try {
-
     let path = field.name;
-    let props = this.schema.properties[path]; // todo deep path
+    let props = this.schema.properties[path];
 
     field.bind = "#/data/" + field.name;
-    // if (!field.name) {
-    //   field.name = path;
-    // }
 
     if (
       Array.isArray(this.schema.required) &&
@@ -85,12 +80,6 @@ class JSONSchemaReader extends MetaReader {
       field.type = "xw-checkgroup";
       field.items = props.enum;
     }
-    // } catch (ex) {
-    //   console.error(
-    //     `Error applying JSON Schema for field ${field.name}`,
-    //     ex
-    //   );
-    // }
   }
 
   static mapType(schema, field, prop) {
@@ -137,7 +126,7 @@ class JSONSchemaReader extends MetaReader {
     field = { type: "xw-checkgroup" };
 
     if (props?.items?.$ref) {
-      let enumStruct = DataBinding.getValue(schema, props.items.$ref);
+      let enumStruct = Util.getValue(schema, props.items.$ref);
       if (Array.isArray(enumStruct.enum)) field.items = enumStruct.enum;
     }
 

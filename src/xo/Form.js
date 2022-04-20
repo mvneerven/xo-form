@@ -11,6 +11,15 @@ import { version } from "../../package.json";
 class Form extends Control {
   elements = {};
 
+  static get mixins() {
+    return {
+      submit: {
+        disabled: "#/_xo/disabled/send",
+        bind: "#/state/commit"
+      }
+    };
+  }
+
   /**
    * Returns package version
    */
