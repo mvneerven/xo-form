@@ -11,7 +11,8 @@ export const form = {
       // one or more instance nodes
     },
     rules: {
-      // any number of instance node references to hook into when they get modified
+      // any number of instance node references 
+      // to hook into when they get modified
     }
   },
   pages: [

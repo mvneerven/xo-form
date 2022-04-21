@@ -2,6 +2,7 @@ import { LitElement, html, css } from "lit";
 import AutoComplete from "../autocomplete/AutoComplete";
 import Context from "./Context";
 import Util from "./Util";
+import xo from "./index";
 
 const ERR_INVALID_BINDING = "Invalid binding value";
 
@@ -21,11 +22,21 @@ class Control extends LitElement {
   }
 
   static get properties() {
-    return Context.controlProperties
+    return Context.controlProperties;
   }
 
   static get styles() {
     return [Context.sharedStyles, AutoComplete.sharedStyles];
+  }
+
+  /**
+   * Allows for proper disposing
+   */
+  dispose() {
+    this.nestedElement?.removeEventListener("focus", this.onfocus);
+    this.nestedElement?.removeEventListener("blur", this.onblur);
+    this.shadowRoot.removeEventListener("input", this.onInput);
+    this.shadowRoot.removeEventListener("change", this.onInput);
   }
 
   /**
@@ -57,10 +68,7 @@ class Control extends LitElement {
   }
 
   disconnectedCallback() {
-    this.nestedElement?.removeEventListener("focus", this.onfocus);
-    this.nestedElement?.removeEventListener("blur", this.onblur);
-    this.shadowRoot.removeEventListener("input", this.onInput);
-    this.shadowRoot.removeEventListener("change", this.onInput);
+    this.dispose();
   }
 
   firstUpdated() {
@@ -96,6 +104,7 @@ class Control extends LitElement {
   }
 
   onInput(e) {
+    const me = this;
     if (e.type === "input" && this.nestedElement) {
       //console.log(e.target)
       if (this.nestedElement.nodeName.indexOf("-") !== -1) return;
@@ -116,13 +125,28 @@ class Control extends LitElement {
       }
     }
 
-    this.form.emit("interaction", {
-      type: "input",
-      control: this,
-      source: source,
-      value: this.value,
-      guid: Util.guid()
-    });
+    const emit = () => {
+      me.form.emit("interaction", {
+        type: "input",
+        control: this,
+        source: source,
+        value: me.value,
+        guid: Util.guid()
+      });
+    };
+
+    if (xo.options.throttleInput) {
+      if (this.inputTmr) clearTimeout(this.inputTmr);
+      if (this.value !== me.oldValue) {
+        me.inputTmr = setTimeout(() => {
+          me.oldValue = this.value;
+
+          emit();
+        }, xo.options.throttleInput);
+      }
+    } else {
+      emit();
+    }
 
     if (e.type === "input") this.__lastInputValue = this.value;
   }
@@ -315,7 +339,7 @@ class Control extends LitElement {
       }
     }
 
-    cls.push(this.form?.theme ?? "standard");
+    cls.push(this.form?.theme ?? xo.options.defaultTheme ?? "default");
 
     return [...new Set(cls)].join(" ");
   }

@@ -39,17 +39,7 @@ body {
 
 header {
 	> h1 {
-		position: fixed;
-		margin: 0;
-		top: 5px;
-		left: 5px;
-		display: inline-block;
-		height: 40px;
-		width: 40px;
-
-		> a {
-			opacity: 0;
-		}
+		opacity: 0;
 	}
 }
 
@@ -84,6 +74,18 @@ main {
 			}
 		}
 	}
+}
+
+xo-form {
+	display: block;
+	padding: 1rem;
+	box-shadow: 2px 5px 25px var(--shadow-color);
+	border-radius: 1rem;
+}
+
+.slogan {
+	display: block;
+	margin-top: -1rem;
 }
 
 footer {

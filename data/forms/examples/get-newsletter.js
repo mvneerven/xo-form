@@ -27,24 +27,17 @@ export const getNewsLetter = {
         {
           type: "xw-switch",
           label: "Subscribe to the newsletter",
-          text: "Yes, I would like to receive it",
-          bind: "#/data/receive"
+          bind: "#/data/receive",
+          text: "Yes, I would like to receive it"
         },
         {
-          label: "Email address",
-          placeholder: "john@doe.com",
-          bind: "#/data/email",
           type: "email",
+          label: "Email address",
+          bind: "#/data/email",
+          placeholder: "john@doe.com",
           disabled: "#/data/noreceive",
           prepend: {
             icon: "email"
-          }
-        },
-        {
-          type: "button",
-          label: "Test",
-          prepend: {
-            icon: "fas fa-share"
           }
         }
       ]

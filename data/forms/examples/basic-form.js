@@ -25,6 +25,7 @@ export const form = {
   pages: [
     // root node for form (form can have multiple pages)
     {
+      label: "My Form",
       fields: [
         // each page has array of field schemas
         {
@@ -43,6 +44,7 @@ export const form = {
           bind: "#/myData/msg",
           placeholder: "Type a message...",
           label: "Message",
+          rows: 5,
           prepend: {
             icon: "msg"
           }

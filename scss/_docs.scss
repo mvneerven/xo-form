@@ -10,13 +10,28 @@ body {
   border: 0;
   font-size: x-small;
   position: absolute;
-  right: 50%;
-  padding: .2rem .5rem ;
+  transform: rotate(90deg);
+  transform-origin: top left;
+  top: 30px;
+  left: 26px;
+  padding: 0.7rem 0.5rem 0.2rem 0.5rem;
   margin: 0;
-  border-radius: 0 0 .5rem .5rem;
-  top: 0px;
+  border-radius: 0.5rem 0.5rem 0 0;
+  //top: 0px;
 }
 
+@media screen and (min-width: 1400px) {
+  #toggle-docs.on {
+    z-index: 3;
+    transform: none;
+    top: 5px;
+    left: 5px;
+    font-size: 24px;
+    background-color: rgba(127, 127, 127, 0.3);
+    border-radius: 1rem;
+    padding: 0.2rem 0.4rem;
+  }
+}
 
 xo-docs:not(.show) {
   display: none;
@@ -35,7 +50,7 @@ xo-docs.show {
 
 html.theme-dark {
   xo-docs.show {
-    background-color: #1b1b1b;
+    background-color: #242424;
   }
 }
 
@@ -46,7 +61,8 @@ html.theme-dark {
     --docs-max-height: 500px;
     max-height: 500px;
     border: 1px solid var(--xo-input-border-color);
-    width: 700px;
+    max-width: 700px;
+    width: auto;
     margin: auto;
     display: block;
   }

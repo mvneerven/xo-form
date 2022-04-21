@@ -15,9 +15,6 @@ class SchemaEditor extends Monaco {
         type: String,
         attribute: true
       },
-      // value: {
-      //   type: String
-      // },
       schemaSrc: {
         type: String
       }
@@ -95,7 +92,6 @@ class SchemaEditor extends Monaco {
           ";return " +
           schemaString.substring(p + 1);
       }
-
       form.schema = Util.scopeEval(me, schemaString);
     }
   }

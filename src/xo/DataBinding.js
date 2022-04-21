@@ -17,44 +17,62 @@ const isIrelevantChange = (oldValue, newValue) => {
  */
 class DataBinding {
   instance = {};
+  revocables = [];
   bound = {};
   rules = {};
 
   constructor(context) {
     if (!context) throw Error("Missing context");
 
-    const me = this;
     this._context = context;
 
-    this.context.form.on("interaction", (e) => {
-      console.debug("interaction", e);
+    this.context.form.off("interaction", this.onInteraction.bind(this));
 
-      if (e.detail.control?.bind) {
-        const path = this.processBindingIndex(
-          e.detail.control,
-          e.detail.control?.bind
-        );
+    this.context.form.on("interaction", this.onInteraction.bind(this));
+  }
 
-        me.set(path, e.detail.value, e.detail);
-      }
-    });
+  onInteraction(e) {
+    const me = this;
+    console.debug("interaction", e);
+
+    if (e.detail.control?.bind) {
+      const path = this.processBindingIndex(
+        e.detail.control,
+        e.detail.control?.bind
+      );
+
+      me.set(path, e.detail.value, e.detail);
+    }
+  }
+
+  dispose(){
+    if(this.schemaModel?.instance){
+      this.revocables.forEach((item) => {
+        item.revoke()
+      });
+    }
+    this.revocables.length=0;
   }
 
   initialize(schemaModel = {}, options = {}) {
+    console.debug("Initialize model state");
+
     const me = this;
     this.options = options;
 
     const proxify = (instanceName, target, path) => {
       path = path || instanceName;
 
-      return new Proxy(target, {
+      return Proxy.revocable(target, {
         get: function (target, key) {
           if (
             ["[object Object]", "[object Array]"].indexOf(
               Object.prototype.toString.call(target[key])
             ) > -1
           ) {
-            return proxify(instanceName, target[key], path + "/" + key);
+            const revocable = proxify(instanceName, target[key], path + "/" + key);
+            me.revocables.push(revocable);
+            return revocable.proxy;
           }
           return target[key];
         },
@@ -123,7 +141,12 @@ class DataBinding {
     // create Proxy for each instance
     Object.entries(me.schemaModel.instance).forEach((item) => {
       const key = item[0];
-      this.instance[key] = proxify(key, item[1]);
+
+      const revocable = proxify(key, item[1]);
+      this.revocables.push(revocable);
+      this.instance[key] = revocable.proxy; 
+
+      //this.instance[key] = proxify(key, item[1]);
     });
 
     // set up change rules & run logic
@@ -150,7 +173,7 @@ class DataBinding {
   }
 
   addBuiltinModelState() {
-    this.schemaModel.instance["_xo"] = {
+    this.schemaModel.instance._xo = {
       disabled: {
         back: true,
         next: false,
@@ -158,10 +181,7 @@ class DataBinding {
       },
       nav: {
         page: 1,
-        total: this.options.pageCount
-        // back: 0,
-        // next: 0,
-        // send: 0
+        total: this.context.form.schema.pages.length // this.options.pageCount
       }
     };
   }

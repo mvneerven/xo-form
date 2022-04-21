@@ -21,8 +21,14 @@ class xo {
     return version;
   }
 
-  static initialize(options = {}) {
-    this.options = options;
+  static initialize(options = {
+
+  }) {
+    this.options = {
+      throttleInput: 150, // input event throttling
+      defaultTheme: "material",
+      ...options
+    };
 
     if (this.options && this.options.mixins) {
       PropertyMapper._mixins = {

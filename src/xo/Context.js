@@ -39,6 +39,10 @@ class Context {
     };
   }
 
+  dispose(){
+    this._db.dispose();
+  }
+
   /**
    * Returns a reference to the Form instance.
    * @returns {import('./Form.js') as Form}

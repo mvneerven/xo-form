@@ -126,10 +126,10 @@ class Navigation extends Group {
       result = {};
 
     Object.entries(xo.elements).forEach((item) => {
-      let key = item[0];
-      if (key) {
+      let name = item[1].name;
+      if (name) {
         let value = item[1].value;
-        result[key] = value;
+        result[name] = value;
       }
     });
     console.log(JSON.stringify(result, null, 2));

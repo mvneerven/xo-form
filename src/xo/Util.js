@@ -27,6 +27,13 @@ class Util {
     return new DOMParser().parseFromString(html, "text/html").body.firstChild;
   }
 
+  static replaceDOMElement(oldElm, newElm) {
+    let dummy = oldElm;
+    dummy.parentNode.insertBefore(newElm, dummy);
+    dummy.remove();
+    return newElm;
+}
+
   static objectEquals(x, y) {
     if (x === null || x === undefined || y === null || y === undefined) {
       return x === y;
@@ -157,7 +164,7 @@ class Util {
   ) {
     return new Promise((resolve, reject) => {
       let timeout = setTimeout((e) => {
-          if(tmr) clearInterval(tmr)
+          if (tmr) clearInterval(tmr);
           reject("Timeout expired");
         }, timeoutMilliseconds),
         tmr,
@@ -339,7 +346,7 @@ class Util {
     for (var i = 0; i < pathElements.length; i++) {
       let key = this.parseKey(pathElements[i]);
       if (i === pathElements.length - 1) {
-        current[key] = value;
+        if (!this.equals(current[key], value)) current[key] = value;
         break;
       }
       current = current[key];

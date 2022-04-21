@@ -4,16 +4,21 @@ import Validator from "./Validator";
 import Context from "./Context";
 import { until } from "lit/directives/until.js";
 import { version } from "../../package.json";
+import Util from "./Util";
 
 /**
- * XO Form Control (```<xo-form/>```)
+ * Main xo-form element
  */
 class Form extends Control {
   elements = {};
 
+  /**
+   * Built-in mixins
+   */
   static get mixins() {
     return {
       submit: {
+        // shortcut for submit buttons
         disabled: "#/_xo/disabled/send",
         bind: "#/state/commit"
       }
@@ -96,9 +101,22 @@ class Form extends Control {
    * Sets the XO Form Schema to read.
    */
   set schema(schema) {
-    this._schema = schema;
-    this.innerHTML = "";
-    this.requestUpdate();
+    if (!this._schema) {
+      this._schema = schema;
+      this.innerHTML = ""; // important, keep here for inline validation to work
+      this.requestUpdate();
+    } else {
+      let form = this;
+
+      // trick to get a clean sheet
+      setTimeout(() => {
+        const newForm = document.createElement(this.nodeName);
+        newForm.id = form.id;
+        newForm.theme = form.theme;
+        newForm.schema = schema;
+        form = Util.replaceDOMElement(form, newForm);
+      }, 0);
+    }
   }
 
   /**
@@ -108,13 +126,20 @@ class Form extends Control {
     return this._schema;
   }
 
+  dispose() {
+    super.dispose();
+    this._context.dispose(); // = null;
+    this.elements = {};
+    this.innerHTML = "";
+  }
+
   /**
    *
    * @param {HTMLElement} element
    */
   registerElement(element) {
-    if (element.name) {
-      this.elements[element.name] = element;
+    if (element.id) {
+      this.elements[element.id] = element;
     }
   }
 
@@ -150,6 +175,8 @@ class Form extends Control {
 
     this.interpretSchema();
 
+    //await new Promise((resolve) => setTimeout(resolve, 3000));
+
     return true;
   }
 
@@ -162,9 +189,7 @@ class Form extends Control {
 
     this.emit("initialized");
 
-    this.context.data.initialize(this.schema.model, {
-      pageCount: this.schema.pages.length
-    });
+    this.context.data.initialize(this.schema.model);
 
     let index = 1;
     for (let page of this.schema.pages) {
@@ -206,14 +231,13 @@ class Form extends Control {
             </form>
           </div>`;
         }),
-        html`Loading...`
+        html`Loading form...`
       )}
     `;
   }
 
   firstUpdated() {
     this.validator = new Validator(this);
-
     this.emit("first-updated");
   }
 

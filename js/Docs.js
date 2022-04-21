@@ -75,8 +75,6 @@ export default class Docs extends LitElement {
       code {
         font-family: "SF Mono", Monaco, Menlo, Consolas, "Ubuntu Mono",
           "Liberation Mono", "DejaVu Sans Mono", "Courier New", monospace;
-        
-        
       }
       h1 {
         border-bottom: 2px solid rgba(127, 127, 127, 0.5);
@@ -117,6 +115,10 @@ export default class Docs extends LitElement {
 
       .d-top:hover {
         color: var(--accent);
+      }
+
+      #ds-top {
+        margin-top: 2rem;
       }
 
       pre code {
@@ -165,6 +167,10 @@ export default class Docs extends LitElement {
 
   toggleDocs(e) {
     e.preventDefault();
+    e.target.classList.toggle("on");
+    e.target.innerHTML = e.target.classList.contains("on")
+      ? "⨉"
+      : "Documentation";
     const host = this.shadowRoot.getRootNode()?.host;
     host.classList.toggle("show");
   }
@@ -194,7 +200,10 @@ export default class Docs extends LitElement {
 
     if (e.target.href) {
       e.preventDefault();
-      const id = this.getFileName(e.target.getAttribute("href") ?? "");
+      const id = this.getFileName(e.target.getAttribute("href") ?? "").replace(
+        "-",
+        ""
+      );
       document.location.hash = "#ds-" + id;
 
       let el = me.shadowRoot.getElementById("ds-" + id);
