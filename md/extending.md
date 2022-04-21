@@ -28,16 +28,42 @@ document.body.appendChild(xForm);
 Since `xo-form` schemas are data, extending them is a matter of manipulating the object literal:
 
 ```js
+const form = {
+  pages: [
+    {
+      fields: [
+      ]
+    }
+  ]
+};
 
+form.pages[0].fields.push({
+  type: "text",
+  //...
+})
+
+// etc.
 ```
 
 ## Extending general xo-form behavior
+
+You can set options at global level, using an `options` object:
+
+```js
+import xo from "xo-form";
+
+xo.initialize({
+  // options
+})
+```
 
 ### Defining mixins
 
 You can define mixins at global level by passing in a mixins structure in the static `initialize` method of the `xo` object:
 
 ```js
+import xo from "xo-form";
+
 xo.initialize({
   mixins: {
     myMixins: {
@@ -68,3 +94,14 @@ Using multiple mixins:
 ```
 
 > Mixins prefixed with 'xo/' are built-in and are used as shortcuts for default behavior and UI.
+
+### General settings
+
+```js
+import xo from "xo-form";
+
+xo.initialize({
+  throttleInput: 150, // input event throttling
+  defaultTheme: "material" // default theme
+})
+```

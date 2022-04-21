@@ -9,7 +9,7 @@ class Context {
   static _sheet;
 
   // static constructor
-  static _staticConstructor = (() => { })();
+  static _staticConstructor = (() => {})();
 
   constructor(form) {
     this._form = form;
@@ -17,29 +17,29 @@ class Context {
     this._mapper = new PropertyMapper(this);
   }
 
-  static get controlProperties(){
+  static get controlProperties() {
     return {
       name: { type: String, attribute: true },
       bind: { type: String },
       type: { type: String, attribute: true },
-      hidden: { type: Boolean },
-      disabled: { type: Boolean },
-      required: { type: Boolean },
-      focus: { type: Boolean },
-      label: { type: String, attribute: true },
-      tooltip: { type: String, attribute: true },
+      hidden: { type: Boolean, attribute: true },
+      disabled: { type: Boolean, attribute: true },
+      required: { type: Boolean, attribute: true },
+      autofocus: { type: Boolean },
+      hasFocus: { type: Boolean },
+      label: { type: String },
+      title: { type: String },
       placeholder: { type: String, attribute: true },
-      valid: { type: Boolean },
       value: { type: Object },
       classes: { type: Array },
       autocomplete: { type: Object },
       prepend: { type: Object },
       append: { type: Object },
-      mixin: { type: Object}
+      mixin: { type: Object }
     };
   }
 
-  dispose(){
+  dispose() {
     this._db.dispose();
   }
 

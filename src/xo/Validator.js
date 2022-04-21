@@ -16,6 +16,7 @@ class Validator {
       })
       .on("ready", (e) => {
         setTimeout(() => {
+          //this.processValidation(elm);
           this.checkValid();
         }, 1);
       });
@@ -47,14 +48,15 @@ class Validator {
     let allValid = true;
     for (let p = 1; p <= totalPages; p++) {
       let pv = this.isPageValid(p);
-      if (p == this.form.page) pageValid = pv;
+      if (p === this.form.page) pageValid = pv;
       if (!pv) allValid = false;
     }
 
     db.set("#/_xo/disabled/next", !pageValid || this.form.page >= totalPages);
     db.set("#/_xo/disabled/back", this.form.page <= 1);
-
     db.set("#/_xo/disabled/send", !allValid);
+
+    console.log("send enabled", allValid)
   }
 
   processValidation(elm) {
@@ -77,7 +79,9 @@ class Validator {
         count = elms.length,
         i = 0;
       elms.forEach((elm) => {
+        //this.processValidation(elm);
         let valid = elm.checkValidity();
+        console.log(elm, "valid:", valid)
         if (valid) i++;
       });
 

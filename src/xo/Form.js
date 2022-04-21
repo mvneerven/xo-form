@@ -174,9 +174,7 @@ class Form extends Control {
     if (!this.schema) return false;
 
     this.interpretSchema();
-
     //await new Promise((resolve) => setTimeout(resolve, 3000));
-
     return true;
   }
 

@@ -28,6 +28,7 @@ export const form = {
         {
           type: "text",
           label: "Your name",
+          autofocus: true,
           required: true,
           placeholder: "Enter your name...",
           minLength: 3,
@@ -54,11 +55,14 @@ export const form = {
             items: ["Beer", "Wine", "Coffee"]
           }
         },
-       
+
         {
           type: "button",
           label: "Send",
-          bind: "#/state/submit"
+          mixin: "xo/button/submit",
+          prepend: {
+            icon: "db"
+          }
         }
       ]
     }

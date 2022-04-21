@@ -100,7 +100,7 @@ class Control extends LitElement {
 
   onfocus(e) {
     e.stopPropagation();
-    this.focus = true;
+    this.hasFocus = true;
   }
 
   onInput(e) {
@@ -200,7 +200,7 @@ class Control extends LitElement {
 
   onblur(e) {
     e.stopPropagation();
-    this.focus = false;
+    this.hasFocus = false;
   }
 
   fireChange() {
@@ -230,6 +230,42 @@ class Control extends LitElement {
         this.nestedElement.value = value ?? "";
       }
     }
+  }
+
+  set required(value) {
+    this._required = value;
+    if (this.nestedElement) this.nestedElement.required = value;
+  }
+
+  get required() {
+    return this.nestedElement?.required ?? this._required;
+  }
+
+  set placeholder(value) {
+    this._placeholder = value;
+    if (this.nestedElement) this.nestedElement.placeholder = value;
+  }
+
+  get placeholder() {
+    return this.nestedElement?.placeholder ?? this._placeholder;
+  }
+
+  set name(value) {
+    this._name = value;
+    if (this.nestedElement) this.nestedElement.name = value;
+  }
+
+  get name() {
+    return this.nestedElement?.name ?? this._name;
+  }
+
+  set autofocus(value) {
+    this._autofocus = value;
+    if (this.nestedElement) this.nestedElement.autofocus = value;
+  }
+
+  get autofocus() {
+    return this.nestedElement?.autofocus ?? this._autofocus;
   }
 
   /**
@@ -303,7 +339,7 @@ class Control extends LitElement {
    * - hidden: xo-hd
    * - invalid: xo-iv
    * - disabled: xo-ds
-   * - focus: xo-fc
+   * - hasFocus: xo-fc
    * - textual control: xo-tx
    * - nested element: xo-ne
    * - nested element textual: xo-tx
@@ -315,7 +351,7 @@ class Control extends LitElement {
     if (this.hidden) {
       cls.push("xo-hd");
     }
-    if (this.focus) {
+    if (this.hasFocus) {
       cls.push("xo-fc");
     }
     if (this.disabled) {
@@ -359,7 +395,7 @@ class Control extends LitElement {
 
   render() {
     if (this.type) this.setAttribute("data-type", this.type);
-
+    const $h = 1;
     let nav = this.closest("xo-nav");
     if (nav) {
       return html`${this.renderInput()}`;
