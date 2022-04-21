@@ -45,13 +45,13 @@ class DataBinding {
     }
   }
 
-  dispose(){
-    if(this.schemaModel?.instance){
+  dispose() {
+    if (this.schemaModel?.instance) {
       this.revocables.forEach((item) => {
-        item.revoke()
+        item.revoke();
       });
     }
-    this.revocables.length=0;
+    this.revocables.length = 0;
   }
 
   initialize(schemaModel = {}, options = {}) {
@@ -70,7 +70,11 @@ class DataBinding {
               Object.prototype.toString.call(target[key])
             ) > -1
           ) {
-            const revocable = proxify(instanceName, target[key], path + "/" + key);
+            const revocable = proxify(
+              instanceName,
+              target[key],
+              path + "/" + key
+            );
             me.revocables.push(revocable);
             return revocable.proxy;
           }
@@ -144,7 +148,7 @@ class DataBinding {
 
       const revocable = proxify(key, item[1]);
       this.revocables.push(revocable);
-      this.instance[key] = revocable.proxy; 
+      this.instance[key] = revocable.proxy;
 
       //this.instance[key] = proxify(key, item[1]);
     });

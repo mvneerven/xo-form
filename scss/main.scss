@@ -37,10 +37,8 @@ body {
 	}
 }
 
-header {
-	> h1 {
-		opacity: 0;
-	}
+h1 > a:link {
+	border-bottom: 0;
 }
 
 main {
@@ -85,7 +83,9 @@ xo-form {
 
 .slogan {
 	display: block;
-	margin-top: -1rem;
+	margin-top: -1.2rem;
+	letter-spacing: .05rem;
+	font-variant: small-caps;
 }
 
 footer {

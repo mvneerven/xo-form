@@ -56,7 +56,7 @@ class Validator {
     db.set("#/_xo/disabled/back", this.form.page <= 1);
     db.set("#/_xo/disabled/send", !allValid);
 
-    console.log("send enabled", allValid)
+    console.log("send enabled", allValid);
   }
 
   processValidation(elm) {
@@ -79,9 +79,7 @@ class Validator {
         count = elms.length,
         i = 0;
       elms.forEach((elm) => {
-        //this.processValidation(elm);
         let valid = elm.checkValidity();
-        console.log(elm, "valid:", valid)
         if (valid) i++;
       });
 

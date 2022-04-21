@@ -268,6 +268,33 @@ class Control extends LitElement {
     return this.nestedElement?.autofocus ?? this._autofocus;
   }
 
+  set hidden(value) {
+    this._hidden = value;
+    if (this.nestedElement) this.nestedElement.hidden = value;
+  }
+
+  get hidden() {
+    return this.nestedElement?.hidden ?? this._hidden;
+  }
+
+  /**
+   * Sets the disabled state of the control
+   * @param {Boolean} value
+   */
+  set disabled(value) {
+    this._disabled = value;
+    if (this.nestedElement) this.nestedElement.disabled = value;
+    this.requestUpdate();
+  }
+
+  /**
+   * Returns true if the control is currently disabled
+   * @param {Boolean} value
+   */
+  get disabled() {
+    return this.nestedElement?.disabled ?? this._disabled;
+  }
+
   /**
    * Instantiates a Control in the Form Context
    * @param {Context} context
@@ -530,21 +557,6 @@ class Control extends LitElement {
       this.removeEventListener(e, func);
     });
     return this;
-  }
-
-  /**
-   * Sets the disabled state of the control
-   * @param {Boolean} value
-   */
-  set disabled(value) {
-    this._disabled = value;
-  }
-
-  /**
-   * @returns {Boolean} true if the control is currently disabled
-   */
-  get disabled() {
-    return this._disabled;
   }
 
   toString() {

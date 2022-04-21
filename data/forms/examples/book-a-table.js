@@ -1,5 +1,5 @@
 const TODAY = new Date().toISOString().split("T")[0],
-  SPECIAL_WISHES = ["Vegatarian", "Vegan", "Gluten free"],
+  SPECIAL_WISHES = ["Vegetarian", "Vegan", "Gluten free"],
   SLOTS = ["17:00", "18:00", "19:00", "20:00"];
 
 /**

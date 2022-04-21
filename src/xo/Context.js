@@ -23,7 +23,7 @@ class Context {
       bind: { type: String },
       type: { type: String, attribute: true },
       hidden: { type: Boolean, attribute: true },
-      disabled: { type: Boolean, attribute: true },
+      disabled: { type: Boolean},
       required: { type: Boolean, attribute: true },
       autofocus: { type: Boolean },
       hasFocus: { type: Boolean },
