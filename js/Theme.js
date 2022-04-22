@@ -12,6 +12,7 @@ class Theme extends LitElement {
     return [
       css`
         button {
+          z-index: 10;
           cursor: pointer;
           outline: none;
           padding: 0.5rem;

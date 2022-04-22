@@ -64,8 +64,10 @@ class PropertyMapper {
 
       if (!["id"].includes(prop)) {
         element[prop] = value;
-        if (Context.controlProperties[prop]) continue; // property set on host element
+        //if(prop==="autocomplete") debugger
       }
+
+      //if (Context.controlProperties[prop]) continue; // property set on host element
 
       if (["style", "title", "id"].includes(prop)) {
         element[prop] = value ?? "";
@@ -77,14 +79,18 @@ class PropertyMapper {
 
           let hyphenAttrName = PropertyMapper.camelCaseToHyphen(prop);
 
-          if (PropertyMapper.elementSupportsAttribute(nested, hyphenAttrName)) {
-            nested.setAttribute(hyphenAttrName, value);
-          } else {
-            hyphenAttrName = hyphenAttrName.startsWith("data-")
-              ? hyphenAttrName
-              : "data-" + hyphenAttrName;
+          if (typeof value !== "object") {
+            if (
+              PropertyMapper.elementSupportsAttribute(nested, hyphenAttrName)
+            ) {
+              nested.setAttribute(hyphenAttrName, value);
+            } else {
+              hyphenAttrName = hyphenAttrName.startsWith("data-")
+                ? hyphenAttrName
+                : "data-" + hyphenAttrName;
 
-            nested.setAttribute(hyphenAttrName, value);
+              nested.setAttribute(hyphenAttrName, value);
+            }
           }
         }
       }

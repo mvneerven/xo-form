@@ -271,6 +271,7 @@ class Control extends LitElement {
   set hidden(value) {
     this._hidden = value;
     if (this.nestedElement) this.nestedElement.hidden = value;
+    this.requestUpdate();
   }
 
   get hidden() {

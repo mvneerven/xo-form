@@ -103,21 +103,21 @@ class Tags extends LitElement {
         a:hover {
           opacity: 1;
         }
-      `,
+      `
     ];
   }
 
   static get properties() {
     return {
       value: {
-        type: Array,
+        type: Array
       },
       maxWidth: {
-        type: String,
+        type: String
       },
       autocomplete: {
-        type: Object,
-      },
+        type: Object
+      }
     };
   }
 
