@@ -131,7 +131,7 @@ class Control extends LitElement {
         control: this,
         source: source,
         value: me.value,
-        guid: Util.guid()
+        guid: Util.guid(),
       });
     };
 
@@ -154,7 +154,7 @@ class Control extends LitElement {
   emit(name, detail = {}) {
     this.dispatchEvent(
       new CustomEvent(name, {
-        detail: detail
+        detail: detail,
       })
     );
   }
@@ -174,7 +174,7 @@ class Control extends LitElement {
         control: this,
         source: source,
         value: source.defaultValue || this._clicked,
-        guid: Util.guid()
+        guid: Util.guid(),
       });
     }
   }
@@ -311,7 +311,7 @@ class Control extends LitElement {
 
     context.form.emit("create-control", {
       type: type,
-      properties: properties
+      properties: properties,
     });
 
     let elm;
@@ -349,7 +349,7 @@ class Control extends LitElement {
       context.mapper.mapProperties(elm, properties);
 
       context.form.emit("created-control", {
-        control: elm
+        control: elm,
       });
     }
 
@@ -494,7 +494,7 @@ class Control extends LitElement {
 
   renderNestedElement(noContainer) {
     if (noContainer) {
-      this.nestedElement.setAttribute("class", this.getContainerClasses());
+      this.nestedElement.class = this.getContainerClasses();
     }
     return this.nestedElement;
   }

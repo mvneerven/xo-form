@@ -56,7 +56,7 @@ class Validator {
     db.set("#/_xo/disabled/back", this.form.page <= 1);
     db.set("#/_xo/disabled/send", !allValid);
 
-    console.log("send enabled", allValid);
+    console.log("Page valid: ", pageValid, "All valid:", allValid, "total pages: ", totalPages, "Page: ", this.form.page);
   }
 
   processValidation(elm) {

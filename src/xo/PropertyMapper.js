@@ -64,7 +64,7 @@ class PropertyMapper {
 
       if (!["id"].includes(prop)) {
         element[prop] = value;
-        //if(prop==="autocomplete") debugger
+        //if(prop==="disabled") debugger
       }
 
       //if (Context.controlProperties[prop]) continue; // property set on host element

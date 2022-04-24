@@ -1,5 +1,5 @@
 import Group from "./Group";
-
+import { css, html } from "lit";
 /**
  * XO Repeat Control (```<xo-repeat/>```) - Repeats underlying structure for all items in *.items* Array.
  */
@@ -64,6 +64,10 @@ class Repeat extends Group {
       this.appendChild(group);
     });
   }
+
+  // render() {
+  //   return html`${this.renderInput()}`;
+  // }
 
   getContainerClasses() {
     let c = super.getContainerClasses();

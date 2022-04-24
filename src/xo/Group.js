@@ -51,6 +51,8 @@ class Group extends Control {
       this.ui ? "type-" + this.ui : ""
     }`;
   }
+
+  
 }
 export default Group;
 window.customElements.define("xo-group", Group);

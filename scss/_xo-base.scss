@@ -117,7 +117,9 @@ label {
   }
 }
 
-input::placeholder, input:-moz-placeholder, input::-moz-placeholder {
+input::placeholder,
+input:-moz-placeholder,
+input::-moz-placeholder {
   /* Mozilla Firefox 4 to 18 */
   color: white !important;
 }
@@ -155,7 +157,7 @@ button {
 }
 
 /* disabled */
-.xo-ds {
+.xo-ds, [disabled] {
   opacity: 0.5;
   user-select: none;
   cursor: not-allowed;
