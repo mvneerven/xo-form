@@ -26,8 +26,6 @@ class Repeat extends Control {
 
   set bind(value) {
     super.bind = value;
-
-    console.log("Add binding for repeat");
     this.form.model.addBinding({
       control: this,
       rawValue: value,
@@ -69,8 +67,6 @@ class Repeat extends Control {
   }
 
   renderGroup(item, index) {
-   // this.scope = item;
-    
     console.debug("Rendering group", this.scope, this.fields);
 
     return html`<xo-group

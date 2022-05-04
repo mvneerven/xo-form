@@ -493,7 +493,6 @@ class Control extends LitElement {
         },
         "#/scope/" + path.substring(4)
       );
-      console.log("scope: ", this.scope, data.value);
     }
     return data.value;
   }

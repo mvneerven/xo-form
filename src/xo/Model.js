@@ -75,8 +75,6 @@ class Model {
           return target[key];
         },
         set: function (target, key, value) {
-          console.log("SET: ", target, key, value);
-
           if (isIrelevantChange(target[key], value)) return true;
 
           let bindingPath = "#/" + path + "/" + key;
@@ -85,7 +83,7 @@ class Model {
 
           target[key] = value;
 
-          console.log("Set ", bindingPath, value);
+          console.debug("Model change: ", bindingPath, value);
 
           value = me.applyRules(bindingPath, value); // apply rules on change
 

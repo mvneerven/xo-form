@@ -187,7 +187,6 @@ class Form extends Control {
     this.emit("initialized");
 
     this._model = new Model(this, this.schema.model);
-    console.log("model", this.model);
 
     let index = 1;
     for (let page of this.schema.pages) {
