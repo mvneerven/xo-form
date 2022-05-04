@@ -1,40 +1,109 @@
 import { LitElement, html, css } from "lit";
 import AutoComplete from "../autocomplete/AutoComplete";
-import Context from "./Context";
 import Util from "./Util";
 import xo from "./index";
+import xoStyles from "../../css/controls.css";
+import PropertyMapper from "./PropertyMapper";
 
 const ERR_INVALID_BINDING = "Invalid binding value";
 
 /**
- * XO Control (```<xo-control/>```) - both Base Control for XO, and wrapping Control for other HTML elements
+ * Base Control for internal controls, and wrapping Control for other HTML elements
  */
 class Control extends LitElement {
+  static _sheet;
   _disabled = false;
   _clicked = 0;
   _context = null;
+  _container = true;
 
-  /**
-   * @returns {Context} a reference to the Context instance
-   */
-  get context() {
-    return this._context;
+  constructor() {
+    super(...arguments);
+    this.on("interaction", this.onInteraction.bind(this));
+    this._mapper = new PropertyMapper(this);
+  }
+
+  onInteraction(e) {
+    e.stopPropagation();
+    const me = this;
+    console.debug("interaction", e);
+
+    if (e.detail.control?.bind) {
+      const path = e.detail.control?.bind;
+      me.setData(path, e.detail.value, e.detail);
+    }
+  }
+
+  get data() {
+    return this._data;
   }
 
   static get properties() {
-    return Context.controlProperties;
+    return {
+      name: { type: String, attribute: true },
+      bind: { type: String },
+      children: { type: Object, raw: true },
+      type: { type: String, attribute: true },
+      hidden: { type: Boolean, attribute: true },
+      container: { type: Boolean },
+      disabled: { type: Boolean },
+      required: { type: Boolean, attribute: true },
+      autofocus: { type: Boolean },
+      hasFocus: { type: Boolean },
+      label: { type: String },
+      title: { type: String },
+      placeholder: { type: String, attribute: true },
+      value: { type: Object },
+      classes: { type: Array },
+      autocomplete: { type: Object },
+      prepend: { type: Object },
+      append: { type: Object },
+      mixin: { type: Object }
+    };
   }
 
   static get styles() {
-    return [Context.sharedStyles, AutoComplete.sharedStyles];
+    return [this.sharedStyles, AutoComplete.sharedStyles];
+  }
+
+  /**
+   * @returns {CSSStyleSheet}
+   */
+  static get sharedStyles() {
+    if (!this._sheet) {
+      this._sheet = Util.createStyleSheet(new Document(), xoStyles);
+    }
+    return this._sheet;
+  }
+
+  /**
+   * Sets the declarative fields Array to append children with.
+   * @param value {Array}
+   */
+  set children(value) {
+    this.innerHTML = "";
+
+    this._children = value;
+
+    for (let child of this._children) {
+      let element = this.createControl(this, child.type, child);
+      this.appendChild(element);
+    }
+  }
+
+  /**
+   * @returns {Array} - Array of schema fields that define the children to be appended.
+   */
+  get children() {
+    return this._children;
   }
 
   /**
    * Allows for proper disposing
    */
   dispose() {
-    this.nestedElement?.removeEventListener("focus", this.onfocus);
-    this.nestedElement?.removeEventListener("blur", this.onblur);
+    this.nested?.removeEventListener("focus", this.onfocus);
+    this.nested?.removeEventListener("blur", this.onblur);
     this.shadowRoot.removeEventListener("input", this.onInput);
     this.shadowRoot.removeEventListener("change", this.onInput);
   }
@@ -58,11 +127,12 @@ class Control extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    this.form = this.closest("xo-form");
+    //this.form = this.closest("xo-form");
     this.form?.registerElement(this);
+    //this.map(this.properties)
     this.acceptMappedState();
-    this.nestedElement?.addEventListener("focus", this.onfocus.bind(this));
-    this.nestedElement?.addEventListener("blur", this.onblur.bind(this));
+    this.nested?.addEventListener("focus", this.onfocus.bind(this));
+    this.nested?.addEventListener("blur", this.onblur.bind(this));
     this.shadowRoot.addEventListener("input", this.onInput.bind(this));
     this.shadowRoot.addEventListener("change", this.onInput.bind(this));
   }
@@ -73,7 +143,7 @@ class Control extends LitElement {
 
   firstUpdated() {
     if (this.autocomplete && this.autocomplete.items) {
-      if (this.nestedElement instanceof HTMLInputElement) {
+      if (this.nested instanceof HTMLInputElement) {
         this.tryApplyAutoComplete();
       }
     }
@@ -90,7 +160,7 @@ class Control extends LitElement {
   tryApplyAutoComplete() {
     this._autoCompleter = new AutoComplete(
       this,
-      this.nestedElement,
+      this.nested,
       this.autocomplete
     );
     this._autoCompleter.attach();
@@ -105,9 +175,9 @@ class Control extends LitElement {
 
   onInput(e) {
     const me = this;
-    if (e.type === "input" && this.nestedElement) {
+    if (e.type === "input" && this.nested) {
       //console.log(e.target)
-      if (this.nestedElement.nodeName.indexOf("-") !== -1) return;
+      if (this.nested.nodeName.indexOf("-") !== -1) return;
     }
 
     e.preventDefault();
@@ -126,12 +196,12 @@ class Control extends LitElement {
     }
 
     const emit = () => {
-      me.form.emit("interaction", {
+      me.emit("interaction", {
         type: "input",
         control: this,
         source: source,
         value: me.value,
-        guid: Util.guid(),
+        guid: Util.guid()
       });
     };
 
@@ -151,10 +221,11 @@ class Control extends LitElement {
     if (e.type === "input") this.__lastInputValue = this.value;
   }
 
-  emit(name, detail = {}) {
+  emit(name, detail = {}, options = {}) {
     this.dispatchEvent(
       new CustomEvent(name, {
         detail: detail,
+        ...options
       })
     );
   }
@@ -168,15 +239,13 @@ class Control extends LitElement {
     const source = e.composedPath()[0];
     this._clicked++;
 
-    if (this.form) {
-      this.form.emit("interaction", {
-        type: "click",
-        control: this,
-        source: source,
-        value: source.defaultValue || this._clicked,
-        guid: Util.guid(),
-      });
-    }
+    this.emit("interaction", {
+      type: "click",
+      control: this,
+      source: source,
+      value: source.defaultValue ?? this._clicked,
+      guid: Util.guid()
+    });
   }
 
   /**
@@ -187,14 +256,14 @@ class Control extends LitElement {
   }
 
   checkValidity() {
-    return this.nestedElement && this.nestedElement.checkValidity
-      ? this.nestedElement.checkValidity()
+    return this.nested && this.nested.checkValidity
+      ? this.nested.checkValidity()
       : true;
   }
 
   reportValidity() {
-    return this.nestedElement && this.nestedElement.reportValidity
-      ? this.nestedElement.reportValidity()
+    return this.nested && this.nested.reportValidity
+      ? this.nested.reportValidity()
       : true;
   }
 
@@ -213,69 +282,77 @@ class Control extends LitElement {
    * @returns {Object} value of the control - if any
    */
   get value() {
-    return this.nestedElement?.value;
+    return this.nested?.value;
   }
 
   /**
    * Sets the value of the control - especially when a nested value-managing control is present
    */
   set value(value) {
-    if (this.nestedElement) {
-      if (this.nestedElement instanceof HTMLSelectElement) {
+    if (this.nested) {
+      if (this.nested instanceof HTMLSelectElement) {
         let index = this.items.findIndex((v) => {
           return value === v.value || v;
         });
-        this.nestedElement.selectedIndex = index;
+        this.nested.selectedIndex = index;
       } else {
-        this.nestedElement.value = value ?? "";
+        this.nested.value = value ?? "";
       }
     }
   }
 
+  get container() {
+    return this._container;
+  }
+
+  set container(value) {
+    this._container = value;
+  }
+
   set required(value) {
     this._required = value;
-    if (this.nestedElement) this.nestedElement.required = value;
+    if (this.nested) this.nested.required = value;
   }
 
   get required() {
-    return this.nestedElement?.required ?? this._required;
+    return this.nested?.required ?? this._required;
   }
 
   set placeholder(value) {
     this._placeholder = value;
-    if (this.nestedElement) this.nestedElement.placeholder = value;
+    if (this.nested) this.nested.placeholder = value;
   }
 
   get placeholder() {
-    return this.nestedElement?.placeholder ?? this._placeholder;
+    return this.nested?.placeholder ?? this._placeholder;
   }
 
   set name(value) {
     this._name = value;
-    if (this.nestedElement) this.nestedElement.name = value;
+    if (this.nested) this.nested.name = value;
   }
 
   get name() {
-    return this.nestedElement?.name ?? this._name;
+    return this.nested?.name ?? this._name;
   }
 
   set autofocus(value) {
     this._autofocus = value;
-    if (this.nestedElement) this.nestedElement.autofocus = value;
+    if (this.nested) this.nested.autofocus = value;
   }
 
   get autofocus() {
-    return this.nestedElement?.autofocus ?? this._autofocus;
+    return this.nested?.autofocus ?? this._autofocus;
   }
 
   set hidden(value) {
     this._hidden = value;
-    if (this.nestedElement) this.nestedElement.hidden = value;
+    if (this.nested) this.nested.hidden = value;
     this.requestUpdate();
   }
 
   get hidden() {
-    return this.nestedElement?.hidden ?? this._hidden;
+    return this.nested?.hidden ?? this._hidden;
   }
 
   /**
@@ -284,7 +361,7 @@ class Control extends LitElement {
    */
   set disabled(value) {
     this._disabled = value;
-    if (this.nestedElement) this.nestedElement.disabled = value;
+    if (this.nested) this.nested.disabled = value;
     this.requestUpdate();
   }
 
@@ -293,25 +370,23 @@ class Control extends LitElement {
    * @param {Boolean} value
    */
   get disabled() {
-    return this.nestedElement?.disabled ?? this._disabled;
+    return this.nested?.disabled ?? this._disabled;
   }
 
   /**
-   * Instantiates a Control in the Form Context
-   * @param {Context} context
+   * Instantiates a Control
+   * @param {Control} parent
    * @param {String} type
    * @param {Object} properties
    * @param {Object} options
    * @returns {Control}
    */
-  createControl(context, type, properties, options = {}) {
-    if (!context || !context.data) throw Error("Invalid or missing context");
-
+  createControl(parent, type, properties, options = {}) {
     type = this.transform(type, properties) || "text";
 
-    context.form.emit("create-control", {
+    parent.emit("create-control", {
       type: type,
-      properties: properties,
+      properties: properties
     });
 
     let elm;
@@ -337,23 +412,136 @@ class Control extends LitElement {
       }
       let wrapper = document.createElement("xo-control");
       wrapper.type = type;
-      wrapper.nestedElement = elm;
+      wrapper.setNested(elm);
       elm = wrapper;
     }
     if (elm) {
-      elm.parent = this;
+      elm._parent = this;
+      elm._scope = this.scope;
       elm.options = options;
-      context.parent = this;
-      elm._context = context;
+      //elm.properties = properties
+      elm.map(properties);
 
-      context.mapper.mapProperties(elm, properties);
-
-      context.form.emit("created-control", {
-        control: elm,
+      this.emit("created-control", {
+        control: elm
       });
     }
 
     return elm;
+  }
+
+  get parent() {
+    return this._parent;
+  }
+
+  getForm() {
+    let form = null;
+    let elm = this;
+
+    while (!form) {
+      if (elm.nodeName === "XO-FORM") {
+        form = elm;
+        break;
+      }
+      elm = elm.parent;
+
+      if (!elm) break;
+    }
+
+    return form;
+  }
+
+  get form() {
+    if (!this._form) this._form = this.getForm();
+
+    return this._form;
+  }
+
+  set children(value) {
+    this._children = value;
+  }
+
+  get children() {
+    return this._children;
+  }
+
+  map(properties, singleValue) {
+    this.form.model.processBindings(this, properties);
+    this._mapper.mapProperties(this, properties, singleValue);
+  }
+
+  set scope(data) {
+    this._scope = data;
+  }
+
+  get scope() {
+    return this._scope;
+  }
+
+  getData(path) {
+    const data = {
+      path: path,
+      value: this.form.model.get(path)
+    };
+
+    if (this.scope && path.startsWith("#/./")) {
+      console.debug("Resolving scoped variable ", path , " in scope ", this.scope);
+
+      data.value = Util.getValue(
+        {
+          scope: this.scope
+        },
+        "#/scope/" + path.substring(4)
+      );
+      console.log("scope: ", this.scope, data.value);
+    }
+    return data.value;
+  }
+
+  setData(path, value) {
+    if (this.scope && path.startsWith("#/./")) {
+      
+      Util.setValue(
+        {
+          scope: this.scope
+        },
+        "#/scope/" + path.substring(4)
+      );
+
+      return;
+    }
+
+    Util.setValue(this.form.model.instance, path, value);
+  }
+
+  setNested(element) {
+    this._nested = element;
+
+    //this.appendChild(this.nested)
+
+    var observer = new MutationObserver(function (mutations) {
+      mutations.forEach(function (mutation) {
+        if (mutation.type === "attributes") {
+          console.warn("MUTATION ATTRIBUTE", mutation.attributeName);
+
+          switch (mutation.attributeName) {
+            case "disabled":
+              //this.disabled =
+              //debugger;
+
+              break;
+          }
+        }
+      });
+    });
+
+    observer.observe(this._nested, {
+      attributes: true //configure it to listen to attribute changes
+    });
+  }
+
+  get nested() {
+    return this._nested;
   }
 
   transform(type, properties) {
@@ -394,8 +582,8 @@ class Control extends LitElement {
     if (this.prepend) {
       cls.push("xo-prp");
     }
-    if (this.nestedElement) {
-      if (this.nestedElement.value) {
+    if (this.nested) {
+      if (this.nested.value) {
         cls.push("xo-ne");
       }
       if (this.isTextual) {
@@ -413,15 +601,19 @@ class Control extends LitElement {
    */
   get isTextual() {
     return (
-      this.nestedElement instanceof HTMLTextAreaElement ||
-      (this.nestedElement instanceof HTMLInputElement &&
+      this.nested instanceof HTMLTextAreaElement ||
+      (this.nested instanceof HTMLInputElement &&
         ["text", "url", "tel", "password", "email"].includes(
-          this.nestedElement.getAttribute("type")
+          this.nested.getAttribute("type")
         ))
     );
   }
 
   render() {
+    if (!this.container) {
+      return html`${this.renderInput()}`;
+    }
+
     if (this.type) this.setAttribute("data-type", this.type);
     const $h = 1;
     let nav = this.closest("xo-nav");
@@ -429,17 +621,17 @@ class Control extends LitElement {
       return html`${this.renderInput()}`;
     }
 
-    if (this.nestedElement instanceof HTMLButtonElement) {
-      if (typeof this.nestedElement.defaultValue == "undefined")
-        this.nestedElement.defaultValue = this.nestedElement.value;
-      this.nestedElement.removeEventListener("click", this.click);
-      this.nestedElement.addEventListener("click", this.click.bind(this));
+    if (this.nested instanceof HTMLButtonElement) {
+      if (typeof this.nested.defaultValue == "undefined")
+        this.nested.defaultValue = this.nested.value;
+      this.nested.removeEventListener("click", this.click);
+      this.nested.addEventListener("click", this.click.bind(this));
       return html`${this.renderInput(true)}`;
     }
 
     return html`<div
       part="xo-cn"
-      ${this.hidden ? " hidden" : ""}
+      ?hidden=${this.hidden}
       class="xo-cn ${this.getContainerClasses()}"
     >
       <div class="xo-ct" part="xo-ct">
@@ -489,39 +681,31 @@ class Control extends LitElement {
   }
 
   renderInput(noContainer) {
-    return this.renderNestedElement(noContainer);
+    //return html`<slot></slot>`
+
+
+    return html`${this.renderNestedElement(noContainer)}
+    `;
   }
 
   renderNestedElement(noContainer) {
     if (noContainer) {
-      this.nestedElement.class = this.getContainerClasses();
+      this.nested.class = this.getContainerClasses();
     }
-    return this.nestedElement;
+    return this.nested;
   }
 
   /**
-   * Sets the dual binding for this control, using the syntax #/<instancename>/<property-path>
-   * Example: `
-   *  {
-   *    model: {
-   *      instance: {
-   *        data: {
-   *          userName: "john"
-   *        }
-   *      }
-   *  }
-   *  -> #/data/userName
-   * `
+   * Binds control to model state. Example: '#/data/email'
    */
   set bind(value) {
-    if (typeof value !== "string" || !value.startsWith("#/"))
-      throw Error(ERR_INVALID_BINDING);
+    if (!PropertyMapper.isExpression(value)) throw Error(ERR_INVALID_BINDING);
 
     this._bind = value;
   }
 
   /**
-   * Gets the current dual binding path.
+   * Returns the binding path.
    */
   get bind() {
     return this._bind;
@@ -561,11 +745,11 @@ class Control extends LitElement {
   }
 
   toString() {
-    if (this.nestedElement) {
-      if (this.nestedElement.nodeName === "INPUT")
-        return `${this.nestedElement.nodeName}[type="${this.nestedElement.type}"]`;
+    if (this.nested) {
+      if (this.nested.nodeName === "INPUT")
+        return `${this.nested.nodeName}[type="${this.nested.type}"]`;
 
-      return this.nestedElement.nodeName;
+      return this.nested.nodeName;
     }
     return this.nodeName;
   }

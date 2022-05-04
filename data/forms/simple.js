@@ -26,34 +26,31 @@ export const form = {
       label: "My Form",
       fields: [
         {
-          type: "text",
-          label: "Your name",
-          autofocus: true,
-          required: true,
-          placeholder: "Enter your name...",
-          minLength: 3,
-          bind: "#/data/name",
-          prepend: {
-            icon: "test"
-          }
-        },
-        {
-          type: "email",
-          label: "Your email address",
-          required: true,
-          placeholder: "john@doe.com",
-          bind: "#/data/email",
-          prepend: {
-            icon: "email"
-          }
-        },
-        {
-          type: "xw-tags",
-          label: "Tags",
-          placeholder: "New tag...",
-          autocomplete: {
-            items: ["Beer", "Wine", "Coffee"]
-          }
+          type: "groupie",
+          fields: [
+            {
+              type: "text",
+              label: "Your name",
+              autofocus: true,
+              required: true,
+              placeholder: "Enter your name...",
+              minLength: 3,
+              bind: "#/data/name",
+              prepend: {
+                icon: "test"
+              }
+            },
+            {
+              type: "email",
+              label: "Your email address",
+              required: true,
+              placeholder: "john@doe.com",
+              bind: "#/data/email",
+              prepend: {
+                icon: "email"
+              }
+            }
+          ]
         },
 
         {

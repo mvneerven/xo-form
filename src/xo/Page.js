@@ -3,7 +3,7 @@ import Control from "./Control";
 import { html } from "lit";
 
 /**
- * XO Page Control (```<xo-page/>```)
+ * Page Control
  */
 class Page extends Group {
   constructor() {
@@ -24,7 +24,7 @@ class Page extends Group {
     if (this.hidden) return html``;
 
     return html`<fieldset
-      ${this.hidden ? "hidden" : ""}
+      ?hidden=${this.hidden}
       data-page="${this.index}"
       class="xo-cn ${this.getContainerClasses()}"
     >

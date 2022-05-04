@@ -19,7 +19,10 @@ export const form = {
     instance: {
       // container for all instances
       state: {},
-      myData: {} // 'myData' instance
+      myData: {
+        emailAddress: "",
+        msg: ""
+      } // 'myData' instance
     }
   },
   pages: [
@@ -48,6 +51,12 @@ export const form = {
           prepend: {
             icon: "msg"
           }
+        },
+        {
+          type: "div",
+          label: "Result",
+          container: false,
+          innerText: "Message '#/myData/msg' to '#/myData/emailAddress'"
         },
         {
           type: "button",

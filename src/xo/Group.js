@@ -2,7 +2,7 @@ import Control from "./Control";
 import { css, html } from "lit";
 
 /**
- * XO Group Control (```<xo-group/>```)
+ * Group Control
  */
 class Group extends Control {
   static get properties() {
@@ -10,7 +10,7 @@ class Group extends Control {
       layout: { type: String, attribute: true },
       align: { type: String, attribute: true },
       ui: { type: String, attribute: true },
-      fields: { type: Array },
+      fields: { type: Array }
     };
   }
 
@@ -25,10 +25,12 @@ class Group extends Control {
    * @param value {Array}
    */
   set fields(value) {
+    const me = this;
+    this.innerHTML = "";
     this._fields = value;
 
     for (let field of this._fields) {
-      let element = this.createControl(this.context, field.type, field);
+      let element = this.createControl(this, field.type, field);
       this.appendChild(element);
     }
   }
@@ -51,8 +53,6 @@ class Group extends Control {
       this.ui ? "type-" + this.ui : ""
     }`;
   }
-
-  
 }
 export default Group;
 window.customElements.define("xo-group", Group);

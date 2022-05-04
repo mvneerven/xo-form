@@ -58,7 +58,7 @@ class ModelView extends LitElement {
 
   getModelJSON() {
     return JSON.stringify(
-      this.form?.context.data.schemaModel?.instance ?? {},
+      this.form?.model?.instance ?? {},
       null,
       2
     );

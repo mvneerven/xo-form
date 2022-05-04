@@ -140,6 +140,32 @@ class Util {
     return `${options.prefix || ""}${options.compact ? g.split("-").pop() : g}`;
   }
 
+  
+
+  /**
+     * Clone an object.
+     * @param {Object} obj 
+     * @returns cloned object.
+     */
+   static clone(obj) {
+    if (obj === null || typeof (obj) !== 'object' || 'isActiveClone' in obj)
+        return obj;
+
+    if (obj instanceof Date)
+        var temp = new obj.constructor(); 
+    else
+        var temp = obj.constructor();
+
+    for (var key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+            obj['isActiveClone'] = null;
+            temp[key] = Util.clone(obj[key]);
+            delete obj['isActiveClone'];
+        }
+    }
+    return temp;
+}
+
   static async requireJS(src) {
     return new Promise((resolve) => {
       let headElement = document.querySelector(`[src="${src}"]`);

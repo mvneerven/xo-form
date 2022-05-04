@@ -1,7 +1,6 @@
 import { css } from "lit";
-import Context from "./Context";
 import Group from "./Group";
-
+import Control from "./Control";
 /**
  * Navigation - Manages multi-step form navigation
  */
@@ -9,7 +8,7 @@ import Group from "./Group";
 class Navigation extends Group {
   static get styles() {
     return [
-      Context.sharedStyles,
+      Control.sharedStyles,
       css`
         :host {
           display: flex;
@@ -27,7 +26,7 @@ class Navigation extends Group {
 
     this._controls = [];
 
-    const totalPages = this.context.data.get("#/_xo/nav/total");
+    const totalPages = this.getData("#/_xo/nav/total");
 
     if (totalPages > 1) {
       this._controls.push(
@@ -65,27 +64,19 @@ class Navigation extends Group {
   }
 
   set page(value) {
+    if(value === null || typeof(value) === "undefined") return
+    
     if (typeof value !== "number") throw Error("Invalid value for page");
-    const old = this.context.form.page;
-    this.context.form.page = value;
-    this.context.form.emit("page", {
+    const old = this.form.page;
+    this.form.page = value;
+    this.form.emit("page", {
       from: old,
       to: value
     });
-    this.updateUrl();
   }
-
-  updateUrl() {
-    return;
-
-    let href = document.location.origin;
-    href += "/page/" + this.context.form.page;
-    history.replaceState(null, null, href);
-    window.history.pushState({ page: this.context.form.page }, null, href);
-  }
-
+  
   get page() {
-    return this.context.form.page;
+    return this.form.page;
   }
 
   set controls(value) {
@@ -93,7 +84,7 @@ class Navigation extends Group {
     this._controls = value;
 
     for (let control of this._controls) {
-      let navElement = this.createControl(this.context, "button", control);
+      let navElement = this.createControl(this, "button", control);
       this.appendChild(navElement);
     }
   }
@@ -111,14 +102,14 @@ class Navigation extends Group {
   }
 
   updateState(dir) {
-    let p = this.context.data.get("#/_xo/nav/page");
-    let total = this.context.data.get("#/_xo/nav/total");
+    let p = this.getData("#/_xo/nav/page");
+    let total = this.getData("#/_xo/nav/total");
     if (dir > 0) p = Math.min(total, p + 1);
     else p = Math.max(1, p - 1);
 
-    this.context.data.set("#/_xo/nav/page", p);
-    this.context.data.set("#/_xo/disabled/next", p >= total);
-    this.context.data.set("#/_xo/disabled/back", p <= 1);
+    this.setData("#/_xo/nav/page", p);
+    this.setData("#/_xo/disabled/next", p >= total);
+    this.setData("#/_xo/disabled/back", p <= 1);
   }
 
   submit() {

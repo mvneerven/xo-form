@@ -1,10 +1,10 @@
 import { html, css } from "lit";
 import Control from "./Control";
 import Validator from "./Validator";
-import Context from "./Context";
 import { until } from "lit/directives/until.js";
 import { version } from "../../package.json";
 import Util from "./Util";
+import Model from "./Model";
 
 /**
  * Main xo-form element
@@ -34,8 +34,6 @@ class Form extends Control {
 
   constructor() {
     super();
-    this._url = new URL(document.location.href);
-    this._context = new Context(this);
     this._page = 1;
   }
 
@@ -67,17 +65,18 @@ class Form extends Control {
     };
   }
 
-  /**
-   * @returns {Context}
-   */
-  get context() {
-    return this._context;
+  get form() {
+    return this;
   }
+
+  set form(value) {}
 
   /**
    * @param value {Number}
    */
   set page(value) {
+    if (value === null || typeof value === "undefined") return;
+
     if (value === this._page) return;
 
     if (value < 1) return;
@@ -98,7 +97,7 @@ class Form extends Control {
   }
 
   /**
-   * Sets the XO Form Schema to read.
+   * Sets the Form Schema to read.
    */
   set schema(schema) {
     if (!this._schema) {
@@ -120,7 +119,7 @@ class Form extends Control {
   }
 
   /**
-   * Gets the XO Form Schema
+   * Gets the Form Schema
    */
   get schema() {
     return this._schema;
@@ -128,7 +127,7 @@ class Form extends Control {
 
   dispose() {
     super.dispose();
-    this._context.dispose(); // = null;
+    this.model.dispose(); // = null;
     this.elements = {};
     this.innerHTML = "";
   }
@@ -144,14 +143,14 @@ class Form extends Control {
   }
 
   /**
-   * Sets the URL to read an XO Form Schema from
+   * Sets the URL to read a Form Schema from
    */
   set src(url) {
     this._src = url;
   }
 
   /**
-   * Returns the URL to read an XO Form Schema from
+   * Returns the URL to read a Form Schema from
    */
   get src() {
     return this._src;
@@ -187,27 +186,27 @@ class Form extends Control {
 
     this.emit("initialized");
 
-    this.context.data.initialize(this.schema.model);
+    this._model = new Model(this, this.schema.model);
+    console.log("model", this.model);
 
     let index = 1;
     for (let page of this.schema.pages) {
       page.index = index++;
-      let pageElement = this.createControl(
-        this.context,
-        page.type ?? "xo-page",
-        page
-      );
+      let pageElement = this.createControl(this, page.type ?? "xo-page", page);
       pageElement.setAttribute("slot", "w");
       this.appendChild(pageElement);
     }
 
-    this.nav = this.createControl(this.context, "xo-nav", this.schema);
+    this.nav = this.createControl(this, "xo-nav", this.schema);
 
     this.nav.controls = this.nav.controls;
     this.nav.setAttribute("slot", "n");
     this.appendChild(this.nav);
 
     this.emit("ready");
+
+    console.debug("Model Bindings: ", this.model.bound);
+
   }
 
   render() {
@@ -235,17 +234,13 @@ class Form extends Control {
   }
 
   firstUpdated() {
+    console.debug("Set up validator");
     this.validator = new Validator(this);
     this.emit("first-updated");
   }
 
-  get url() {
-    return this._url;
-  }
-
-  getSlotted(node) {
-    const slot = node.shadowRoot?.querySelector("slot");
-    return [...(slot?.assignedElements({ flatten: true }) || [])];
+  get model() {
+    return this._model;
   }
 }
 

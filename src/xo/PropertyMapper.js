@@ -1,7 +1,5 @@
-import AutoComplete from "../autocomplete/AutoComplete";
 import builtinMixins from "./Mixins.json";
 import Util from "./Util";
-import Context from "./Context";
 
 const RESERVED_PROPERTIES = ["type", "label", "bind", "classes"];
 
@@ -12,27 +10,27 @@ const getUniqueName = () => {
 const propMappings = {};
 
 /**
- * XO Property Mapper
+ * Property Mapper
  */
 class PropertyMapper {
   static _mixins = {
     ...builtinMixins
   };
 
-  constructor(context) {
-    this._context = context;
+  constructor(element) {
+    this._element = element;
   }
 
   static get mixins() {
     return this._mixins;
   }
 
-  get context() {
-    return this._context;
+  get element() {
+    return this._element;
   }
 
   mapProperties(element, properties, value) {
-    const nested = element.nestedElement;
+    const nested = element.nested;
     let isInitialState = true;
 
     if (typeof properties === "string") {
@@ -52,22 +50,12 @@ class PropertyMapper {
     if (!properties.id) properties.id = getUniqueName();
     if (!properties.name) properties.name = properties.id;
 
-    if (isInitialState) {
-      // first distill all bindings to manage
-      this.context.data.processBindings(element, properties);
-    }
-
     for (let prop in properties) {
       if (prop === "type") continue;
 
       let value = this.getCurrentValue(element, properties, prop);
 
-      if (!["id"].includes(prop)) {
-        element[prop] = value;
-        //if(prop==="disabled") debugger
-      }
-
-      //if (Context.controlProperties[prop]) continue; // property set on host element
+      if (!["id"].includes(prop)) element[prop] = value;
 
       if (["style", "title", "id"].includes(prop)) {
         element[prop] = value ?? "";
@@ -181,23 +169,15 @@ class PropertyMapper {
   }
 
   getCurrentValue(element, properties, prop) {
-    if (["type", "bind"].includes(prop)) return properties[prop];
+    if (prop === "bind") return properties[prop];
 
-    let varRes,
-      i = 0;
-    if (element.data && element.data[prop]) {
-      let result = PropertyMapper.match(element.data[prop], (variable) => {
-        i++;
-        varRes = this.context.data.get(variable);
+    let value = properties[prop];
+    if (typeof value === "string" && value.indexOf("#/") !== -1) {
+      value = this.element.getData(value);
 
-        return varRes;
-      });
-      if (i === 1 && typeof varRes !== "undefined") {
-        if (varRes.toString().length === result.length) return varRes; // keep type (non-string)
-      }
-
-      return result;
+      return value;
     }
+
     return properties[prop];
   }
 
@@ -205,39 +185,8 @@ class PropertyMapper {
     return RESERVED_PROPERTIES.includes(name);
   }
 
-  static match(s, callback) {
-    const origString = s;
-    if (typeof s !== "string" || s.length < 5) {
-      // minimum variable length: #/a/b
-      return s;
-    }
-
-    return s.replace(
-      /(#\/[A-Za-z_]+[A-Za-z_0-9\/@]*[A-Za-z_]+[A-Za-z_0-9]*)(?=[\s+\/*,.?!;'")]|$)/gm,
-      (match, token, r) => {
-        return callback(token, origString);
-      }
-    );
-  }
-
-  replaceVar(binding, prop, value) {
-    const me = this;
-    let combinedString = false;
-    let varRes,
-      result = PropertyMapper.match(
-        binding.rawValue,
-        (variable, origString) => {
-          if (origString !== variable) combinedString = true;
-
-          varRes = me.context.data.get(variable); // value;
-          return varRes;
-        }
-      );
-
-    if (!combinedString) {
-      return varRes;
-    }
-    return result;
+  static isExpression(value) {
+    return typeof value === "string" && value.startsWith("#/");
   }
 
   static importItems(select, items = []) {

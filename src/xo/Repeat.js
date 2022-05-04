@@ -1,73 +1,85 @@
-import Group from "./Group";
-import { css, html } from "lit";
+import Control from "./Control";
+import { html } from "lit";
+import { repeat } from "lit/directives/repeat.js";
+
 /**
- * XO Repeat Control (```<xo-repeat/>```) - Repeats underlying structure for all items in *.items* Array.
+ * Repeats underlying structure for all items in the Array the control is bound to.
  */
-class Repeat extends Group {
+class Repeat extends Control {
+  _items = [];
+
+  constructor() {
+    super(...arguments);
+    this._container = false;
+  }
+
   static get properties() {
     return {
-      items: {
-        type: Array,
-      },
       layout: {
-        type: String,
+        type: String
       },
       fields: {
-        type: Array,
-      },
+        type: Array
+      }
     };
   }
 
-  set fields(value) {
-    if (!Array.isArray(value))
-      throw Error("Invalid fields property value for repeat.");
+  set bind(value) {
+    super.bind = value;
 
-    this._fields = value;
-    this.refresh();
-  }
+    console.log("Add binding for repeat");
+    this.form.model.addBinding({
+      control: this,
+      rawValue: value,
+      property: "items",
+      binding: value
+    });
 
-  get fields() {
-    return this._fields;
+    this._items = this.form.model.get(value);
   }
 
   set items(value) {
     this._items = value;
-    if (this.hasUpdated) {
-      this.refresh();
-      this.requestUpdate();
-    }
+
+    this.requestUpdate();
   }
 
   get items() {
     return this._items;
   }
 
-  refresh() {
-    this.innerHTML = "";
-
-    let index = 0;
-    this.items.forEach((item) => {
-      let group = this.createControl(
-        this.context,
-        "group",
-        {
-          fields: this.fields,
-          classes: ["xo-ri"],
-          index: index,
-        },
-        {
-          scope: item,
-          index: index++,
-        }
-      );
-      group.setAttribute("data-index", index);
-      this.appendChild(group);
-    });
+  get bind() {
+    return super.bind;
   }
 
-  // render() {
-  //   return html`${this.renderInput()}`;
-  // }
+  render() {
+    if (!this._items) return html``;
+
+    let result = html`
+      ${repeat(
+        this._items,
+        (item) => item.id,
+        (item, index) => {
+          return this.renderGroup(item, index);
+        }
+      )}
+    `;
+
+    return result;
+  }
+
+  renderGroup(item, index) {
+   // this.scope = item;
+    
+    console.debug("Rendering group", this.scope, this.fields);
+
+    return html`<xo-group
+      .scope=${item}
+      ._parent=${this}
+      .container=${false}
+      .fields=${this.fields}
+    ></xo-group>`;
+  }
 
   getContainerClasses() {
     let c = super.getContainerClasses();

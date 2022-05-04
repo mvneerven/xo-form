@@ -16,7 +16,6 @@ class Validator {
       })
       .on("ready", (e) => {
         setTimeout(() => {
-          //this.processValidation(elm);
           this.checkValid();
         }, 1);
       });
@@ -29,8 +28,8 @@ class Validator {
         e.detail.control.on("invalid", (e2) => {
           e2.preventDefault();
         });
-        if (e.detail.control.nestedElement) {
-          e.detail.control.nestedElement.addEventListener("invalid", (e2) => {
+        if (e.detail.control.nested) {
+          e.detail.control.nested.addEventListener("invalid", (e2) => {
             e2.preventDefault();
             e2.stopPropagation(); // stop it from bubbling up
             e.detail.control.validationMessage = e2.target.validationMessage;
@@ -41,7 +40,7 @@ class Validator {
   }
 
   checkValid() {
-    const db = this.form.context.data;
+    const db = this.form.model;
     let pageValid = undefined; //;this.isPageValid(this.form.page);
     let totalPages = db.get("#/_xo/nav/total");
 
@@ -56,7 +55,7 @@ class Validator {
     db.set("#/_xo/disabled/back", this.form.page <= 1);
     db.set("#/_xo/disabled/send", !allValid);
 
-    console.log("Page valid: ", pageValid, "All valid:", allValid, "total pages: ", totalPages, "Page: ", this.form.page);
+    console.debug("Validation: page valid: ", pageValid, "all valid:", allValid, "total pages: ", totalPages, "page: ", this.form.page);
   }
 
   processValidation(elm) {

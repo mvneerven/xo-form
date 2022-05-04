@@ -4,26 +4,22 @@ import Group from "./Group";
 import Page from "./Page";
 import Repeat from "./Repeat";
 import Navigation from "./Navigation";
-import Context from "./Context";
 import Util from "./Util";
-import DataBinding from "./DataBinding";
 import PropertyMapper from "./PropertyMapper";
 import Validator from "./Validator";
-import {version} from '../../package.json';
+import { version } from "../../package.json";
 
 /**
- * XO - Namespace
+ * The xo namespace
  */
 class xo {
   static _options = {};
 
-  static get version(){
+  static get version() {
     return version;
   }
 
-  static initialize(options = {
-
-  }) {
+  static initialize(options = {}) {
     this.options = {
       throttleInput: 150, // input event throttling
       defaultTheme: "material",
@@ -39,15 +35,7 @@ class xo {
   }
 
   /**
-   * XO Context
-   * @returns {Context}
-   */
-  static get Context() {
-    return Context;
-  }
-
-  /**
-   * XO Control (```<xo-control/>```) - both Base Control for XO, and wrapping Control for other HTML elements
+   * Base Control and wrapping Control for other HTML elements
    * @returns {Control}
    */
   static get Control() {
@@ -55,15 +43,7 @@ class xo {
   }
 
   /**
-   * XO DataBinding - Manages dual-databinding within the form
-   * @returns {DataBinding}
-   */
-  static get DataBinding() {
-    return DataBinding;
-  }
-
-  /**
-   * XO Form Control (```<xo-form/>```)
+   * Form Control
    * @returns {Form}
    */
   static get Form() {
@@ -71,7 +51,7 @@ class xo {
   }
 
   /**
-   * XO Group Control (```<xo-group/>```)
+   * Group Control
    * @returns {Group}
    */
   static get Group() {
@@ -79,7 +59,7 @@ class xo {
   }
 
   /**
-   * XO Property Mapper
+   * Property Mapper
    * @returns {PropertyMapper}
    */
   static get PropertyMapper() {
@@ -87,7 +67,7 @@ class xo {
   }
 
   /**
-   * XO Page Control (```<xo-page/>```)
+   * Page Control
    * @returns {Page}
    */
   static get Page() {
@@ -95,7 +75,7 @@ class xo {
   }
 
   /**
-   * XO Repeat Control (```<xo-repeat/>```) - Repeats underlying structure for all items in *.items* Array.
+   * Repeat Control - Repeats underlying structure for all items in the Array the repeat is bound to.
    * @returns {Repeat}
    */
   static get Repeat() {

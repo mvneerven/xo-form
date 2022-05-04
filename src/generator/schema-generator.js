@@ -1,5 +1,8 @@
 import MetaReader from "./meta-reader";
 
+/**
+ * Generates xo-form schema using specified MetaReader.
+ */
 class SchemaGenerator {
   _schema = {
     note: "Generated schema",
@@ -9,20 +12,20 @@ class SchemaGenerator {
 
   /**
    * Constructor
-   * @param {MetaReader} metaReader
+   * @param {MetaReader} reader
    */
-  constructor(metaReader) {
-    this._metaReader = metaReader;
+  constructor(reader) {
+    this._reader = reader;
   }
 
   createSchema() {
-    const instance = {}, page1 = this.schema.pages[0];
+    const instance = {},
+      page1 = this.schema.pages[0];
     Object.entries(this.reader.properties).forEach((entry) => {
       let key = entry[0];
       instance[key] = undefined;
-
-      let field= this.reader.getFieldSchema(key);
-      page1.fields.push(field)
+      let field = this.reader.getFieldSchema(key);
+      page1.fields.push(field);
     });
 
     this.schema.model.instance["data"] = instance;
@@ -35,7 +38,7 @@ class SchemaGenerator {
   }
 
   get reader() {
-    return this._metaReader;
+    return this._reader;
   }
 }
 

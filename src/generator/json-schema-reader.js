@@ -1,4 +1,3 @@
-import DataBinding from "../xo/DataBinding";
 import MetaReader from "./meta-reader";
 import Util from "../xo/Util";
 
@@ -136,12 +135,12 @@ class JSONSchemaReader extends MetaReader {
   static applyObjectType(schema, field, props) {
     let obj = { type: "group" };
 
-    if (!field.fields) {
-      obj.fields = [];
+    if (!field.children) {
+      obj.children = [];
 
       for (var name in props.properties) {
         var p = props.properties[name];
-        obj.fields.push({
+        obj.children.push({
           ...JSONSchemaReader.mapType(schema, obj, p),
           name: name,
           label: Util.toWords(name)
