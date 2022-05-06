@@ -15,9 +15,10 @@ class Validator {
         this.checkValid();
       })
       .on("ready", (e) => {
+        
         setTimeout(() => {
           this.checkValid();
-        }, 1);
+        }, 10);
       });
 
     this.form.on("created-control", (e) => {
@@ -25,11 +26,13 @@ class Validator {
         this.form.schema.validation ??
         DEFAULT_VALIDATION_TYPE === VALIDATION_TYPE_INLINE
       ) {
-        e.detail.control.on("invalid", (e2) => {
-          e2.preventDefault();
-        });
+        // e.detail.control.on("invalid", (e2) => {
+        //   debugger
+        //   e2.preventDefault();
+        // });
         if (e.detail.control.nested) {
           e.detail.control.nested.addEventListener("invalid", (e2) => {
+            
             e2.preventDefault();
             e2.stopPropagation(); // stop it from bubbling up
             e.detail.control.validationMessage = e2.target.validationMessage;

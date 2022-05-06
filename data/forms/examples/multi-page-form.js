@@ -27,7 +27,7 @@ export const wizard = {
   pages: [
     {
       label: "Compose mail",
-      fields: [
+      children: [
         {
           type: "email",
           label: "Email address",
@@ -56,7 +56,7 @@ export const wizard = {
     },
     {
       label: "Add data",
-      fields: [
+      children: [
         {
           type: "xw-tags",
           label: "Tags",
@@ -75,7 +75,7 @@ export const wizard = {
     },
     {
       label: "Page 3",
-      fields: [
+      children: [
         {
           type: "div",
           label: "Message",

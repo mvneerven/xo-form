@@ -10,7 +10,7 @@ class Group extends Control {
       layout: { type: String, attribute: true },
       align: { type: String, attribute: true },
       ui: { type: String, attribute: true },
-      fields: { type: Array }
+      children: { type: Array }
     };
   }
 
@@ -21,25 +21,25 @@ class Group extends Control {
   }
 
   /**
-   * Sets the declarative fields Array to append children with.
+   * Sets the children to be appended.
    * @param value {Array}
    */
-  set fields(value) {
+  set children(value) {
     const me = this;
     this.innerHTML = "";
-    this._fields = value;
+    this._children = value;
 
-    for (let field of this._fields) {
+    for (let field of this._children) {
       let element = this.createControl(this, field.type, field);
       this.appendChild(element);
     }
   }
 
   /**
-   * @returns {Array} - Array of schema fields that define the children to be appended.
+   * @returns {Array} - Array of children to be appended.
    */
-  get fields() {
-    return this._fields;
+  get children() {
+    return this._children;
   }
 
   getGroupClasses() {

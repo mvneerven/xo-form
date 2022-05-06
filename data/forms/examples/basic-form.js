@@ -29,7 +29,7 @@ export const form = {
     // root node for form (form can have multiple pages)
     {
       label: "My Form",
-      fields: [
+      children: [
         // each page has array of field schemas
         {
           type: "email",

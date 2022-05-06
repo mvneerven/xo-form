@@ -9,7 +9,9 @@ export const bookATable = {
   icons: "/data/svg/icons.svg",
   model: {
     instance: {
-      state: {},
+      state: {
+        nospecial: true
+      },
       eat: {
         // main instance
         who: "",
@@ -34,11 +36,21 @@ export const bookATable = {
   pages: [
     {
       label: "Book a table",
-      fields: [
+      children: [
+        {
+          type: "text",
+          label: "Your name",
+          required: true,
+          placeholder: "John Doe",
+          bind: "#/eat/who",
+          prepend: {
+            icon: "user"
+          }
+        },
         {
           type: "group",
           layout: "horizontal",
-          fields: [
+          children: [
             {
               label: "Date",
               type: "date",
@@ -59,7 +71,7 @@ export const bookATable = {
 
         {
           type: "group",
-          fields: [
+          children: [
             {
               bind: "#/eat/special",
               type: "xw-switch",
@@ -82,17 +94,8 @@ export const bookATable = {
     },
     {
       label: "Book a table on #/eat/date, #/eat/time",
-      fields: [
-        {
-          type: "text",
-          label: "Your name",
-          required: true,
-          placeholder: "John Doe",
-          bind: "#/eat/who",
-          prepend: {
-            icon: "user"
-          }
-        },
+      children: [
+        
         {
           type: "email",
           label: "Your email address",
@@ -117,7 +120,7 @@ export const bookATable = {
     },
     {
       label: "Book",
-      fields: [
+      children: [
         {
           type: "button",
           label: "Book now",

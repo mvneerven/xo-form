@@ -24,10 +24,10 @@ export const form = {
   pages: [
     {
       label: "My Form",
-      fields: [
+      children: [
         {
-          type: "groupie",
-          fields: [
+          type: "group",
+          children: [
             {
               type: "text",
               label: "Your name",

@@ -105,7 +105,16 @@ class xo {
   static get Validation() {
     return Validator;
   }
+
+  static get UI(){
+    return {
+      layouts: {
+        horizontal: "horizontal",
+        vertical: "vertical"
+      }
+      
+    }
+  }
 }
 
-//window.xo = xo;
 export default xo;

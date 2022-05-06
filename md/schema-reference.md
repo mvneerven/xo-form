@@ -1,90 +1,54 @@
 # Schema Reference
 
-## model (Object)
+## Control (base class)
 
-The `model` node holds all databinding state (instances) and logic (rules).
+### `label` (String)
+Renders a label for the control, or a legend in the subclassed `Page` class.
 
-### model/instance (Object)
-Each `instance` defines a self-contained JavaScript object with data managed by the form. 
-Instances are easy to directly pass to `REST` or `GraphQL` APIs, or use client-side.
-Since each instance is proxied internally (using the JavaScript `Proxy` class), changes to its properties can immediately be reflected in the UI, and you can define `rules` to actively listen to changes.
-
-### model/rules (Object)
-The `rules` node contains rules to execute whenever some property has changed in any instance.
-
-See [Databinding](./databinding.md)
-
-## pages (Array)
-The `pages` node is an array of page objects.
-
-### pages/page (Object)
-A `page` object is implicitly created for each element in the `pages` array. 
-It can contain `label` (String) and `fields` (Array) nodes.
-
-#### pages/page/label (String)
-Label (legend) of the fieldset rendered for a page.
-
-#### pages/page/fields (Array)
+### `children` (Array)
 Array of `field` objects in a page.
 
-##### pages/page/fields/field/type (String)
-Control type. Can be any html tag name, including any custom element (web component), or any [HTML input type(https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input)], such as `text` , `email`, `password`, `tel`, `date`, `month`, `week`, `button`, `color`, etc.
+### `type` (String)
 
-##### pages/page/fields/field/name (String)
+Defines the control to be created. 
+
+Can be any html tag name, including any custom element (web component), or any [HTML input type(https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input)], such as `text` , `email`, `password`, `tel`, `date`, `month`, `week`, `button`, `color`, etc.
+
+```js
+
+// creates a textarea element
+{
+  type: "textarea"
+}
+
+// creates an input[type="range"] element
+{
+  type: "range"
+}
+
+// creates an custom element <my-element></my-element>
+{
+  type: "my-element"
+}
+```
+
+### `name` (String)
 
 Name of the control.
 
-##### pages/page/fields/field/bind (String)
-
+### `bind` (String)
 Databinding expression. Syntax: `#/<instance>/<property-path>`
 
 `#/data/email` points to the `email` property of the `data` instance.
 
-##### pages/page/fields/field/hidden (Boolean)
 
-If set, hides the control.
-Use in combination with databinding:
-
-```js
-{
-  type: "xw-checkgroup",
-  items: ["Nuts", "Lactose", "Sugar", "Colorants"],
-  hidden: "#/state/noallergens"
-}
-```
-
-##### pages/page/fields/field/disabled (Boolean)
-
-If set, disables the control.
-Same as `hidden`
-
-##### pages/page/fields/field/required (Boolean)
-
-Set to true to make the field required, so the form/page will not validate unless a value is set.
-
-##### pages/page/fields/field/autofocus (Boolean)
-
-Set to true to put the focus in this field at load time.
-
-##### pages/page/fields/field/label (String)
-
-Label/caption of the control.
-
-##### pages/page/fields/field/title (String)
-
-Sets the tooltip for the control.
-
-##### pages/page/fields/field/placeholder (String)
-
-Sets the placeholder value, shown when no value is set.
-
-##### pages/page/fields/field/classes (Array|String)
+### `classes` (Array|String)
 
 Array of class names to add.
 
-##### pages/page/fields/field/autocomplete (Object)
+### `autocomplete` (Object|String)
 
-Object declaring the autocomplete settings on textual controls.
+Use `"off"` for disabling browser autocomplete, or use an object declaring the autocomplete settings on textual controls.
 
 Example:
 
@@ -97,8 +61,7 @@ Example:
 }
 ```
 
-##### pages/page/fields/field/prepend (Object)
-
+### `prepend` (Object)
 Structure that defines prepended data in a control
 
 Example:
@@ -139,10 +102,10 @@ const form = {
 </svg>
 ```
 
-##### pages/page/fields/field/append (Object)
+### `append` (Object)
 TBD
 
-##### pages/page/fields/field/mixin (Array|String)
+### `mixin` (Array|String)
 (List of) mixins that define any number of properties for easy reuse. 
 
 See [Extending](./extending.md)

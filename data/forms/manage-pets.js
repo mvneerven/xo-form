@@ -84,12 +84,12 @@ export const managePets = {
     {
       label: "Manage your pets",
 
-      fields: [
+      children: [
         {
           type: "group",
           layout: "horizontal",
           align: "center",
-          fields: [
+          children: [
             {
               type: "text",
               label: "Pet name",
@@ -109,17 +109,17 @@ export const managePets = {
           layout: "vertical",
           items: "#/state/pets",
 
-          fields: [
+          children: [
             {
               type: "group",
               layout: "horizontal",
               ui: "panel",
-              fields: [
+              children: [
                 {
                   type: "group",
                   layout: "vertical",
 
-                  fields: [
+                  children: [
                     {
                       type: "text",
                       style: "width: 8em",

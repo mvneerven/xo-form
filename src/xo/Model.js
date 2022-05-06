@@ -1,4 +1,8 @@
 import Util from "./Util";
+const APPLY_RULE_MODES = {
+  Set: 1,
+  Run: 2
+};
 const DATABINDING_EXPRESSION =
   /(#\/[A-Za-z_.]+[A-Za-z_0-9\/@]*[A-Za-z_]+[A-Za-z_0-9]*)(?=[\s+\/*,.?!;'")]|$)/gm;
 const REGEX_DATABINDING_EXPRESSION = new RegExp(DATABINDING_EXPRESSION);
@@ -37,6 +41,14 @@ class DataBindingContext {
   get binding() {
     return this._options.binding;
   }
+
+  get path() {
+    return this._options.path;
+  }
+
+  get expression() {
+    return this._options.expression;
+  }
 }
 
 /**
@@ -44,7 +56,7 @@ class DataBindingContext {
  */
 class Model {
   _instance = {};
-  revocables = [];
+  revocableProxies = {};
   bound = {};
   rules = {};
 
@@ -59,17 +71,16 @@ class Model {
 
       return Proxy.revocable(target, {
         get: function (target, key) {
-          if (
-            ["[object Object]", "[object Array]"].indexOf(
-              Object.prototype.toString.call(target[key])
-            ) > -1
-          ) {
+          if (Util.isObject(target[key])) {
+            let proxyPath = path + "/" + key;
             const revocable = proxify(
               instanceName,
               target[key],
-              path + "/" + key
+              proxyPath
             );
-            me.revocables.push(revocable);
+            
+            me.revocableProxies[proxyPath] = revocable;
+
             return revocable.proxy;
           }
           return target[key];
@@ -77,52 +88,46 @@ class Model {
         set: function (target, key, value) {
           if (isIrelevantChange(target[key], value)) return true;
 
-          let bindingPath = "#/" + path + "/" + key;
+          if (me._inSetData) {
+            target[key] = value;
+            return true; //debugger;
+          }
 
-          const oldValue = target[key];
-
-          target[key] = value;
-
-          console.debug("Model change: ", bindingPath, value);
-
-          value = me.applyRules(bindingPath, value); // apply rules on change
-
-          let matchPattern = bindingPath; // me.matchArrays(bindingPath);
-
+          const bindingPath = "#/" + path + "/" + key,
+            oldValue = target[key];
           
-          if (me.bound[matchPattern]) {
-            console.log("Found matching binding", me.bound[matchPattern]);
+          let matchPattern = bindingPath.replace(/[\/]\d{1,}/gm, "/*");
 
-            me.bound[matchPattern].forEach((binding) => {
-              if (binding.partial) {
-                //debugger;
-              }
-              let prop =
-                binding.property === "bind" ? "value" : binding.property;
+          value = me.applyRules(matchPattern, bindingPath, value, 1); // apply 'set' rules
 
-              let boundPropertyValue = Model.replaceVar(binding, prop, value);
-              binding.control.map(prop, boundPropertyValue);
+          if (typeof value !== "undefined") {
+            me._inSetData = true;
+            try {
+              target[key] = value;
+            } finally {
+              me._inSetData = false;
+            }
 
-              console.debug(
-                `Set property '${prop}' on ${binding.control} to`,
-                value
-              );
-            });
+            console.debug("Model change: ", bindingPath, value);
+
+            me.checkBindings(matchPattern, value);
+
+            try {
+              me.form.emit("modelchange", {
+                model: me._instance,
+                change: bindingPath,
+                oldValue: oldValue,
+                newValue: value,
+                context: me.originatingEventContext
+              });
+            } finally {
+              me.originatingEventContext = null;
+            }
           }
 
-          //TODO: JSON Patch - https://github.com/Palindrom/JSONPatcherProxy
-
-          try {
-            me.form.emit("modelchange", {
-              model: me._instance,
-              change: bindingPath,
-              oldValue: oldValue,
-              newValue: value,
-              context: me.originatingEventContext
-            });
-          } finally {
-            me.originatingEventContext = null;
-          }
+          setTimeout(() => {
+            me.applyRules(matchPattern, bindingPath, value, 2); // apply 'run' rules
+          }, 1);
 
           return true;
         }
@@ -140,7 +145,7 @@ class Model {
     Object.entries(me.schemaModel.instance).forEach((item) => {
       const key = item[0];
       const revocable = proxify(key, item[1]);
-      this.revocables.push(revocable);
+      this.revocableProxies["#/" + key] = revocable;
       this.instance[key] = revocable.proxy;
     });
 
@@ -166,38 +171,47 @@ class Model {
     }, 1);
   }
 
-  applyRules(path, value) {
+  checkBindings(matchPattern, value) {
     const me = this;
 
-    if (me.rules[path]) {
-      let ar = me.rules[path];
+    if (me.bound[matchPattern]) {
+      me.bound[matchPattern].forEach((binding) => {
+        if (binding.partial) {
+          //debugger;
+        }
+        let prop = binding.property === "bind" ? "value" : binding.property;
+
+        let boundPropertyValue = Model.replaceVar(binding, prop, value);
+        binding.control.map(prop, boundPropertyValue);
+
+        console.debug(`Set property '${prop}' on ${binding.control} to`, value);
+      });
+    }
+  }
+
+  applyRules(
+    bindingExpression,
+    bindingPath,
+    value,
+    mode = APPLY_RULE_MODES.unknown
+  ) {
+    const me = this;
+    if (me.rules[bindingExpression]) {
+      let ar = me.rules[bindingExpression];
 
       if (Array.isArray(ar)) {
         ar.forEach((expression) => {
-          expression.set = expression.set ?? path;
+          expression.set = expression.set ?? expression;
           const context = new DataBindingContext({
+            expression: expression,
             data: me,
+            path: bindingPath,
             form: me.form,
             value: value,
-            //path: path,
-            binding: path
+            binding: expression
           });
 
-          if (expression.run) {
-            if (typeof expression.run === "function") expression.run(context);
-            else Util.scopeEval(context, "return " + expression.run);
-          } else if (expression.set) {
-            let result;
-            if (typeof expression.value === "function") {
-              result = expression.value(context);
-            } else {
-              result = Util.scopeEval(context, "return " + expression.value);
-            }
-            if (typeof result !== "undefined") {
-              me.set(expression.set, result);
-              if (expression.set === path) value = result;
-            }
-          }
+          value = me.executeRule(expression, context, value, mode);
         });
       }
     }
@@ -205,13 +219,33 @@ class Model {
     return value;
   }
 
+  executeRule(expression, context, value, mode = APPLY_RULE_MODES.unknown) {
+    const me = this;
+    if (mode === APPLY_RULE_MODES.Run && expression.run) {
+      if (typeof expression.run === "function") expression.run(context);
+      else Util.scopeEval(context, "return " + expression.run);
+    } else if (mode === APPLY_RULE_MODES.Set && expression.set) {
+      let result;
+      if (typeof expression.value === "function") {
+        result = expression.value(context);
+      } else {
+        result = Util.scopeEval(context, "return " + expression.value);
+      }
+      if (typeof result !== "undefined") {
+        me.set(expression.set, result);
+        if (expression.set === expression) value = result;
+      }
+    }
+    return value;
+  }
+
   dispose() {
-    if (this.instance && this.revocables) {
-      this.revocables.forEach((item) => {
-        item.revoke();
+    if (this.instance && this.revocableProxies) {
+      Object.keys(this.revocableProxies).forEach((item) => {
+        this.revocableProxies[item].revoke();
       });
     }
-    this.revocables.length = 0;
+    this.revocableProxies = {};
   }
 
   get form() {
@@ -236,16 +270,23 @@ class Model {
     };
   }
 
+  /**
+   * Process binding expressions
+   * @param {HTMLElement} element
+   * @param {Object} properties
+   */
   processBindings(element, properties) {
-    
+    //console.log("processBindings", element, properties);
+
     //const litProps = element.constructor.properties;
 
     for (let prop in properties) {
       let value = properties[prop];
-      // first, check for expressions
-      const test = Model.testForExpressions(value);
 
-      if (test.expressions.length > 0) { // expressions found
+      const test = Model.testForExpressions(value); // check for expressions
+
+      if (test.expressions.length > 0) {
+        // expressions found
         if (test.expressions.length === 1 && !test.isEmbedded) {
           // the whole property value is an expression
           this.addBinding({
@@ -254,6 +295,7 @@ class Model {
             property: prop,
             binding: value
           });
+
         } else {
           // there are multiple expressions in the property value
           const result = Model.replaceExpressions(value, (variable) => {
@@ -324,7 +366,6 @@ class Model {
   }
 
   static replaceVar(binding, prop, value) {
-    const me = this;
     let combinedString = false;
     let varRes,
       result = this.replaceExpressions(

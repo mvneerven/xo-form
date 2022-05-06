@@ -31,13 +31,12 @@ Since `xo-form` schemas are data, extending them is a matter of manipulating the
 const form = {
   pages: [
     {
-      fields: [
-      ]
+      children: [ ]
     }
   ]
 };
 
-form.pages[0].fields.push({
+form.pages[0].children.push({
   type: "text",
   //...
 })

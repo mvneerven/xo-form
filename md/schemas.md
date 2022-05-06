@@ -19,12 +19,12 @@ export const form = {
     {
       label: "My Form",
 
-      fields: [
+      children: [
         {
           type: "<any (custom)element or input type>",
           // any other properties
         }
-        // any other fields...
+        // any other children...
       ]
     }
     // any other pages...
@@ -58,7 +58,7 @@ export const form = {
     {
       label: "My Form",
 
-      fields: [
+      children: [
         {
           type: "text",
           bind: "#/data/name",
@@ -106,7 +106,7 @@ export const form = {
   },
   pages: [
     {
-      fields: [
+      children: [
         {
           type: "text",
           label: "User name",
@@ -134,7 +134,7 @@ You can also explicitly create a group, using the following syntax:
 ```js
 {
   type: "group", // xo-group element
-  fields: []
+  children: []
 }
 ```
 

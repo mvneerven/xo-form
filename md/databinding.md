@@ -36,7 +36,7 @@ export const getNewsLetter = {
   pages: [
     {
       label: "Newsletter",
-      fields: [
+      children: [
         {
           type: "xw-switch",
           label: "Subscribe to the newsletter",

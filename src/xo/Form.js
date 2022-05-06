@@ -201,11 +201,8 @@ class Form extends Control {
     this.nav.controls = this.nav.controls;
     this.nav.setAttribute("slot", "n");
     this.appendChild(this.nav);
-
+    
     this.emit("ready");
-
-    console.debug("Model Bindings: ", this.model.bound);
-
   }
 
   render() {
@@ -233,7 +230,7 @@ class Form extends Control {
   }
 
   firstUpdated() {
-    console.debug("Set up validator");
+    // console.debug("Set up validator");
     this.validator = new Validator(this);
     this.emit("first-updated");
   }

@@ -1,6 +1,8 @@
 import Control from "./Control";
 import { html } from "lit";
 import { repeat } from "lit/directives/repeat.js";
+import Model from "./Model";
+import { textChangeRangeIsUnchanged } from "../../node_modules/typescript/lib/typescript";
 
 /**
  * Repeats underlying structure for all items in the Array the control is bound to.
@@ -8,17 +10,9 @@ import { repeat } from "lit/directives/repeat.js";
 class Repeat extends Control {
   _items = [];
 
-  constructor() {
-    super(...arguments);
-    this._container = false;
-  }
-
   static get properties() {
     return {
-      layout: {
-        type: String
-      },
-      fields: {
+      template: {
         type: Array
       }
     };
@@ -26,32 +20,43 @@ class Repeat extends Control {
 
   set bind(value) {
     super.bind = value;
+
+    // this.form.model.addBinding({
+    //   control: this,
+    //   rawValue: value,
+    //   property: "items",
+    //   binding: value
+    // });
+
+    // add extra binding for length of array changing (delete)
     this.form.model.addBinding({
       control: this,
       rawValue: value,
-      property: "items",
-      binding: value
+      property: "touch",
+      binding: value + "/length"
+    });
+
+    // add extra binding for adding/changing array items
+    this.form.model.addBinding({
+      control: this,
+      rawValue: value,
+      property: "touch",
+      binding: value + "/*"
     });
 
     this._items = this.form.model.get(value);
-  }
-
-  set items(value) {
-    this._items = value;
-
-    this.requestUpdate();
-  }
-
-  get items() {
-    return this._items;
   }
 
   get bind() {
     return super.bind;
   }
 
+  set touch(value) {
+    this.requestUpdate();
+  }
+
   render() {
-    if (!this._items) return html``;
+    this.removeChildBindings();
 
     let result = html`
       ${repeat(
@@ -66,20 +71,56 @@ class Repeat extends Control {
     return result;
   }
 
+  removeChildBindings() {
+    const me = this;
+    let bindings = this.getBindings();
+
+    const isControlUnderMe = (e) => {
+      let repeat = e.control.closestElement("xo-repeat");
+      return repeat === me;
+    };
+
+    Object.keys(bindings).forEach((binding) => {
+      let boundInModel = this.form.model.bound[binding];
+      if (Array.isArray(boundInModel)) {
+        this.form.model.bound[binding] = boundInModel.filter((entry) => {
+          return !isControlUnderMe(entry);
+        });
+      }
+    });
+  }
+
+  // recursively search for binding expressions in template object
+  getBindings() {
+    let result = {};
+    const gb = (o) => {
+      Object.entries(o).forEach((entry) => {
+        if (typeof entry[1] === "object") {
+          gb(entry[1]);
+        } else {
+          let test = Model.testForExpressions(entry[1]);
+          if (test.expressions.length) {
+            test.expressions.forEach((xp) => {
+              result[xp] = entry[0];
+            });
+          }
+        }
+      });
+    };
+    gb(this.template);
+    return result;
+  }
+
   renderGroup(item, index) {
-    console.debug("Rendering group", this.scope, this.fields);
+    //console.debug("Rendering group", this.scope, this.template);
 
     return html`<xo-group
+      data-index="${index}"
       .scope=${item}
       ._parent=${this}
       .container=${false}
-      .fields=${this.fields}
+      .children=${this.template}
     ></xo-group>`;
-  }
-
-  getContainerClasses() {
-    let c = super.getContainerClasses();
-    return c + " xo-rep";
   }
 }
 

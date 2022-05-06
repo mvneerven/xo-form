@@ -15,18 +15,14 @@ class Control extends LitElement {
   _disabled = false;
   _clicked = 0;
   _context = null;
+  _valid = true;
   _container = true;
-
-  constructor() {
-    super(...arguments);
-    this.on("interaction", this.onInteraction.bind(this));
-    this._mapper = new PropertyMapper(this);
-  }
+  _mapper = new PropertyMapper(this);
 
   onInteraction(e) {
-    e.stopPropagation();
     const me = this;
-    console.debug("interaction", e);
+
+    console.debug("interaction: ", e.detail.control?.bind);
 
     if (e.detail.control?.bind) {
       const path = e.detail.control?.bind;
@@ -58,7 +54,8 @@ class Control extends LitElement {
       autocomplete: { type: Object },
       prepend: { type: Object },
       append: { type: Object },
-      mixin: { type: Object }
+      mixin: { type: Object },
+      valid: { type: Boolean }
     };
   }
 
@@ -77,7 +74,7 @@ class Control extends LitElement {
   }
 
   /**
-   * Sets the declarative fields Array to append children with.
+   * Sets the children to append.
    * @param value {Array}
    */
   set children(value) {
@@ -92,7 +89,7 @@ class Control extends LitElement {
   }
 
   /**
-   * @returns {Array} - Array of schema fields that define the children to be appended.
+   * @returns {Array} - Array of children to be appended.
    */
   get children() {
     return this._children;
@@ -106,6 +103,7 @@ class Control extends LitElement {
     this.nested?.removeEventListener("blur", this.onblur);
     this.shadowRoot.removeEventListener("input", this.onInput);
     this.shadowRoot.removeEventListener("change", this.onInput);
+    this.off("interaction", this.onInteraction.bind(this));
   }
 
   /**
@@ -127,14 +125,13 @@ class Control extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    //this.form = this.closest("xo-form");
     this.form?.registerElement(this);
-    //this.map(this.properties)
     this.acceptMappedState();
     this.nested?.addEventListener("focus", this.onfocus.bind(this));
     this.nested?.addEventListener("blur", this.onblur.bind(this));
     this.shadowRoot.addEventListener("input", this.onInput.bind(this));
     this.shadowRoot.addEventListener("change", this.onInput.bind(this));
+    this.on("interaction", this.onInteraction.bind(this));
   }
 
   disconnectedCallback() {
@@ -196,13 +193,19 @@ class Control extends LitElement {
     }
 
     const emit = () => {
-      me.emit("interaction", {
-        type: "input",
-        control: this,
-        source: source,
-        value: me.value,
-        guid: Util.guid()
-      });
+      me.emit(
+        "interaction",
+        {
+          type: "input",
+          control: this,
+          source: source,
+          value: me.value,
+          guid: Util.guid()
+        },
+        {
+          bubbles: true
+        }
+      );
     };
 
     if (xo.options.throttleInput) {
@@ -221,7 +224,13 @@ class Control extends LitElement {
     if (e.type === "input") this.__lastInputValue = this.value;
   }
 
-  emit(name, detail = {}, options = {}) {
+  emit(
+    name,
+    detail = {},
+    options = {
+      bubbles: true
+    }
+  ) {
     this.dispatchEvent(
       new CustomEvent(name, {
         detail: detail,
@@ -239,26 +248,41 @@ class Control extends LitElement {
     const source = e.composedPath()[0];
     this._clicked++;
 
-    this.emit("interaction", {
-      type: "click",
-      control: this,
-      source: source,
-      value: source.defaultValue ?? this._clicked,
-      guid: Util.guid()
-    });
+    const value = source.defaultValue || this._clicked;
+
+    this.emit(
+      "interaction",
+      {
+        type: "click",
+        control: this,
+        source: source,
+        value: value,
+        guid: Util.guid()
+      },
+      {
+        bubbles: true
+      }
+    );
   }
 
   /**
    * @returns {Boolean} true if the control is currently valid
    */
   get valid() {
-    return this.checkValidity();
+    return this._valid;
+  }
+
+  set valid(value) {
+    this._valid = value;
   }
 
   checkValidity() {
-    return this.nested && this.nested.checkValidity
-      ? this.nested.checkValidity()
-      : true;
+    this._valid =
+      this.nested && this.nested.checkValidity
+        ? this.nested.checkValidity()
+        : true;
+
+    return this._valid;
   }
 
   reportValidity() {
@@ -422,9 +446,15 @@ class Control extends LitElement {
       //elm.properties = properties
       elm.map(properties);
 
-      this.emit("created-control", {
-        control: elm
-      });
+      this.form.emit(
+        "created-control",
+        {
+          control: elm
+        },
+        {
+          bubbles: true
+        }
+      );
     }
 
     return elm;
@@ -466,7 +496,9 @@ class Control extends LitElement {
   }
 
   map(properties, singleValue) {
-    this.form.model.processBindings(this, properties);
+    if (typeof singleValue === "undefined")
+      this.form.model.processBindings(this, properties);
+
     this._mapper.mapProperties(this, properties, singleValue);
   }
 
@@ -479,55 +511,42 @@ class Control extends LitElement {
   }
 
   getData(path) {
-    const data = {
-      path: path,
-      value: this.form.model.get(path)
-    };
-
-    if (this.scope && path.startsWith("#/./")) {
-      console.debug("Resolving scoped variable ", path , " in scope ", this.scope);
-
-      data.value = Util.getValue(
-        {
-          scope: this.scope
-        },
-        "#/scope/" + path.substring(4)
-      );
-    }
-    return data.value;
+    const dataAction = this.getDataAction(path);
+    return Util.getValue(dataAction.scope, dataAction.path);
   }
 
   setData(path, value) {
+    const dataAction = this.getDataAction(path);
+    Util.setValue(dataAction.scope, dataAction.path, value);
+  }
+
+  /**
+   * Returns structure with scope and path to execute databinding expression.
+   * @param {String} path
+   * @returns {Object}
+   */
+  getDataAction(path) {
     if (this.scope && path.startsWith("#/./")) {
-      
-      Util.setValue(
-        {
-          scope: this.scope
-        },
-        "#/scope/" + path.substring(4)
-      );
-
-      return;
+      return {
+        scope: this.scope,
+        path: "#/" + path.substring(4)
+      };
     }
-
-    Util.setValue(this.form.model.instance, path, value);
+    return {
+      scope: this.form.model.instance,
+      path: path
+    };
   }
 
   setNested(element) {
     this._nested = element;
-
-    //this.appendChild(this.nested)
-
     var observer = new MutationObserver(function (mutations) {
       mutations.forEach(function (mutation) {
         if (mutation.type === "attributes") {
-          console.warn("MUTATION ATTRIBUTE", mutation.attributeName);
+          // console.warn("MUTATION ATTRIBUTE", mutation.attributeName);
 
           switch (mutation.attributeName) {
             case "disabled":
-              //this.disabled =
-              //debugger;
-
               break;
           }
         }
@@ -682,9 +701,7 @@ class Control extends LitElement {
   renderInput(noContainer) {
     //return html`<slot></slot>`
 
-
-    return html`${this.renderNestedElement(noContainer)}
-    `;
+    return html`${this.renderNestedElement(noContainer)} `;
   }
 
   renderNestedElement(noContainer) {
@@ -701,6 +718,8 @@ class Control extends LitElement {
     if (!PropertyMapper.isExpression(value)) throw Error(ERR_INVALID_BINDING);
 
     this._bind = value;
+
+    this.value = this.getData(value);
   }
 
   /**

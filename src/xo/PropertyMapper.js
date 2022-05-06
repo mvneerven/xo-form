@@ -1,6 +1,46 @@
 import builtinMixins from "./Mixins.json";
 import Util from "./Util";
 
+const html2dom = {
+  acceptcharset: 'acceptCharset',
+  accesskey: 'accessKey',
+  bgcolor: 'bgColor',
+  cellindex: 'cellIndex',
+  cellpadding: 'cellPadding',
+  cellspacing: 'cellSpacing',
+  choff: 'chOff',
+  class: 'className',
+  codebase: 'codeBase',
+  codetype: 'codeType',
+  colspan: 'colSpan',
+  datetime: 'dateTime',
+  checked: 'defaultChecked',
+  selected: 'defaultSelected',
+  value: 'defaultValue',
+  frameborder: 'frameBorder',
+  httpequiv: 'httpEquiv',
+  longdesc: 'longDesc',
+  marginheight: 'marginHeight',
+  marginwidth: 'marginWidth',
+  maxlength: 'maxLength',
+  nohref: 'noHref',
+  noresize: 'noResize',
+  noshade: 'noShade',
+  nowrap: 'noWrap',
+  readonly: 'readOnly',
+  rowindex: 'rowIndex',
+  rowspan: 'rowSpan',
+  sectionrowindex: 'sectionRowIndex',
+  selectedindex: 'selectedIndex',
+  tabindex: 'tabIndex',
+  tbodies: 'tBodies',
+  tfoot: 'tFoot',
+  thead: 'tHead',
+  url: 'URL',
+  usemap: 'useMap',
+  valign: 'vAlign',
+  valuetype: 'valueType' };
+
 const RESERVED_PROPERTIES = ["type", "label", "bind", "classes"];
 
 let ctlNr = 1000;
@@ -47,8 +87,9 @@ class PropertyMapper {
 
     if (properties.mixin) this.applyMixins(properties);
 
-    if (!properties.id) properties.id = getUniqueName();
-    if (!properties.name) properties.name = properties.id;
+    // properties.id = properties.id ?? getUniqueName();
+    
+    // properties.name = properties.name ??  properties.id;
 
     for (let prop in properties) {
       if (prop === "type") continue;

@@ -6,12 +6,14 @@ import extending from './extending.md';
 import generating from './generating.md';
 import databinding from './databinding.md';
 import schemareference from './schema-reference.md'
+import builtincontrols from './builtincontrols.md'
 
 export const docs = {
   index: index,
   installing: installing,
   markup: markup,
   schemas: schemas,
+  builtincontrols: builtincontrols,
   schemareference: schemareference,
   databinding: databinding,
   generating: generating,

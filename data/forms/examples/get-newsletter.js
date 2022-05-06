@@ -23,7 +23,7 @@ export const getNewsLetter = {
   pages: [
     {
       label: "Newsletter",
-      fields: [
+      children: [
         {
           type: "xw-switch",
           label: "Subscribe to the newsletter",
@@ -34,6 +34,7 @@ export const getNewsLetter = {
           type: "email",
           label: "Email address",
           bind: "#/data/email",
+          required: true,
           placeholder: "john@doe.com",
           disabled: "#/data/noreceive",
           prepend: {

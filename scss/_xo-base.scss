@@ -36,7 +36,16 @@
       transition: all 0.3s ease;
     }
   }
+
+  &.xo-iv {
+    .xo-in {
+      border-color: var(--xo-input-border-color-invalid);
+      
+    }
+  }
 }
+
+
 
 .xo-cn:not(.xo-rep):not(.xo-ri) {
   // xo-ri = repeat-item

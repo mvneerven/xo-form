@@ -7,7 +7,7 @@ class SchemaGenerator {
   _schema = {
     note: "Generated schema",
     model: { rules: {}, instance: {} },
-    pages: [{ fields: [] }]
+    pages: [{ children: [] }]
   };
 
   /**
@@ -25,7 +25,7 @@ class SchemaGenerator {
       let key = entry[0];
       instance[key] = undefined;
       let field = this.reader.getFieldSchema(key);
-      page1.fields.push(field);
+      page1.children.push(field);
     });
 
     this.schema.model.instance["data"] = instance;

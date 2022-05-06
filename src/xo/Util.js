@@ -19,6 +19,17 @@ class Util {
   }
 
   /**
+   * Returns true if the value is an object
+   * @param {Any} value 
+   * @returns 
+   */
+  static isObject(value){
+    return ["[object Object]", "[object Array]"].indexOf(
+      Object.prototype.toString.call(value)
+    ) > -1
+  }
+
+  /**
    * Generates an Html Element from the given HTML string
    * @param {String} html
    * @returns {HTMLElement} DOM element
@@ -32,7 +43,7 @@ class Util {
     dummy.parentNode.insertBefore(newElm, dummy);
     dummy.remove();
     return newElm;
-}
+  }
 
   static objectEquals(x, y) {
     if (x === null || x === undefined || y === null || y === undefined) {
@@ -140,31 +151,27 @@ class Util {
     return `${options.prefix || ""}${options.compact ? g.split("-").pop() : g}`;
   }
 
-  
-
   /**
-     * Clone an object.
-     * @param {Object} obj 
-     * @returns cloned object.
-     */
-   static clone(obj) {
-    if (obj === null || typeof (obj) !== 'object' || 'isActiveClone' in obj)
-        return obj;
+   * Clone an object.
+   * @param {Object} obj
+   * @returns cloned object.
+   */
+  static clone(obj) {
+    if (obj === null || typeof obj !== "object" || "isActiveClone" in obj)
+      return obj;
 
-    if (obj instanceof Date)
-        var temp = new obj.constructor(); 
-    else
-        var temp = obj.constructor();
+    if (obj instanceof Date) var temp = new obj.constructor();
+    else var temp = obj.constructor();
 
     for (var key in obj) {
-        if (Object.prototype.hasOwnProperty.call(obj, key)) {
-            obj['isActiveClone'] = null;
-            temp[key] = Util.clone(obj[key]);
-            delete obj['isActiveClone'];
-        }
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        obj["isActiveClone"] = null;
+        temp[key] = Util.clone(obj[key]);
+        delete obj["isActiveClone"];
+      }
     }
     return temp;
-}
+  }
 
   static async requireJS(src) {
     return new Promise((resolve) => {
@@ -346,12 +353,7 @@ class Util {
   }
 
   static getValue(obj, path) {
-    if (path.indexOf("*") !== -1 || path.indexOf("@index") !== -1)
-      throw Error("Invalid binding path: " + path);
-
-    let pathElements = path.substring(2).split("/");
-    let instanceName = pathElements.shift();
-    var current = obj[instanceName]; //this.instance[instanceName];
+    let pathElements = path.substring(2).split("/"), current = obj; 
     if (!current) return undefined;
 
     for (var i = 0; i < pathElements.length; i++) {
@@ -360,14 +362,13 @@ class Util {
         return current[key];
       }
       current = current[key];
+      if (typeof current === "undefined") return undefined;
     }
   }
 
   static setValue(obj, path, value) {
-    let pathElements = path.substring(2).split("/");
-    let instanceName = pathElements.shift();
-    var current = obj[instanceName];
-    if (!current) return undefined;
+    let pathElements = path.substring(2).split("/"),
+      current = obj;
 
     for (var i = 0; i < pathElements.length; i++) {
       let key = this.parseKey(pathElements[i]);
