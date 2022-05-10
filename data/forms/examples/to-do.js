@@ -1,14 +1,13 @@
 // TO-DO app written entirely as declarative schema
 export const todos = {
+  icons: "/data/svg/icons.svg",
   model: {
     rules: {
       "#/todo/items/*/del": [
         {
           run: (context) => {
-            //debugger;
             let index = parseInt(context.path.split("/")[3]);
             context.data.instance.todo.items.splice(index, 1);
-            console.log("Removed item", index, "new item count: ", context.data.instance.todo.items.length)
           }
         }
       ],
@@ -19,18 +18,23 @@ export const todos = {
             ar.push({
               name: context.data.get("#/state/newTask")
             });
-            
+
             context.data.set("#/state/newTask", "");
+          }
+        }
+      ],
+      "#/state/newTask": [
+        {
+          run: (context) => {
+            context.data.set("#/state/newTaskEmpty", context.value === "");
           }
         }
       ]
     },
     instance: {
-      state: {},
+      state: { newTaskEmpty: true, check: false },
       todo: {
-        items: [
-          
-        ]
+        items: []
       }
     }
   },
@@ -46,16 +50,20 @@ export const todos = {
               layout: "horizontal",
               children: [
                 {
-                  type: "div",
-                  style: "padding-top:12px; width: 200px",
+                  type: "xw-checkbox",
+                  text: "#/./name",
                   container: false,
-                  innerText: "#/./name"
+                  name: "tasks",
+                  style: "padding-top:12px; width: 300px",
+                  bind: "#/./done",
+                  title: "Mark task as done"
                 },
-
                 {
                   type: "button",
                   label: "⨉",
-                  bind: "#/./del"
+                  style: "float: right",
+                  bind: "#/./del",
+                  title: "Remove task"
                 }
               ]
             }
@@ -67,17 +75,18 @@ export const todos = {
           label: "New task name",
           placeholder: "Task name...",
           bind: "#/state/newTask",
+          prepend: {
+            icon: "task"
+          },
           required: true,
-          minLength: 5,
-          autocomplete: {
-            items: ["Binge", "Shop", "Sleep"]
-          }
+          minLength: 5
         },
-        
+
         {
           type: "button",
           label: "Add",
-          bind: "#/state/added"
+          bind: "#/state/added",
+          disabled: "#/state/newTaskEmpty"
         }
       ]
     }
