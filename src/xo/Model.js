@@ -57,6 +57,7 @@ class DataBindingContext {
 class Model {
   _instance = {};
   revocableProxies = {};
+  _stack = {};
   bound = {};
   rules = {};
 
@@ -73,12 +74,8 @@ class Model {
         get: function (target, key) {
           if (Util.isObject(target[key])) {
             let proxyPath = path + "/" + key;
-            const revocable = proxify(
-              instanceName,
-              target[key],
-              proxyPath
-            );
-            
+            const revocable = proxify(instanceName, target[key], proxyPath);
+
             me.revocableProxies[proxyPath] = revocable;
 
             return revocable.proxy;
@@ -86,26 +83,31 @@ class Model {
           return target[key];
         },
         set: function (target, key, value) {
-          if (isIrelevantChange(target[key], value)) return true;
-
-          if (me._inSetData) {
-            target[key] = value;
-            return true; //debugger;
-          }
-
           const bindingPath = "#/" + path + "/" + key,
             oldValue = target[key];
-          
-          let matchPattern = bindingPath.replace(/[\/]\d{1,}/gm, "/*");
 
-          value = me.applyRules(matchPattern, bindingPath, value, 1); // apply 'set' rules
+          if (isIrelevantChange(target[key], value)) return true;
+
+          if (me.stack(bindingPath) > 5) return true;
+          let matchPattern = bindingPath.replace(/[\/]\d{1,}/gm, "/*");
+        
+          let newValue = me.applyRules(
+            matchPattern,
+            bindingPath,
+            value,
+            APPLY_RULE_MODES.Set
+          ); // apply 'set' rules
+          if (newValue !== oldValue) {
+            value = newValue;
+          }
 
           if (typeof value !== "undefined") {
-            me._inSetData = true;
+            me.stack(bindingPath, +1);
+
             try {
-              target[key] = value;
+              if (oldValue !== value) target[key] = value;
             } finally {
-              me._inSetData = false;
+              me.stack(bindingPath, -1);
             }
 
             console.debug("Model change: ", bindingPath, value);
@@ -126,7 +128,12 @@ class Model {
           }
 
           setTimeout(() => {
-            me.applyRules(matchPattern, bindingPath, value, 2); // apply 'run' rules
+            me.applyRules(
+              matchPattern,
+              bindingPath,
+              value,
+              APPLY_RULE_MODES.Run
+            ); // apply 'run' rules
           }, 1);
 
           return true;
@@ -189,6 +196,13 @@ class Model {
     }
   }
 
+  stack(path, level) {
+    if (typeof level !== "undefined")
+      this._stack[path] = (this._stack[path] ?? 0) + level;
+
+    return this._stack[path] ?? 0;
+  }
+
   applyRules(
     bindingExpression,
     bindingPath,
@@ -196,24 +210,28 @@ class Model {
     mode = APPLY_RULE_MODES.unknown
   ) {
     const me = this;
-    if (me.rules[bindingExpression]) {
+    if (Array.isArray(me.rules[bindingExpression])) {
       let ar = me.rules[bindingExpression];
-
-      if (Array.isArray(ar)) {
-        ar.forEach((expression) => {
-          expression.set = expression.set ?? expression;
-          const context = new DataBindingContext({
-            expression: expression,
-            data: me,
-            path: bindingPath,
-            form: me.form,
-            value: value,
-            binding: expression
-          });
-
-          value = me.executeRule(expression, context, value, mode);
+      ar.forEach((expression) => {
+        const context = new DataBindingContext({
+          data: me,
+          path: bindingPath,
+          form: me.form,
+          value: value,
+          binding: bindingExpression
         });
-      }
+
+        let newValue = me.executeRule(expression, context, value, mode);
+        if (typeof newValue !== "undefined") {
+          if (expression.set && expression.set !== bindingExpression) {
+            // Set value if expression points to different value
+            me.set(expression.set, newValue);
+            value === undefined;
+          } else {
+            value = newValue;
+          }
+        }
+      });
     }
 
     return value;
@@ -221,22 +239,18 @@ class Model {
 
   executeRule(expression, context, value, mode = APPLY_RULE_MODES.unknown) {
     const me = this;
+    let result;
     if (mode === APPLY_RULE_MODES.Run && expression.run) {
       if (typeof expression.run === "function") expression.run(context);
       else Util.scopeEval(context, "return " + expression.run);
-    } else if (mode === APPLY_RULE_MODES.Set && expression.set) {
-      let result;
+    } else if (mode === APPLY_RULE_MODES.Set) {
       if (typeof expression.value === "function") {
         result = expression.value(context);
       } else {
         result = Util.scopeEval(context, "return " + expression.value);
       }
-      if (typeof result !== "undefined") {
-        me.set(expression.set, result);
-        if (expression.set === expression) value = result;
-      }
     }
-    return value;
+    return result;
   }
 
   dispose() {
@@ -276,10 +290,6 @@ class Model {
    * @param {Object} properties
    */
   processBindings(element, properties) {
-    //console.log("processBindings", element, properties);
-
-    //const litProps = element.constructor.properties;
-
     for (let prop in properties) {
       let value = properties[prop];
 
@@ -295,7 +305,6 @@ class Model {
             property: prop,
             binding: value
           });
-
         } else {
           // there are multiple expressions in the property value
           const result = Model.replaceExpressions(value, (variable) => {
@@ -393,7 +402,13 @@ class Model {
       originatingEventContext
     );
 
-    Util.setValue(this.instance, path, value);
+    this.stack(path, +1);
+
+    try {
+      Util.setValue(this.instance, path, value);
+    } finally {
+      this.stack(path, -1);
+    }
   }
 
   static createDataBindingOriginContext(originatingEventContext) {

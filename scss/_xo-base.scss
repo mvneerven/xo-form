@@ -75,8 +75,8 @@
   padding: 0.5rem 0px 0px 0.5rem;
 }
 
-.xo-pp {
-  // prepend
+.xo-pp, .xo-app {
+  // prepend, append
   display: inline;
 }
 
@@ -162,6 +162,7 @@ button {
 /* sub label */
 .xo-sl {
   display: inline-block;
+  width: max-content;
   padding-left: 0.5rem;
 }
 

@@ -318,8 +318,6 @@ class Util {
       return css;
     } catch {
       let id = this.hash(cssText);
-      console.log(id);
-      // currently not fully supported on Firefox
       let style = document.getElementById(id);
       if (!style) {
         style = document.createElement("style");

@@ -2,7 +2,6 @@ import Control from "./Control";
 import { html } from "lit";
 import { repeat } from "lit/directives/repeat.js";
 import Model from "./Model";
-import { textChangeRangeIsUnchanged } from "../../node_modules/typescript/lib/typescript";
 
 /**
  * Repeats underlying structure for all items in the Array the control is bound to.
@@ -20,14 +19,6 @@ class Repeat extends Control {
 
   set bind(value) {
     super.bind = value;
-
-    // this.form.model.addBinding({
-    //   control: this,
-    //   rawValue: value,
-    //   property: "items",
-    //   binding: value
-    // });
-
     // add extra binding for length of array changing (delete)
     this.form.model.addBinding({
       control: this,

@@ -4,16 +4,16 @@ class Checkbox extends CheckGroup {
   static get properties() {
     return {
       value: { type: Boolean },
-      text: { type: String },
+      text: { type: String }
     };
   }
 
   get value() {
-    return this._value[0] === this.items[0].value;
+    return this._value[0]?.toString() == this.items[0]?.value.toString();
   }
 
   set value(value) {
-    //if (typeof value !== "boolean") return;
+    if (typeof value !== "boolean") value = false;
 
     this._value = [value];
   }
@@ -29,6 +29,11 @@ class Checkbox extends CheckGroup {
   toggleCheck(e) {
     this._value = [];
     super.toggleCheck(e);
+    this.requestUpdate();
+  }
+
+  isSelected(item) {
+    return this.value;
   }
 
   constructor() {
@@ -36,8 +41,8 @@ class Checkbox extends CheckGroup {
     this.items = [
       {
         value: true,
-        label: "On",
-      },
+        label: "On"
+      }
     ];
   }
 }

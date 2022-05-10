@@ -25,7 +25,9 @@ class RadioGroup extends InputGroup {
     e.stopPropagation();
   }
 
-  reportValidity() {}
+  reportValidity() {
+    debugger
+  }
 
   toggleCheck(e) {
     e.stopPropagation();
@@ -41,10 +43,8 @@ class RadioGroup extends InputGroup {
   }
 
   checkValidity() {
-    //TODO
     return this.required && !this.value ? false : true;
   }
-
   isSelected(item) {
     return this._value === item.value;
   }

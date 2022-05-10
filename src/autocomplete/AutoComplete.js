@@ -7,7 +7,7 @@ import autoCompleteStyles from "../../css/autocomplete.css";
 class AutoComplete {
   cssClasses = {
     result: "xo-ac-rs",
-    item: "xo-ac-itm",
+    item: "xo-ac-itm"
   };
 
   /**
@@ -15,8 +15,7 @@ class AutoComplete {
    */
   static get sharedStyles() {
     if (!this._sheet) {
-      this._sheet = Util.createStyleSheet(new Document(), autoCompleteStyles)
-      
+      this._sheet = Util.createStyleSheet(new Document(), autoCompleteStyles);
     }
     return this._sheet;
   }
@@ -37,7 +36,6 @@ class AutoComplete {
   }
 
   attach() {
-    
     const isXoControl = this.isXoControl(this.control);
 
     const on = (a, b) => {
@@ -90,11 +88,11 @@ class AutoComplete {
       div.scrollIntoView({
         behavior: "smooth",
         block: "end",
-        inline: "nearest",
+        inline: "nearest"
       });
     } else {
       this.clickHandler({
-        target: this.htmlElement,
+        target: this.htmlElement
       });
     }
   }
@@ -122,7 +120,7 @@ class AutoComplete {
 
       let options = {
         ...result,
-        search: this.htmlElement.value,
+        search: this.htmlElement.value
       };
 
       div.classList.add("active");
@@ -144,7 +142,7 @@ class AutoComplete {
 
         const ev = new Event("result-selected", { bubbles: false });
         ev.detail = {
-          text: options.text,
+          text: options.text
         };
         this.htmlElement.dispatchEvent(ev);
       }, 0);
@@ -200,7 +198,7 @@ class AutoComplete {
     this.clear();
     let options = {
       search: e.target.value,
-      categories: this.categories,
+      categories: this.categories
     };
 
     this.getItems(options, e).then((r) => {
@@ -265,14 +263,14 @@ class AutoComplete {
     const options = {
       suggest: true,
       search: value || "",
-      categories: this.categories,
+      categories: this.categories
     };
     this.getItems(options, e).then((r) => {
       this.htmlElement.dispatchEvent(
         new CustomEvent("show-results", {
           detail: {
-            results: r,
-          },
+            results: r
+          }
         })
       );
 
@@ -342,7 +340,7 @@ class AutoComplete {
       result = catHandler.format({
         item: i,
         result: result,
-        options: options,
+        options: options
       });
     }
     return result;
@@ -431,7 +429,8 @@ class AutoComplete {
         );
       } else if (typeof this.items === "function") {
         options.control = this.control;
-        let ar = this.items(options, e).then((ar) => {
+        let ar = Promise.resolve(this.items(options, e));
+        ar.then((ar) => {
           ar = ar.map((i) => {
             return normalizeItem(i);
           });

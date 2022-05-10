@@ -41,7 +41,7 @@ const html2dom = {
   valign: 'vAlign',
   valuetype: 'valueType' };
 
-const RESERVED_PROPERTIES = ["type", "label", "bind", "classes"];
+const RESERVED_PROPERTIES = ["type", "label", "bind", "classes", "container", "name"];
 
 let ctlNr = 1000;
 const getUniqueName = () => {
@@ -98,7 +98,7 @@ class PropertyMapper {
 
       if (!["id"].includes(prop)) element[prop] = value;
 
-      if (["style", "title", "id"].includes(prop)) {
+      if (["style", "id"].includes(prop)) {
         element[prop] = value ?? "";
       } else if (nested) {
         if (PropertyMapper.elementSupportsProperty(nested, prop)) {

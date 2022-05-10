@@ -13,6 +13,7 @@ const ERR_INVALID_BINDING = "Invalid binding value";
 class Control extends LitElement {
   static _sheet;
   _disabled = false;
+  _touched = false;
   _clicked = 0;
   _context = null;
   _valid = true;
@@ -21,10 +22,12 @@ class Control extends LitElement {
 
   onInteraction(e) {
     const me = this;
-
-    console.debug("interaction: ", e.detail.control?.bind);
+    me._touched = true;
 
     if (e.detail.control?.bind) {
+      me.form.model._stack = {};
+      console.debug("interaction: ", e.detail.control?.bind);
+      // e.stopPropagation();
       const path = e.detail.control?.bind;
       me.setData(path, e.detail.value, e.detail);
     }
@@ -32,6 +35,10 @@ class Control extends LitElement {
 
   get data() {
     return this._data;
+  }
+
+  get touched() {
+    return this._touched;
   }
 
   static get properties() {
@@ -173,7 +180,6 @@ class Control extends LitElement {
   onInput(e) {
     const me = this;
     if (e.type === "input" && this.nested) {
-      //console.log(e.target)
       if (this.nested.nodeName.indexOf("-") !== -1) return;
     }
 
@@ -269,10 +275,16 @@ class Control extends LitElement {
    * @returns {Boolean} true if the control is currently valid
    */
   get valid() {
+    this._valid = this.checkValidity();
     return this._valid;
   }
 
   set valid(value) {
+    // if(this._valid !== value)
+    //   this.requestUpdate();
+
+    console.log("Set valid", this, this._valid);
+
     this._valid = value;
   }
 
@@ -587,18 +599,23 @@ class Control extends LitElement {
     }
     if (this.hasFocus) {
       cls.push("xo-fc");
+
+      if (this.touched && !this.valid) {
+        cls.push("xo-iv");
+      }
     }
     if (this.disabled) {
       cls.push("xo-ds");
     }
-    if (!this.valid) {
-      cls.push("xo-iv");
-    }
+
     if (this.classes) {
       cls.push(...this.classes);
     }
     if (this.prepend) {
       cls.push("xo-prp");
+    }
+    if (this.append) {
+      cls.push("xo-app");
     }
     if (this.nested) {
       if (this.nested.value) {
@@ -673,11 +690,21 @@ class Control extends LitElement {
   }
 
   renderPrepend() {
-    if (this.prepend) {
-      if (this.prepend.icon) {
-        return this.renderIcon(this.prepend.icon);
-      } else if (this.prepend.text) {
-        return html`<span class="xo-pp">${this.prepend.text}</span>`;
+    return this.renderPrependOrAppend("prepend");
+  }
+
+  renderAppend() {
+    return this.renderPrependOrAppend("append");
+  }
+
+  renderPrependOrAppend(type) {
+    if (this[type]) {
+      if (this[type].icon) {
+        return this.renderIcon(this[type].icon);
+      } else if (this[type].text) {
+        return html`<span class="${type === "append" ? "xo-ap" : "xo-pp"}"
+          >${this[type].text}</span
+        >`;
       }
     }
   }
@@ -691,8 +718,6 @@ class Control extends LitElement {
       <use id="use" href="${icon}" />
     </svg>`;
   }
-
-  renderAppend() {}
 
   renderRequiredState() {
     return this.label ? (this.required ? html`<sup>*</sup>` : "") : "";
@@ -742,12 +767,12 @@ class Control extends LitElement {
    * @param {String|Array} eventName Event name(s) (string) or array containing event names
    * @param {Function} func
    */
-  on(eventName, func) {
+  on(eventName, func, options = {}) {
     const events = Array.isArray(eventName)
       ? eventName
       : [...eventName.split(" ")];
     events.forEach((e) => {
-      this.addEventListener(e, func);
+      this.addEventListener(e, func, options);
     });
     return this;
   }

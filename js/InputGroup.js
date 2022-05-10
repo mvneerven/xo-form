@@ -107,10 +107,11 @@ class InputGroup extends LitElement {
         .default label {
           position: relative;
           padding-left: 24px;
-          cursor: pointer;
+          cursor: pointer;s
           margin-right: 1rem;
-          margin-bottom: .3rem;
+          margin-bottom: 0.3rem;
           display: inline-block;
+          width: -webkit-fill-available;
         }
 
         .default label:before {
@@ -121,7 +122,7 @@ class InputGroup extends LitElement {
           width: 18px;
           height: 18px;
           border: 1px solid #ddd;
-          
+
           background: #fff;
         }
 
@@ -133,7 +134,7 @@ class InputGroup extends LitElement {
           position: absolute;
           top: 4px;
           left: 4px;
-          
+
           -webkit-transition: all 0.2s ease;
           transition: all 0.2s ease;
         }
@@ -177,6 +178,11 @@ class InputGroup extends LitElement {
   }
 
   render() {
+    this.checkValidity();
+    // debugger
+
+    console.log("RENDER INPUTGROUP");
+
     return html`<div
       class="${this.layout ?? "default"}"
       style=${this.getStyle()}
@@ -196,15 +202,16 @@ class InputGroup extends LitElement {
   }
 
   renderItem(item) {
+    console.log(item);
+
     return html`<label
-      title=${item.label}
       class=${ifDefined(item.class ? item.class : undefined)}
       style=${ifDefined(item.style ? item.style : undefined)}
       ><input
         @change=${this.change}
         @click=${this.toggleCheck}
         .checked=${item.checked}
-        type=${this.inputType}
+        type="${this.inputType}"
         name="${this.name}"
         value="${item.value}"
       /><span class="xo-sl"> ${item.label}</span></label
@@ -249,8 +256,7 @@ class InputGroup extends LitElement {
   }
 
   checkValidity() {
-    //TODO
-    return this.required && !this.value ? false : true;
+    throw Error("Not implemented");
   }
 
   isSelected(item) {

@@ -1,5 +1,4 @@
 import Group from "./Group";
-import Control from "./Control";
 import { html } from "lit";
 
 /**
@@ -23,6 +22,8 @@ class Page extends Group {
   render() {
     if (this.hidden) return html``;
 
+    if (this.childNodes.length === 0) console.warn(`${this} has no children`);
+
     return html`<fieldset
       ?hidden=${this.hidden}
       data-page="${this.index}"
@@ -31,12 +32,24 @@ class Page extends Group {
       <legend>${this.label}</legend>
       <slot></slot>
     </fieldset>`;
+
+    
+  }
+
+  updated(){
+    this.form.emit("page-updated", {
+      index: this.index
+    })
   }
 
   static get properties() {
     return {
       index: { type: Number, attribute: true }
     };
+  }
+
+  toString() {
+    return `Page ${this.index}`;
   }
 }
 

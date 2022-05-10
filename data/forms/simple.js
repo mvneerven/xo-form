@@ -5,17 +5,19 @@ export const form = {
   model: {
     instance: {
       state: {},
-      data: {
-        name: "",
-        schema: "const schema = {};",
-        range: 8
-      }
+      insurance: {}
     },
     rules: {
-      "#/state/submit": [
+      "#/insurance/zipCode": [
         {
-          run: (context) => {
-            alert(JSON.stringify(context.data.instance.data, null, 2));
+          value: (context) => {
+            let s = (context.value ?? "").replace(" ", "");
+
+            if (s && s.length >= 6) {
+              s = s.substring(0, 4) + " " + s.substring(4);
+              return s.toUpperCase();
+            }
+            return context.value;
           }
         }
       ]
@@ -30,25 +32,12 @@ export const form = {
           children: [
             {
               type: "text",
-              label: "Your name",
-              autofocus: true,
               required: true,
-              placeholder: "Enter your name...",
-              minLength: 3,
-              bind: "#/data/name",
-              prepend: {
-                icon: "test"
-              }
-            },
-            {
-              type: "email",
-              label: "Your email address",
-              required: true,
-              placeholder: "john@doe.com",
-              bind: "#/data/email",
-              prepend: {
-                icon: "email"
-              }
+              bind: "#/insurance/zipCode",
+              label: "Your zip code",
+              maxlength: 7,
+              pattern: "[1-9][0-9]{3}\\s?[a-zA-Z]{2}",
+              placeholder: "1234 AB"
             }
           ]
         },

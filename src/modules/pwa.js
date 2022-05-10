@@ -20,6 +20,8 @@ class PWA {
       let o = 1 - Math.min(100, window.scrollY) * 0.01;
       fog.style.opacity = o;
     });
+
+    document.getElementById("xo-version").innerText = "v" + xo.version;
   }
 
   checkDarkTheme() {

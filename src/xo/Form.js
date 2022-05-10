@@ -75,6 +75,8 @@ class Form extends Control {
    * @param value {Number}
    */
   set page(value) {
+    let oldPage = this._page;
+
     if (value === null || typeof value === "undefined") return;
 
     if (value === this._page) return;
@@ -82,11 +84,12 @@ class Form extends Control {
     if (value < 1) return;
     else if (value > this.querySelectorAll("xo-page").length) return;
 
-    if (value > this._page) {
-      this.validator.isPageValid(this._page);
-    }
-
     this._page = value;
+
+    this.emit("page", {
+      from: oldPage,
+      to: this._page
+    });
   }
 
   /**

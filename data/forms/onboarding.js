@@ -8,19 +8,20 @@ const weightCategories = {
     "Mix 10-19 kg",
     "Mix 20-29 kg",
     "Mix 30-39 kg",
-    "Mix 40+ kg",
+    "Mix 40+ kg"
   ]
-}
+};
 const breedAutoComplete = (options) => {
-  let type = (options.control?.context?.data.instance.insurance.type ?? 'dog').toLowerCase();
+  let type = (
+    options.control?.context?.data.instance.insurance.type ?? "dog"
+  ).toLowerCase();
 
   let bd = breeds[type].map((i) => {
     return {
-      text: i.name,
+      text: i.name
     };
   });
   let search = options.search.toLowerCase();
-  
 
   return weightCategories[type]
     .map((i) => {
@@ -36,16 +37,16 @@ export const onboarding = {
       insurance: {
         name: "",
         type: "",
-        breed: "",
-      },
+        breed: ""
+      }
     },
     rules: {
       "#/state/send": [
         {
           value: (context) => {
             alert("Request sent");
-          },
-        },
+          }
+        }
       ],
       "#/insurance/zipCode": [
         {
@@ -57,18 +58,18 @@ export const onboarding = {
               return s.toUpperCase();
             }
             return context.value;
-          },
-        },
+          }
+        }
       ],
       "#/insurance/type": [
         {
           set: "#/state/typeImage",
           value: (context) => {
             return `/img/pets/${context.data.get("#/insurance/type")}.webp`;
-          },
-        },
-      ],
-    },
+          }
+        }
+      ]
+    }
   },
   pages: [
     {
@@ -79,7 +80,7 @@ export const onboarding = {
           label: "Name of your pet",
           placeholder: "Fikkie",
           required: true,
-          bind: "#/insurance/name",
+          bind: "#/insurance/name"
         },
         {
           type: "xw-radiogroup",
@@ -95,23 +96,23 @@ export const onboarding = {
             {
               label: "Parrot",
               value: "parrot",
-              image: "/img/pets/parrot.webp",
+              image: "/img/pets/parrot.webp"
             },
             {
               label: "Rabbit",
               value: "rabbit",
-              image: "/img/pets/rabbit.webp",
-            },
-          ],
-        },
-      ],
+              image: "/img/pets/rabbit.webp"
+            }
+          ]
+        }
+      ]
     },
     {
       children: [
         {
           type: "xw-info",
-          title: "Base data (#/insurance/type)",
-          body: "Enter your pet's details",
+          header: "Base data (#/insurance/type)",
+          body: "Enter your pet's details"
         },
 
         {
@@ -121,8 +122,8 @@ export const onboarding = {
           bind: "#/insurance/breed",
           required: true,
           autocomplete: {
-            items: breedAutoComplete,
-          },
+            items: breedAutoComplete
+          }
         },
         {
           type: "text",
@@ -130,7 +131,7 @@ export const onboarding = {
           bind: "#/insurance/petBirthDate",
           required: true,
           placeholder: "DD-MM-JJJJ",
-          pattern: "[0-9]{2}-[0-9]{2}-[1-2][9,0][1-9]{2}",
+          pattern: "[0-9]{2}-[0-9]{2}-[1-2][9,0][1-9]{2}"
         },
 
         {
@@ -140,16 +141,16 @@ export const onboarding = {
           label: "Your zip code",
           maxlength: 7,
           pattern: "[1-9][0-9]{3}\\s?[a-zA-Z]{2}",
-          placeholder: "1234 AB",
-        },
-      ],
+          placeholder: "1234 AB"
+        }
+      ]
     },
     {
-      fields: [
+      children: [
         {
           type: "xw-info",
-          title: "Insurance type",
-          body: "Select a plan",
+          header: "Insurance type",
+          body: "Select a plan"
         },
         {
           type: "xw-radiogroup",
@@ -159,23 +160,23 @@ export const onboarding = {
           items: [
             { label: "Standard", value: "std" },
             { label: "Premium", value: "premium" },
-            { label: "Excellence", value: "excellence" },
-          ],
-        },
-      ],
+            { label: "Excellence", value: "excellence" }
+          ]
+        }
+      ]
     },
     {
-      fields: [
+      children: [
         {
           type: "xw-info",
-          title: "Check your data",
-          body: "Please verify the data below for correctness",
+          header: "Check your data",
+          body: "Please verify the data below for correctness"
         },
 
         {
           type: "xw-info",
-          title: "Your request",
-          body: "You want your #/insurance/breed #/insurance/type '#/insurance/name' to have a #/insurance/plan plan.",
+          header: "Your request",
+          body: "You want your #/insurance/breed #/insurance/type '#/insurance/name' to have a #/insurance/plan plan."
         },
 
         {
@@ -183,15 +184,15 @@ export const onboarding = {
           required: true,
           bind: "#/insurance/email",
           label: "Your email address",
-          placeholder: "john@doe.com",
+          placeholder: "john@doe.com"
         },
 
         {
           type: "button",
           label: "Send request",
-          bind: "#/state/send",
-        },
-      ],
-    },
-  ],
+          bind: "#/state/send"
+        }
+      ]
+    }
+  ]
 };

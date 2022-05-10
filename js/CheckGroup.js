@@ -15,6 +15,14 @@ class CheckGroup extends InputGroup {
         .default label:after {
           border-radius: 10%;
         }
+
+        /* sub label */
+        .xo-sl {
+          display: inline-block;
+          width: max-content;
+          padding-left: 0.5rem;
+        }
+
       `
     ];
   }
@@ -29,7 +37,6 @@ class CheckGroup extends InputGroup {
 
   toggleCheck(e) {
     e.stopPropagation();
-
     if (e.target.checked) {
       this._value.push(e.target.value);
     } else {

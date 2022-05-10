@@ -7,18 +7,24 @@ const VALIDATION_TYPE_INLINE = "inline";
 class Validator {
   constructor(xoForm) {
     this.form = xoForm;
-
+    const me = this;
     this.form
       .on("interaction", (e) => {
         let elm = e.detail.control;
         this.processValidation(elm);
         this.checkValid();
       })
-      .on("ready", (e) => {
-        
-        setTimeout(() => {
-          this.checkValid();
-        }, 10);
+
+      .on("page", (e) => {
+        me.form.on(
+          "page-updated",
+          (e) => {
+            me.checkValid();
+          },
+          {
+            once: true
+          }
+        );
       });
 
     this.form.on("created-control", (e) => {
@@ -26,13 +32,8 @@ class Validator {
         this.form.schema.validation ??
         DEFAULT_VALIDATION_TYPE === VALIDATION_TYPE_INLINE
       ) {
-        // e.detail.control.on("invalid", (e2) => {
-        //   debugger
-        //   e2.preventDefault();
-        // });
         if (e.detail.control.nested) {
           e.detail.control.nested.addEventListener("invalid", (e2) => {
-            
             e2.preventDefault();
             e2.stopPropagation(); // stop it from bubbling up
             e.detail.control.validationMessage = e2.target.validationMessage;
@@ -44,6 +45,7 @@ class Validator {
 
   checkValid() {
     const db = this.form.model;
+    let invalidCtls = [];
     let pageValid = undefined; //;this.isPageValid(this.form.page);
     let totalPages = db.get("#/_xo/nav/total");
 
@@ -58,7 +60,16 @@ class Validator {
     db.set("#/_xo/disabled/back", this.form.page <= 1);
     db.set("#/_xo/disabled/send", !allValid);
 
-    console.debug("Validation: page valid: ", pageValid, "all valid:", allValid, "total pages: ", totalPages, "page: ", this.form.page);
+    console.debug(
+      "Validation: page valid: ",
+      pageValid,
+      "all valid:",
+      allValid,
+      "total pages: ",
+      totalPages,
+      "page: ",
+      this.form.page
+    );
   }
 
   processValidation(elm) {

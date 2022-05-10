@@ -1,9 +1,18 @@
 import { LitElement, html, css } from "lit";
 
 class Info extends LitElement {
+    static get styles() {
+        return css`
+        
+        h3 {
+            margin-top: 0;
+            margin-bottom: .2rem;
+        }
+        `
+    }
     static get properties (){
         return {
-            title: {
+            header: {
                 type: String
             },
             body: {
@@ -14,7 +23,7 @@ class Info extends LitElement {
     render(){
         return html`
             <div class="info">
-                <h3>${this.title}</h3>
+                <h3>${this.header}</h3>
                 <div class="info-body">
                     ${this.body}
                 </div>

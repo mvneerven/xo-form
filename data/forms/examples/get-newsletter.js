@@ -16,6 +16,7 @@ export const getNewsLetter = {
     instance: {
       data: {
         receive: false,
+        noreceive: true,
         email: "yama@moto.jp"
       }
     }
