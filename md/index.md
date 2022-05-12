@@ -10,3 +10,5 @@ The ```xo-form``` custom element renders complex forms directly from [JavaScript
 - [Data Binding](./databinding.md)
 - [Generating schemas](./generating.md)
 - [Extending](./extending.md)
+- [Advanced Topics](./advanced.md)
+- [Literature](./literature.md)

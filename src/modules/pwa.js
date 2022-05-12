@@ -1,4 +1,5 @@
 import xo from "../xo";
+import SchemaGenerator from "../generator/schema-generator";
 
 xo.initialize({
   mixins: {
@@ -22,6 +23,19 @@ class PWA {
     });
 
     document.getElementById("xo-version").innerText = "v" + xo.version;
+
+    const meta = {
+      properties: {
+        firstName: {
+          type: "string",
+          description: "The person's first name."
+        }
+      }
+    };
+
+    let g = new SchemaGenerator(meta);
+    let schema = g.createSchema();
+    console.log("Generated: ", schema);
   }
 
   checkDarkTheme() {

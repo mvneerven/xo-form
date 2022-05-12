@@ -31,3 +31,4 @@ class MetaReader {
 
 You can inherit from ```MetaReader``` to get your metadata from anywhere and feed the ```SchemaGenerator``` instance with the proper mappings.
 
+See [advanced](./advanced.md) for an example with proprietary meta data.

@@ -77,6 +77,7 @@ class Control extends LitElement {
     if (!this._sheet) {
       this._sheet = Util.createStyleSheet(new Document(), xoStyles);
     }
+    
     return this._sheet;
   }
 

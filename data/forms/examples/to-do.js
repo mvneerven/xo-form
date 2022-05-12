@@ -40,6 +40,7 @@ export const todos = {
   },
   pages: [
     {
+      label: "My Task List",
       children: [
         {
           type: "repeat",
@@ -61,7 +62,6 @@ export const todos = {
                 {
                   type: "button",
                   label: "⨉",
-                  style: "float: right",
                   bind: "#/./del",
                   title: "Remove task"
                 }
@@ -71,7 +71,6 @@ export const todos = {
         },
         {
           type: "text",
-          autofocus: true,
           label: "New task name",
           placeholder: "Task name...",
           bind: "#/state/newTask",
@@ -84,7 +83,8 @@ export const todos = {
 
         {
           type: "button",
-          label: "Add",
+          label: "Add task",
+          style: "float: right",
           bind: "#/state/added",
           disabled: "#/state/newTaskEmpty"
         }

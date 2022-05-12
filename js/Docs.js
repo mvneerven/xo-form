@@ -138,6 +138,7 @@ export default class Docs extends LitElement {
       }
     `;
   }
+
   render() {
     return html` ${this.highlightStyle}
 
@@ -199,6 +200,12 @@ export default class Docs extends LitElement {
     const me = this;
 
     if (e.target.href) {
+      let href = e.target.getAttribute("href");
+      if(href.indexOf("://") !== -1){
+        e.target.target="_blank";
+        return;
+      }
+
       e.preventDefault();
       const id = this.getFileName(e.target.getAttribute("href") ?? "").replace(
         "-",

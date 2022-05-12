@@ -7,6 +7,8 @@ import generating from './generating.md';
 import databinding from './databinding.md';
 import schemareference from './schema-reference.md'
 import builtincontrols from './builtincontrols.md'
+import advanced from './advanced.md'
+import literature from './literature.md'
 
 export const docs = {
   index: index,
@@ -17,6 +19,8 @@ export const docs = {
   schemareference: schemareference,
   databinding: databinding,
   generating: generating,
-  extending: extending
+  extending: extending,
+  advanced: advanced,
+  literature: literature
 }
 
