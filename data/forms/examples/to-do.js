@@ -1,6 +1,6 @@
 // TO-DO app written entirely as declarative schema
 export const todos = {
-  icons: "/data/svg/icons.svg",
+  icons: "data/svg/icons.svg",
   model: {
     rules: {
       "#/todo/items/*/del": [

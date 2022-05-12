@@ -3,7 +3,7 @@
  */
 export const getNewsLetter = {
   // conditional logic form
-  icons: "/data/svg/icons.svg",
+  icons: "data/svg/icons.svg",
   model: {
     rules: {
       "#/data/receive": [

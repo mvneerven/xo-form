@@ -2,7 +2,7 @@
  * Simplest example of using xo-form
  */
 export const form = {
-  icons: "/data/svg/icons.svg",
+  icons: "data/svg/icons.svg",
   model: {
     // model node contains all data-related stuff
 

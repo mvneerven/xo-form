@@ -80,7 +80,7 @@ Example:
 
 ```js
 const form = {
-  icons: "/data/svg/icons.svg",
+  icons: "data/svg/icons.svg",
   pages: []
 };
 ```

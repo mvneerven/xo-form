@@ -1,7 +1,7 @@
 export const form = {
   validation: "inline",
   layout: "static",
-  icons: "/data/svg/icons.svg",
+  icons: "data/svg/icons.svg",
   model: {
     instance: {
       state: {},

@@ -60,7 +60,7 @@ class ExampleList extends LitElement {
   render() {
     return html`<a href="#" @click=${this.openList.bind(this)}>
         <svg class="icon" xmlns="http://www.w3.org/2000/svg">
-          <use id="use" href="/data/svg/icons.svg#open" /></svg></a
+          <use id="use" href="data/svg/icons.svg#open" /></svg></a
       >${this.renderDropdown()}`;
   }
 
@@ -92,7 +92,7 @@ class ExampleList extends LitElement {
 
   renderFile(file) {
     let isSchema = file.value.endsWith("json"),
-      iconRef = isSchema ? "/data/svg/icons.svg#db" : "/data/svg/icons.svg#js",
+      iconRef = isSchema ? "data/svg/icons.svg#db" : "data/svg/icons.svg#js",
       tooltip = isSchema ? "JSON Schema" : "JS Object Literal";
     return html`<div title="${tooltip}">
       <a href=${file.value}>${file.name}</a>

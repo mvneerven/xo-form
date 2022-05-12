@@ -3,7 +3,7 @@
  * Shows how to build wizard forms
  **/ 
 export const wizard = {
-  icons: "/data/svg/icons.svg", // pointer to svg sheet
+  icons: "data/svg/icons.svg", // pointer to svg sheet
   model: { 
     rules: {
       "#/state/commit": [

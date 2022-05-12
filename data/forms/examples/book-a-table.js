@@ -6,7 +6,7 @@ const TODAY = new Date().toISOString().split("T")[0],
  * Booking a table at a restaurant
  */
 export const bookATable = {
-  icons: "/data/svg/icons.svg",
+  icons: "data/svg/icons.svg",
   model: {
     instance: {
       state: {
