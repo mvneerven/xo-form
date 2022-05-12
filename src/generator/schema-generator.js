@@ -21,7 +21,7 @@ class SchemaGenerator {
   createSchema() {
     const me = this;
     const instance = {},
-    gfs =  me.reader.getFieldSchema ?? me.getFieldSchema.bind(me),
+    gfs =  me.reader.getFieldSchema?.bind(me.reader) ?? me.getFieldSchema.bind(me),
       page1 = this.schema.pages[0];
     Object.entries(this.reader.properties).forEach((entry) => {
       let key = entry[0];
