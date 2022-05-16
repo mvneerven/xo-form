@@ -64,7 +64,7 @@ class Model {
   constructor(form, schemaModel = {}, options = {}) {
     const me = this;
     this._form = form;
-    this._instance = schemaModel.instance;
+    this._instance = schemaModel.instance ?? {};
     this.options = options;
 
     const proxify = (instanceName, target, path) => {

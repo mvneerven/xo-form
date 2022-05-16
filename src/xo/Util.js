@@ -374,7 +374,11 @@ class Util {
         if (!this.equals(current[key], value)) current[key] = value;
         break;
       }
+      if(typeof(current[key]) === "undefined")
+        current[key]={};
+        
       current = current[key];
+      
     }
   }
 

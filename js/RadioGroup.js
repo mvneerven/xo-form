@@ -26,7 +26,7 @@ class RadioGroup extends InputGroup {
   }
 
   reportValidity() {
-    debugger
+    // TBD
   }
 
   toggleCheck(e) {

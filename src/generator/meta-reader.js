@@ -54,7 +54,6 @@ class MetaReader {
         fieldSchema = this.applyObjectType(schema, field, prop);
         break;
       default:
-        debugger;
         console.error("Mapping error", prop?.type, field, prop);
         fieldSchema = { type: "text" };
     }

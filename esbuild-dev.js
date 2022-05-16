@@ -16,7 +16,7 @@ fs.readdir("./data/forms/examples/", (err, files) => {
       return f.endsWith(".js");
     })
     .map((i) => {
-      return "/data/forms/examples/" + i.toString();
+      return "data/forms/examples/" + i.toString();
     });
 
   arr = arr.map((f) => {
@@ -28,7 +28,7 @@ fs.readdir("./data/forms/examples/", (err, files) => {
 
   fs.readdir("./data/json-schemas/", (err, files) => {
     let arr2 = files.map((i) => {
-      return "/data/json-schemas/" + i.toString();
+      return "data/json-schemas/" + i.toString();
     });
     arr2 = arr2.map((f) => {
       return {
