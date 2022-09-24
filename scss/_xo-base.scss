@@ -40,12 +40,9 @@
   &.xo-iv {
     .xo-in {
       border-color: var(--xo-input-border-color-invalid);
-      
     }
   }
 }
-
-
 
 .xo-cn:not(.xo-rep):not(.xo-ri) {
   // xo-ri = repeat-item
@@ -75,7 +72,8 @@
   padding: 0.5rem 0px 0px 0.5rem;
 }
 
-.xo-pp, .xo-app {
+.xo-pp,
+.xo-app {
   // prepend, append
   display: inline;
 }
@@ -167,7 +165,8 @@ button {
 }
 
 /* disabled */
-.xo-ds, [disabled] {
+.xo-ds,
+[disabled] {
   opacity: 0.5;
   user-select: none;
   cursor: not-allowed;

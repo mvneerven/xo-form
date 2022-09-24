@@ -84,7 +84,7 @@ xo-form {
 .slogan {
 	display: block;
 	margin-top: -1.2rem;
-	letter-spacing: .05rem;
+	letter-spacing: 0.05rem;
 	font-variant: small-caps;
 }
 
@@ -117,8 +117,8 @@ footer {
 }
 
 xo-control::part(label) {
-	border: 2px solid #3477f3 !important;
-	font-family: "Courier New", Courier, monospace;
+	//border: 2px solid #3477f3 !important;
+	//font-family: "Courier New", Courier, monospace;
 }
 
 .icon {

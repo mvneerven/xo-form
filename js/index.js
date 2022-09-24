@@ -9,7 +9,7 @@ import CheckBox from "./CheckBox";
 import FileDrop from "./FileDrop";
 import Info from "./Info";
 import Monaco from "./Monaco";
-import OmnoBox from "./OmniBox";
+import OmniBox from "./OmniBox";
 import Leaflet from "./Leaflet";
 import ModelView from "./ModelView";
 import SchemaEditor from './SchemaEditor';

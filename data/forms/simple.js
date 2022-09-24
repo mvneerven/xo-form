@@ -37,7 +37,10 @@ export const form = {
               label: "Your zip code",
               maxlength: 7,
               pattern: "[1-9][0-9]{3}\\s?[a-zA-Z]{2}",
-              placeholder: "1234 AB"
+              placeholder: "1234 AB",
+              prepend: {
+                icon: "alert"
+              }
             }
           ]
         },

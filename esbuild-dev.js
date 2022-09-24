@@ -1,6 +1,7 @@
 // https://esbuild.github.io/api/
 const esbuild = require("esbuild");
 const { litCssPlugin } = require("esbuild-plugin-lit-css");
+const { sassPlugin } = require('@es-pack/esbuild-sass-plugin');
 const { markdownPlugin } = require("esbuild-plugin-markdown");
 
 const fs = require("fs");
@@ -48,11 +49,12 @@ esbuild
     plugins: [litCssPlugin()],
     entryPoints: ["src/xo/index.js"],
     bundle: true,
+    format: "esm",
     keepNames: true,
     watch: {
       onRebuild(error, result) {
         if (error) console.error("watch build failed:", error);
-        else console.log("src/xo/index.js rebuilt");
+        else console.log("dist/xo-form.js rebuilt");
       }
     },
     outfile: "dist/xo-form.js"

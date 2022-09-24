@@ -1,7 +1,7 @@
 import { LitElement, html, css } from "lit";
 import Util from "./Util";
 
-const MONACO_VERSION = "0.33.0",
+const MONACO_VERSION = "0.34.0",
   getTheme = () => {
     return document.documentElement.classList.contains("theme-dark")
       ? "vs-dark"
@@ -12,27 +12,25 @@ const MONACO_VERSION = "0.33.0",
  * Monaco Code Editor Wrapper
  */
 class Monaco extends LitElement {
-  _version = MONACO_VERSION;
-
+  #src = undefined;
+  #version = MONACO_VERSION;
   language = "javascript";
-
-  _theme = getTheme();
-
-  _minimap = false;
+  #theme = getTheme();
+  #minimap = false;
 
   get version() {
-    return this._version;
+    return this.#version;
   }
 
   set version(version) {
-    this._version = version;
+    this.#version = version;
   }
 
   /**
    * Sets the URL to read an XO Form Schema from
    */
   set src(url) {
-    this._src = url;
+    this.#src = url;
     this.requestUpdate();
   }
 
@@ -40,7 +38,7 @@ class Monaco extends LitElement {
    * Returns the URL to read an XO Form Schema from
    */
   get src() {
-    return this._src;
+    return this.#src;
   }
 
   static get properties() {
@@ -100,19 +98,19 @@ class Monaco extends LitElement {
   }
 
   get minimap() {
-    return this._minimap;
+    return this.#minimap;
   }
 
   set minimap(on) {
-    this._minimap = on;
+    this.#minimap = on;
   }
 
   get theme() {
-    return this._theme;
+    return this.#theme;
   }
 
   set theme(name) {
-    this._theme = name;
+    this.#theme = name;
     if (monaco && monaco.editor) monaco.editor.setTheme(name);
   }
 
@@ -143,7 +141,7 @@ class Monaco extends LitElement {
 
     if (this.src) {
       this.value = await this.readSource(this.src);
-      this._src = null;
+      this.#src = null;
     }
 
     const detail = {

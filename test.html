@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <base href="http://localhost:901/" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>XO-FORM Starter</title>
+    <link rel="stylesheet" href="css/main.css" />
+    <script type="module" defer>
+      //import xo from "https://unpkg.com/xo-form@1.1.5/dist/xo-form.js";
+      import xo_default from "./dist/xo-form.js";
+
+      xo_default.initialize({
+        throttleInput: 150, // input event throttling
+        defaultTheme: "material" // default theme
+      });
+    </script>
+  </head>
+  <body>
+    <h1>XO-FORM Starter</h1>
+
+    <xo-form src="http://localhost:901/data/forms/simple.js"></xo-form>
+  </body>
+</html>
